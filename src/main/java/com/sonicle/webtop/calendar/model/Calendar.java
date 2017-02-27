@@ -40,10 +40,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author malbinola
  */
 public class Calendar {
-	public final static String SYNC_OFF = "O";
-	public final static String SYNC_READ_ONLY = "R";
-	public final static String SYNC_READ_WRITE = "W";
-	
 	private Integer calendarId;
 	private String domainId;
 	private String userId;
@@ -51,7 +47,7 @@ public class Calendar {
 	private String name;
 	private String description;
 	private String color;
-	private String sync;
+	private Sync sync;
 	private Boolean isPrivate;
 	private Boolean isDefault;
 	private Boolean defaultBusy;
@@ -116,11 +112,11 @@ public class Calendar {
 		this.color = color;
 	}
 
-	public String getSync() {
+	public Sync getSync() {
 		return sync;
 	}
 
-	public void setSync(String sync) {
+	public void setSync(Sync sync) {
 		this.sync = sync;
 	}
 
