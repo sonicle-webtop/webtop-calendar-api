@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.webtop.core.sdk.UserProfile;
+import com.sonicle.webtop.core.sdk.UserProfileId;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -160,8 +160,8 @@ public class Calendar {
 		this.defaultSendInvitation = defaultSendInvitation;
 	}
 	
-	public UserProfile.Id getProfileId() {
-		return new UserProfile.Id(getDomainId(), getUserId());
+	public UserProfileId getProfileId() {
+		return new UserProfileId(getDomainId(), getUserId());
 	}
 	
 	public String getHexColor() {
