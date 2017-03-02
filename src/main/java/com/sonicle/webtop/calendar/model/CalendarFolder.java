@@ -33,9 +33,9 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.sonicle.webtop.calendar.model.Calendar;
-import com.sonicle.webtop.core.bol.model.ShareFolder;
-import com.sonicle.webtop.core.bol.model.SharePermsFolder;
-import com.sonicle.webtop.core.bol.model.SharePermsElements;
+import com.sonicle.webtop.core.model.ShareFolder;
+import com.sonicle.webtop.core.model.SharePermsFolder;
+import com.sonicle.webtop.core.model.SharePermsElements;
 
 /**
  *
