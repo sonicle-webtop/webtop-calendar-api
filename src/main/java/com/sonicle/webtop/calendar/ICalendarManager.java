@@ -35,6 +35,7 @@ package com.sonicle.webtop.calendar;
 import com.sonicle.webtop.calendar.model.Calendar;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventInstance;
+import com.sonicle.webtop.core.sdk.UserProfileId;
 import com.sonicle.webtop.core.sdk.WTException;
 import java.util.List;
 import org.joda.time.DateTime;
@@ -45,6 +46,7 @@ import org.joda.time.DateTime;
  */
 public interface ICalendarManager {
 	
+	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
 	public List<Calendar> listCalendars() throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;
@@ -53,10 +55,11 @@ public interface ICalendarManager {
 	public Calendar updateCalendar(Calendar cal) throws Exception;
 	public boolean deleteCalendar(int calendarId) throws WTException;
 	public Event getEvent(int eventId) throws WTException;
-	public Event getEvent(String publicUid) throws WTException;
+	public Event getEvent(GetEventScope scope, boolean forceOriginal, String publicUid) throws WTException;
 	public Event addEvent(Event event) throws WTException;
 	public Event addEvent(Event event, boolean notifyAttendees) throws WTException;
 	public Event addEventFromICal(int calendarId, net.fortuna.ical4j.model.Calendar ical) throws WTException;
+	public void updateEventFromICalReply(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	public String getEventInstanceKey(int eventId) throws WTException;
 	public EventInstance getEventInstance(String eventKey) throws WTException;

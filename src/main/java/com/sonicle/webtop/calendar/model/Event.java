@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.commons.MailUtils;
 import com.sonicle.webtop.calendar.model.EventRecurrence;
 import com.sonicle.webtop.calendar.model.EventAttendee;
 import java.util.ArrayList;
@@ -149,12 +150,14 @@ public class Event {
 		organizer = value;
 	}
 	
-	public String getOrganizerAddress() throws AddressException {
-		return new InternetAddress(organizer).getAddress();
+	public String getOrganizerAddress() {
+		InternetAddress ia = MailUtils.buildInternetAddress(organizer);
+		return (ia != null) ? ia.getAddress() : null;
 	}
 	
-	public String getOrganizerCN() throws AddressException {
-		return new InternetAddress(organizer).getPersonal();
+	public String getOrganizerCN() {
+		InternetAddress ia = MailUtils.buildInternetAddress(organizer);
+		return (ia != null) ? ia.getPersonal() : null;
 	}
 
 	public String getTitle() {
