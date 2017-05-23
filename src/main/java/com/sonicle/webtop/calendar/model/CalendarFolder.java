@@ -32,7 +32,6 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.webtop.calendar.model.Calendar;
 import com.sonicle.webtop.core.model.ShareFolder;
 import com.sonicle.webtop.core.model.SharePermsFolder;
 import com.sonicle.webtop.core.model.SharePermsElements;
@@ -42,12 +41,22 @@ import com.sonicle.webtop.core.model.SharePermsElements;
  * @author malbinola
  */
 public class CalendarFolder extends ShareFolder {
+	private Object data;
 	
 	public CalendarFolder(String shareId, SharePermsFolder perms, SharePermsElements elsPerms, Calendar calendar) {
 		super(shareId, perms, elsPerms, calendar);
+		data = null;
 	}
 
 	public Calendar getCalendar() {
 		return (Calendar)object;
+	}
+	
+	public Object getData() {
+		return data;
+	}
+	
+	public void setData(Object data) {
+		this.data = data;
 	}
 }
