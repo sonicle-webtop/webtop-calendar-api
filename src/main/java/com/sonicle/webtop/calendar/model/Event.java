@@ -33,11 +33,8 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.sonicle.commons.MailUtils;
-import com.sonicle.webtop.calendar.model.EventRecurrence;
-import com.sonicle.webtop.calendar.model.EventAttendee;
 import java.util.ArrayList;
 import java.util.List;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import org.joda.time.DateTime;
 
@@ -62,8 +59,8 @@ public class Event {
 	protected Boolean busy;
 	protected Integer reminder;
 	protected Integer activityId;
-	protected String customerId;
-	protected String statisticId;
+	protected String masterDataId;
+	protected String statMasterDataId;
 	protected Integer causalId;
 	protected EventRecurrence recurrence;
 	protected List<EventAttendee> attendees = new ArrayList<>();
@@ -216,20 +213,20 @@ public class Event {
 		this.activityId = activityId;
 	}
 
-	public String getCustomerId() {
-		return customerId;
+	public String getMasterDataId() {
+		return masterDataId;
 	}
 
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
+	public void setMasterDataId(String masterDataId) {
+		this.masterDataId = masterDataId;
 	}
 
-	public String getStatisticId() {
-		return statisticId;
+	public String getStatMasterDataId() {
+		return statMasterDataId;
 	}
 
-	public void setStatisticId(String statisticId) {
-		this.statisticId = statisticId;
+	public void setStatMasterDataId(String statMasterDataId) {
+		this.statMasterDataId = statMasterDataId;
 	}
 
 	public Integer getCausalId() {

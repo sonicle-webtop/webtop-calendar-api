@@ -32,8 +32,6 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.webtop.calendar.model.Event;
-
 /**
  *
  * @author malbinola
