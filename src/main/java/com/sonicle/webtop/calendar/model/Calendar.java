@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,15 +45,17 @@ public class Calendar {
 	private String domainId;
 	private String userId;
 	private Boolean builtIn;
+	private Provider provider;
 	private String name;
 	private String description;
 	private String color;
 	private Sync sync;
-	private Boolean isPrivate;
 	private Boolean isDefault;
+	private Boolean isPrivate;
 	private Boolean defaultBusy;
 	private Integer defaultReminder;
 	private Boolean defaultSendInvitation;
+	private String parameters;
 	
 	public Calendar() {}
 
@@ -87,6 +90,14 @@ public class Calendar {
 	public void setBuiltIn(Boolean builtIn) {
 		this.builtIn = builtIn;
 	}
+	
+	public Provider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(Provider provider) {
+		this.provider = provider;
+	}
 
 	public String getName() {
 		return name;
@@ -119,6 +130,14 @@ public class Calendar {
 	public void setSync(Sync sync) {
 		this.sync = sync;
 	}
+	
+	public Boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 	public Boolean getIsPrivate() {
 		return isPrivate;
@@ -126,14 +145,6 @@ public class Calendar {
 
 	public void setIsPrivate(Boolean isPrivate) {
 		this.isPrivate = isPrivate;
-	}
-
-	public Boolean getIsDefault() {
-		return isDefault;
-	}
-
-	public void setIsDefault(Boolean isDefault) {
-		this.isDefault = isDefault;
 	}
 
 	public Boolean getDefaultBusy() {
@@ -160,11 +171,40 @@ public class Calendar {
 		this.defaultSendInvitation = defaultSendInvitation;
 	}
 	
+	public String getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(String parameters) {
+		this.parameters = parameters;
+	}
+	
 	public UserProfileId getProfileId() {
 		return new UserProfileId(getDomainId(), getUserId());
 	}
 	
+	public void setProfileId(UserProfileId pid) {
+		setDomainId(pid.getDomain());
+		setUserId(pid.getUser());
+	}
+	
+	public boolean isRemoteProvider() {
+		return Provider.WEBCAL.equals(getProvider()) || Provider.CALDAV.equals(getProvider());
+	}
+	
 	public static String getHexColor(String color) {
 		return (StringUtils.indexOf(color, "#") == 0) ? StringUtils.substring(color, 1) : color;
+	}
+	
+	public static enum Provider {
+		@SerializedName("local") LOCAL,
+		@SerializedName("webcal") WEBCAL,
+		@SerializedName("caldav") CALDAV;
+	}
+	
+	public static enum Sync {
+		@SerializedName("O") OFF,
+		@SerializedName("R") READ,
+		@SerializedName("W") WRITE;
 	}
 }

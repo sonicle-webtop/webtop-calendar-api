@@ -33,6 +33,7 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.sonicle.commons.MailUtils;
+import com.sonicle.commons.time.DateTimeUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.internet.InternetAddress;
@@ -47,6 +48,7 @@ public class Event {
 	protected String publicUid;
 	protected Integer calendarId;
 	protected DateTime revisionTimestamp;
+	protected Boolean readOnly;
 	protected DateTime startDate;
 	protected DateTime endDate;
 	protected String timezone;
@@ -58,6 +60,8 @@ public class Event {
 	protected Boolean isPrivate;
 	protected Boolean busy;
 	protected Integer reminder;
+	protected String href;
+	protected String etag;
 	protected Integer activityId;
 	protected String masterDataId;
 	protected String statMasterDataId;
@@ -95,8 +99,16 @@ public class Event {
 		return publicUid;
 	}
 	
-	public void setPublicUid(String value) {
-		publicUid = value;
+	public void setPublicUid(String publicUid) {
+		this.publicUid = publicUid;
+	}
+	
+	public Boolean getReadOnly() {
+		return this.readOnly;
+	}
+	
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 	public DateTime getStartDate() {
@@ -136,7 +148,7 @@ public class Event {
 		this.timezone = timezone;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		ensureCoherence(this);
+		validate(false);
 	}
 	
 	public String getOrganizer() {
@@ -204,6 +216,22 @@ public class Event {
 	public void setReminder(Integer value) {
 		reminder = value;
 	}
+	
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+	
+	public String getEtag() {
+		return etag;
+	}
+
+	public void setEtag(String etag) {
+		this.etag = etag;
+	}
 
 	public Integer getActivityId() {
 		return activityId;
@@ -261,13 +289,22 @@ public class Event {
 		return ((attendees != null) && !attendees.isEmpty());
 	}
 	
-	public static void ensureCoherence(Event event) {
-		// Ensure start < end
-		if(event.getStartDate().compareTo(event.getEndDate()) > 0) {
-			// Swap dates...
-			DateTime dt = event.getEndDate();
-			event.setEndDate(event.getStartDate());
-			event.setStartDate(dt);
+	public void validate(boolean silent) {
+		if ((startDate != null) && (endDate != null)) {
+			// Ensure start < end
+			if (startDate.compareTo(endDate) > 0) {
+				final DateTime dt = endDate;
+				setEndDate(startDate);
+				setStartDate(dt);
+			}
+			
+			if (allDay != null) {
+				// If event is all day, take max time as possible
+				if (allDay) {
+					setStartDate(startDate.withTimeAtStartOfDay());
+					setEndDate(DateTimeUtils.withTimeAtEndOfDay(endDate));
+				}
+			}
 		}
 	}
 }

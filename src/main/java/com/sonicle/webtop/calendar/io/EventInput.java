@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2014 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,17 +30,24 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar.model;
+package com.sonicle.webtop.calendar.io;
+
+import com.sonicle.webtop.calendar.model.Event;
+import java.util.ArrayList;
+import org.joda.time.LocalDate;
 
 /**
  *
  * @author malbinola
  */
-public enum Sync {
-	OFF("O"), READ("R"), WRITE("W");
-		
-	private final String value;
-	private Sync(String value) { this.value = value; }
-	@Override
-	public String toString() { return value; }
+public class EventInput {
+	public final Event event;
+	public final ArrayList<LocalDate> excludedDates;
+	public final LocalDate overwritesRecurringInstance;
+	
+	public EventInput(Event event, ArrayList<LocalDate> excludedDates, LocalDate overwritesRecurringInstance) {
+		this.event = event;
+		this.excludedDates = excludedDates;
+		this.overwritesRecurringInstance = overwritesRecurringInstance;
+	}
 }
