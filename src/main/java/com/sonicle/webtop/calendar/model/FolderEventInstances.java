@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,55 +32,18 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import java.util.List;
+
 /**
  *
  * @author malbinola
  */
-public class EventInstance extends Event {
-	protected String key;
-	protected RecurringInfo recurringInfo;
-	
-	public EventInstance(String key) {
-		super();
-		this.key = key;
-	}
-	
-	public EventInstance(String key, RecurringInfo recurringInfo) {
-		super();
-		this.key = key;
-		this.recurringInfo = recurringInfo;
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public void setKey(String value) {
-		key = value;
-	}
-	
-	public RecurringInfo getRecurringInfo() {
-		return recurringInfo;
-	}
-	
-	public static enum RecurringInfo {
-		NONE {
-			@Override
-			public String toString() {
-				return "none";
-			}
-		},
-		BROKEN {
-			@Override
-			public String toString() {
-				return "broken";
-			}
-		},
-		RECURRING {
-			@Override
-			public String toString() {
-				return "recurring";
-			}
-		}
+public class FolderEventInstances {
+	public final Calendar folder;
+	public final List<SchedEventInstance> instances;
+
+	public FolderEventInstances(Calendar folder, List<SchedEventInstance> instances) {
+		this.folder = folder;
+		this.instances = instances;
 	}
 }

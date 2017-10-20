@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar;
 
+import com.sonicle.webtop.calendar.model.GetEventScope;
 import com.sonicle.webtop.calendar.model.Calendar;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventInstance;
@@ -47,6 +48,7 @@ import org.joda.time.DateTime;
 public interface ICalendarManager {
 	
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
+	public List<Integer> listCalendarIds() throws WTException;
 	public List<Calendar> listCalendars() throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;

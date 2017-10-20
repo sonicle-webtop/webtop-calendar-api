@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,57 +30,16 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar.model;
+package com.sonicle.webtop.calendar;
+
+import org.joda.time.DateTime;
 
 /**
  *
  * @author malbinola
  */
-public class EventInstance extends Event {
-	protected String key;
-	protected RecurringInfo recurringInfo;
+public interface IEvent {
 	
-	public EventInstance(String key) {
-		super();
-		this.key = key;
-	}
-	
-	public EventInstance(String key, RecurringInfo recurringInfo) {
-		super();
-		this.key = key;
-		this.recurringInfo = recurringInfo;
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public void setKey(String value) {
-		key = value;
-	}
-	
-	public RecurringInfo getRecurringInfo() {
-		return recurringInfo;
-	}
-	
-	public static enum RecurringInfo {
-		NONE {
-			@Override
-			public String toString() {
-				return "none";
-			}
-		},
-		BROKEN {
-			@Override
-			public String toString() {
-				return "broken";
-			}
-		},
-		RECURRING {
-			@Override
-			public String toString() {
-				return "recurring";
-			}
-		}
-	}
+	public DateTime getStartDate();
+	public DateTime getEndDate();
 }

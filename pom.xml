@@ -12,4 +12,12 @@
 		<artifactId>webtop-superpom-service-api</artifactId>
 		<version>1</version>
 	</parent>
+	
+	<dependencies>
+		<dependency>
+			<groupId>uk.com.robust-it</groupId>
+			<artifactId>cloning</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+	</dependencies>
 </project>

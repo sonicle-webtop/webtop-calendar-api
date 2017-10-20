@@ -30,12 +30,37 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2014 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar;
+package com.sonicle.webtop.calendar.model;
+
+import com.rits.cloning.Cloner;
 
 /**
  *
  * @author malbinola
  */
-public enum GetEventScope {
-	PERSONAL, INCOMING, PERSONAL_AND_INCOMING, ALL
+public class SchedEventInstance extends SchedEvent {
+	protected String key;
+	
+	public SchedEventInstance() {
+		super();
+	}
+	
+	public SchedEventInstance(String key) {
+		super();
+		this.key = key;
+	}
+	
+	public SchedEventInstance(SchedEvent event) {
+		this(EventKey.buildKey(event.getEventId(), event.getOriginalEventId()), event);
+	}
+	
+	public SchedEventInstance(String key, SchedEvent event) {
+		super();
+		this.key = key;
+		Cloner.standard().copyPropertiesOfInheritedClass(event, this);
+	}
+	
+	public String getKey() {
+		return key;
+	}
 }
