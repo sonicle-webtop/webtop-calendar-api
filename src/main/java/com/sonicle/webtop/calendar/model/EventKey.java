@@ -74,13 +74,11 @@ public class EventKey {
 	}
 	
 	public static String buildKey(Integer eventId, Integer originalEventId) {
-		if (originalEventId == null) originalEventId = eventId;
 		String str = originalEventId + "_" + eventId;
 		return Hex.encodeHexString(str.getBytes());
 	}
 	
 	public static String buildKey(Integer eventId, Integer originalEventId, LocalDate date) {
-		if (originalEventId == null) originalEventId = eventId;
 		String str = originalEventId + "_" + eventId + "_" + date.toString("yyyyMMdd");
 		return Hex.encodeHexString(str.getBytes());
 	}

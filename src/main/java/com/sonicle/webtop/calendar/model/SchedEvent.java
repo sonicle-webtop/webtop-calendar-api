@@ -35,6 +35,7 @@ package com.sonicle.webtop.calendar.model;
 import com.sonicle.webtop.calendar.IEvent;
 import com.sonicle.commons.MailUtils;
 import com.sonicle.webtop.core.sdk.UserProfileId;
+import java.util.Objects;
 import javax.mail.internet.InternetAddress;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -245,11 +246,13 @@ public class SchedEvent implements IEvent {
 		return DateTimeZone.forID(getTimezone());
 	}
 	
-	public boolean isBroken() {
-		return !isRecurring() && (originalEventId != null);
-	}
-	
 	public boolean isRecurring() {
 		return recurrenceId != null;
+	}
+	
+	public boolean isBroken() {
+		//TODO: estendere l'implementazione per contemplare eventi spezzati con una loro ricorrenza
+		if (isRecurring()) return false;
+		return !Objects.equals(originalEventId, eventId);
 	}
 }

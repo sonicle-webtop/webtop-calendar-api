@@ -34,10 +34,13 @@ package com.sonicle.webtop.calendar;
 
 import com.sonicle.webtop.calendar.model.GetEventScope;
 import com.sonicle.webtop.calendar.model.Calendar;
+import com.sonicle.webtop.calendar.model.CalendarFolder;
+import com.sonicle.webtop.calendar.model.CalendarRoot;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventInstance;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import com.sonicle.webtop.core.sdk.WTException;
+import java.util.HashMap;
 import java.util.List;
 import org.joda.time.DateTime;
 
@@ -47,9 +50,12 @@ import org.joda.time.DateTime;
  */
 public interface ICalendarManager {
 	
-	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
+	public List<CalendarRoot> listIncomingCalendarRoots() throws WTException;
+	public HashMap<Integer, CalendarFolder> listIncomingCalendarFolders(String rootShareId) throws WTException;	
 	public List<Integer> listCalendarIds() throws WTException;
+	public List<Integer> listIncomingCalendarIds() throws WTException;
 	public List<Calendar> listCalendars() throws WTException;
+	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;
 	public Calendar addCalendar(Calendar cal) throws WTException;
