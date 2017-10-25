@@ -44,7 +44,7 @@ public class CalendarFolder extends ShareFolder {
 	private Object data;
 	
 	public CalendarFolder(String shareId, SharePermsFolder perms, SharePermsElements elsPerms, Calendar calendar) {
-		super(shareId, perms, elsPerms, calendar);
+		super(shareId, perms, calendar.isRemoteProvider() ? new SharePermsElements() : elsPerms, calendar);
 		data = null;
 	}
 
