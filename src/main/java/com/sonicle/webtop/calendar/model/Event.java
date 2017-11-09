@@ -37,6 +37,8 @@ import com.sonicle.commons.time.DateTimeUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.internet.InternetAddress;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.joda.time.DateTime;
 
 /**
@@ -305,6 +307,23 @@ public class Event {
 					setEndDate(DateTimeUtils.withTimeAtEndOfDay(endDate));
 				}
 			}
+		}
+	}
+	
+	public boolean trimFieldLengths() {
+		MutableBoolean trimmed = new MutableBoolean(false);
+		setTitle(trimStringLength(getTitle(), 255, trimmed));
+		setLocation(trimStringLength(getLocation(), 255, trimmed));
+		setOrganizer(trimStringLength(getOrganizer(), 650, trimmed));
+		return trimmed.booleanValue();
+	}
+	
+	private static String trimStringLength(String value, int maxLength, MutableBoolean trimmed) {
+		if (StringUtils.length(value) > maxLength) {
+			trimmed.setTrue();
+			return StringUtils.left(value, maxLength);
+		} else {
+			return value;
 		}
 	}
 }

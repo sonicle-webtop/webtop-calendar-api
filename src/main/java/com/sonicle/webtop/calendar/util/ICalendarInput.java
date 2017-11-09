@@ -37,7 +37,6 @@ import com.sonicle.webtop.calendar.io.EventInput;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttendee;
 import com.sonicle.webtop.calendar.model.EventRecurrence;
-import com.sonicle.webtop.core.io.BeanHandler;
 import com.sonicle.webtop.core.sdk.WTException;
 import com.sonicle.webtop.core.util.ICal4jUtils;
 import com.sonicle.webtop.core.util.ICalendarUtils;
@@ -108,9 +107,13 @@ public class ICalendarInput {
 			if (component instanceof VEvent) {
 				final VEvent ve = (VEvent)component;
 				final LogEntries velog = (log != null) ? new LogEntries() : null;
-
+				
 				try {
-					results.add(fromVEvent(ve, velog));
+					final EventInput result = fromVEvent(ve, velog);
+					if (result.event.trimFieldLengths()) {
+						if (velog != null) velog.add(new MessageLogEntry(LogEntry.Level.WARN, "Some fields were truncated due to max-length"));
+					}
+					results.add(result);
 					if ((log != null) && (velog != null)) {
 						if (!velog.isEmpty()) {
 							log.addMaster(new MessageLogEntry(LogEntry.Level.WARN, "VEVENT ['{1}', {0}]", ve.getUid(), ve.getSummary()));
@@ -167,7 +170,7 @@ public class ICalendarInput {
 
 		// Title
 		if (ve.getSummary() != null) {
-			event.setTitle(sanitizeValue(ve.getSummary().getValue(), 255, log, Property.SUMMARY));
+			event.setTitle(StringUtils.defaultString(ve.getSummary().getValue()));
 		} else {
 			event.setTitle("");
 			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Event has no title"));
@@ -182,7 +185,7 @@ public class ICalendarInput {
 
 		// Location
 		if (ve.getLocation() != null) {
-			event.setLocation(sanitizeValue(ve.getLocation().getValue(), 255, log, Property.LOCATION));
+			event.setLocation(StringUtils.defaultString(ve.getLocation().getValue()));
 		} else {
 			event.setLocation(null);
 		}
@@ -228,7 +231,7 @@ public class ICalendarInput {
 		Organizer org = (Organizer)ve.getProperty(Property.ORGANIZER);
 		if (org != null) {
 			try {
-				event.setOrganizer(sanitizeValue(fromVEventOrganizer(org, log), 650, log, Property.ORGANIZER));
+				event.setOrganizer(fromVEventOrganizer(org, log));
 			} catch(Throwable t) {
 				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, t.getMessage()));
 			}
@@ -466,25 +469,6 @@ public class ICalendarInput {
 		if (start.plusDays(1).getDayOfMonth() != end.getDayOfMonth()) return false;
 		return true;
 	}
-	
-	private String sanitizeValue(String value, Integer maxLen, LogEntries log, String propertyName) {
-		if ((maxLen != null) && (StringUtils.length(value) > maxLen)) {
-			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Value truncated! " + propertyName + " exceeds maximum allowed length (" + maxLen.toString() + ")"));
-			return StringUtils.defaultString(StringUtils.left(value, maxLen));
-		} else {
-			return StringUtils.defaultString(value);
-		}
-	}
-	
-	private String stringValue(String value, boolean allowNull, Integer maxLen) {
-		if (allowNull && (value == null)) return value;
-		if ((maxLen != null) && (StringUtils.length(value) > maxLen)) {
-			return StringUtils.defaultString(StringUtils.left(value, maxLen));
-		} else {
-			return StringUtils.defaultString(value);
-		}
-	}
-	
 	
 	
 	
