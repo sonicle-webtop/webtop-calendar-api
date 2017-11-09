@@ -37,18 +37,22 @@ import com.sonicle.webtop.calendar.io.EventInput;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttendee;
 import com.sonicle.webtop.calendar.model.EventRecurrence;
+import com.sonicle.webtop.core.io.BeanHandler;
 import com.sonicle.webtop.core.sdk.WTException;
 import com.sonicle.webtop.core.util.ICal4jUtils;
 import com.sonicle.webtop.core.util.ICalendarUtils;
 import com.sonicle.webtop.core.util.LogEntries;
 import com.sonicle.webtop.core.util.LogEntry;
 import com.sonicle.webtop.core.util.MessageLogEntry;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.mail.internet.InternetAddress;
+import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.NumberList;
@@ -86,16 +90,25 @@ public class ICalendarInput {
 		this.defaultTz = defaultTz;
 	}
 	
-	public ArrayList<EventInput> fromCalendar(Calendar calendar, LogEntries log) throws WTException {
+	public ArrayList<EventInput> fromICalendarFile(InputStream is, LogEntries log) throws WTException {
+		try {
+			final Calendar calendar = ICalendarUtils.parseRelaxed(is);
+			return fromICalendarFile(calendar, log);
+		} catch(IOException | ParserException ex) {
+			throw new WTException(ex, "Unable to read stream");
+		}	
+	}
+	
+	public ArrayList<EventInput> fromICalendarFile(Calendar calendar, LogEntries log) throws WTException {
 		// See http://www.kanzaki.com/docs/ical/
 		ArrayList<EventInput> results = new ArrayList<>();
 		
 		for (Iterator xi = calendar.getComponents().iterator(); xi.hasNext();) {
-			Component component = (Component) xi.next();
+			final Component component = (Component) xi.next();
 			if (component instanceof VEvent) {
 				final VEvent ve = (VEvent)component;
 				final LogEntries velog = (log != null) ? new LogEntries() : null;
-				
+
 				try {
 					results.add(fromVEvent(ve, velog));
 					if ((log != null) && (velog != null)) {
@@ -113,10 +126,12 @@ public class ICalendarInput {
 	}
 	
 	public EventInput fromVEvent(VEvent ve, LogEntries log) throws WTException {
+		// See http://www.kanzaki.com/docs/ical/vevent.html
 		Event event = new Event();
 		ArrayList<LocalDate> excludedDates = null;
 		LocalDate overwritesRecurringInstance = null;
-		// See http://www.kanzaki.com/docs/ical/vevent.html
+		
+		//TODO: pass string field lengths in constructor of take them from db field definitions
 		
 		event.setPublicUid(ve.getUid().getValue());
 
@@ -152,7 +167,7 @@ public class ICalendarInput {
 
 		// Title
 		if (ve.getSummary() != null) {
-			event.setTitle(StringUtils.defaultString(ve.getSummary().getValue()));
+			event.setTitle(sanitizeValue(ve.getSummary().getValue(), 255, log, Property.SUMMARY));
 		} else {
 			event.setTitle("");
 			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Event has no title"));
@@ -167,7 +182,7 @@ public class ICalendarInput {
 
 		// Location
 		if (ve.getLocation() != null) {
-			event.setLocation(StringUtils.defaultString(ve.getLocation().getValue()));
+			event.setLocation(sanitizeValue(ve.getLocation().getValue(), 255, log, Property.LOCATION));
 		} else {
 			event.setLocation(null);
 		}
@@ -213,9 +228,9 @@ public class ICalendarInput {
 		Organizer org = (Organizer)ve.getProperty(Property.ORGANIZER);
 		if (org != null) {
 			try {
-				event.setOrganizer(fromVEventOrganizer(org, log));
-			} catch(Exception ex) {
-				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, ex.getMessage()));
+				event.setOrganizer(sanitizeValue(fromVEventOrganizer(org, log), 650, log, Property.ORGANIZER));
+			} catch(Throwable t) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, t.getMessage()));
 			}
 		}
 
@@ -286,6 +301,12 @@ public class ICalendarInput {
 			for(Object o : monthDayList) {
 				rec.setMonthlyDay((Integer)o);
 			}
+			
+			if (monthDayList.isEmpty()) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Invalid MONTHLY recurrence"));
+				return null;
+			}
+			
 		} else if (freq.equals(Recur.YEARLY)) {
 			rec.setType(EventRecurrence.TYPE_YEARLY);
 			
@@ -298,6 +319,12 @@ public class ICalendarInput {
 			for(Object o : monthDayList) {
 				rec.setYearlyDay((Integer)o);
 			}
+			
+			if (monthList.isEmpty() || monthDayList.isEmpty()) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Invalid YEARLY recurrence"));
+				return null;
+			}
+			
 		} else { // Frequency type not yet supported...skip RR!
 			return null;
 		}
@@ -439,4 +466,76 @@ public class ICalendarInput {
 		if (start.plusDays(1).getDayOfMonth() != end.getDayOfMonth()) return false;
 		return true;
 	}
+	
+	private String sanitizeValue(String value, Integer maxLen, LogEntries log, String propertyName) {
+		if ((maxLen != null) && (StringUtils.length(value) > maxLen)) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Value truncated! " + propertyName + " exceeds maximum allowed length (" + maxLen.toString() + ")"));
+			return StringUtils.defaultString(StringUtils.left(value, maxLen));
+		} else {
+			return StringUtils.defaultString(value);
+		}
+	}
+	
+	private String stringValue(String value, boolean allowNull, Integer maxLen) {
+		if (allowNull && (value == null)) return value;
+		if ((maxLen != null) && (StringUtils.length(value) > maxLen)) {
+			return StringUtils.defaultString(StringUtils.left(value, maxLen));
+		} else {
+			return StringUtils.defaultString(value);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	public <T extends EventInput> void fromICalendarFile2(InputStream is, BeanHandler<T> handler) throws WTException {
+		try {
+			final Calendar calendar = ICalendarUtils.parseRelaxed(is);
+			fromICalendarFile2(calendar, handler);
+		} catch(IOException | ParserException ex) {
+			throw new WTException(ex, "Unable to read stream");
+		}
+	}
+	
+	public <T extends EventInput> void fromICalendarFile2(Calendar calendar, BeanHandler<T> handler) throws WTException {
+		// See http://www.kanzaki.com/docs/ical/
+		
+		for (Iterator xi = calendar.getComponents().iterator(); xi.hasNext();) {
+			final Component component = (Component) xi.next();
+			if (component instanceof VEvent) {
+				final VEvent ve = (VEvent)component;
+				
+				EventInput result = null;
+				try {
+					final LogEntries ilog = writeLog ? new LogEntries() : null;
+					result = fromVEvent(ve, ilog);
+					if ((log != null) && (ilog != null)) {
+						if (!ilog.isEmpty()) {
+							log.addMaster(new MessageLogEntry(LogEntry.Level.WARN, "VEVENT ['{1}', {0}]", ve.getUid(), ve.getSummary()));
+							log.addAll(ilog);
+						}
+					}
+				} catch(Throwable t) {
+					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT ['{1}', {0}]. Reason: {3}", ve.getUid(), ve.getSummary(), t.getMessage()));
+				} finally {
+					try {
+						handler.handle(result, log);
+					} catch(Exception ex) {
+						throw new WTException(ex);
+					}
+				}
+			}
+		}
+	}
+	*/
 }
