@@ -232,16 +232,6 @@ public class SchedEvent implements IEvent {
 		return new UserProfileId(calendarDomainId, calendarUserId);
 	}
 	
-	public String getOrganizerAddress() {
-		InternetAddress ia = MailUtils.buildInternetAddress(organizer);
-		return (ia != null) ? ia.getAddress() : null;
-	}
-	
-	public String getOrganizerCN() {
-		InternetAddress ia = MailUtils.buildInternetAddress(organizer);
-		return (ia != null) ? ia.getPersonal() : null;
-	}
-	
 	public DateTimeZone getDateTimeZone() {
 		return DateTimeZone.forID(getTimezone());
 	}

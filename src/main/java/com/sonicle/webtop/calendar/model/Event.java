@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.commons.MailUtils;
+import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.commons.time.DateTimeUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,12 +162,12 @@ public class Event {
 	}
 	
 	public String getOrganizerAddress() {
-		InternetAddress ia = MailUtils.buildInternetAddress(organizer);
+		InternetAddress ia = InternetAddressUtils.toInternetAddress(organizer);
 		return (ia != null) ? ia.getAddress() : null;
 	}
 	
 	public String getOrganizerCN() {
-		InternetAddress ia = MailUtils.buildInternetAddress(organizer);
+		InternetAddress ia = InternetAddressUtils.toInternetAddress(organizer);
 		return (ia != null) ? ia.getPersonal() : null;
 	}
 

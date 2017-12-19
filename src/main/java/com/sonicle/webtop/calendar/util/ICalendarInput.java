@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar.util;
 
+import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.webtop.calendar.io.EventInput;
 import com.sonicle.webtop.calendar.model.Event;
@@ -366,13 +367,13 @@ public class ICalendarInput {
 		Cn cn = (Cn)org.getParameter(Parameter.CN);
 		if (uri != null) {
 			String address = uri.getSchemeSpecificPart();
-			ia = new InternetAddress(address, (cn == null) ? address : cn.getValue());
+			ia = InternetAddressUtils.toInternetAddress(address, (cn == null) ? address : cn.getValue());
 		} else {
 			throw new WTException("Organizer must be valid [{0}]", org.toString());
 			//log.add(new MessageLogEntry(LogEntry.Level.WARN, "Organizer must have a valid address [{0}]", organizer.toString()));
 		}
 		
-		return ia.toString();
+		return InternetAddressUtils.toFullAddress(ia);
 	}
 	
 	public EventAttendee fromVEventAttendee(Attendee att, LogEntries log) throws Exception {
@@ -386,7 +387,8 @@ public class ICalendarInput {
 		Cn cn = (Cn)att.getParameter(Parameter.CN);
 		if (uri != null) {
 			String address = uri.getSchemeSpecificPart();
-			attendee.setRecipient(new InternetAddress(address, (cn == null) ? address : cn.getValue()).toString());
+			InternetAddress ia = InternetAddressUtils.toInternetAddress(address, (cn == null) ? address : cn.getValue());
+			attendee.setRecipient(InternetAddressUtils.toFullAddress(ia));
 		} else {
 			throw new WTException("Attendee must be valid [{0}]", att.toString());
 			//log.add(new MessageLogEntry(LogEntry.Level.WARN, "Attendee must have a valid address [{0}]", attendee.toString()));

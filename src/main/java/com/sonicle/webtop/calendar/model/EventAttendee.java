@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.commons.MailUtils;
 import java.util.ArrayList;
 import javax.mail.internet.AddressException;
@@ -127,7 +128,7 @@ public class EventAttendee {
 	}
 	
 	public boolean hasEmailRecipient() {
-		return MailUtils.buildInternetAddress(getRecipient()) != null;
+		return InternetAddressUtils.toInternetAddress(getRecipient()) != null;
 	}
 	
 	@Override
