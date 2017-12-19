@@ -75,6 +75,7 @@ import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Uid;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -117,12 +118,12 @@ public class ICalendarInput {
 					results.add(result);
 					if ((log != null) && (velog != null)) {
 						if (!velog.isEmpty()) {
-							log.addMaster(new MessageLogEntry(LogEntry.Level.WARN, "VEVENT ['{1}', {0}]", ve.getUid(), ve.getSummary()));
+							log.addMaster(new MessageLogEntry(LogEntry.Level.WARN, "VEVENT ['{1}', {0}]", ICalendarUtils.getUidValue(ve), ve.getSummary()));
 							log.addAll(velog);
 						}
 					}
 				} catch(Throwable t) {
-					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT ['{1}', {0}]. Reason: {3}", ve.getUid(), ve.getSummary(), t.getMessage()));
+					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT ['{1}', {0}]. Reason: {2}", ICalendarUtils.getUidValue(ve), ve.getSummary(), t.getMessage()));
 				}
 			}
 		}
@@ -136,8 +137,12 @@ public class ICalendarInput {
 		LocalDate overwritesRecurringInstance = null;
 		
 		//TODO: pass string field lengths in constructor of take them from db field definitions
-		
-		event.setPublicUid(ve.getUid().getValue());
+		String uid = ICalendarUtils.getUidValue(ve);
+		if (!StringUtils.isBlank(uid)) {
+			event.setPublicUid(uid);
+		} else {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Missing Uid"));
+		}
 
 		// Extracts and converts date-times
 		DtStart start = ve.getStartDate();
@@ -174,7 +179,7 @@ public class ICalendarInput {
 			event.setTitle(StringUtils.defaultString(ve.getSummary().getValue()));
 		} else {
 			event.setTitle("");
-			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Event has no title"));
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Missing Title"));
 		}
 
 		// Description
