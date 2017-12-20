@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.joda.time.DateTime;
 
@@ -316,6 +317,14 @@ public class Event {
 		setLocation(trimStringLength(getLocation(), 255, trimmed));
 		setOrganizer(trimStringLength(getOrganizer(), 650, trimmed));
 		return trimmed.booleanValue();
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append(getEventId())
+				.append(getTitle())
+				.toString();
 	}
 	
 	private static String trimStringLength(String value, int maxLength, MutableBoolean trimmed) {

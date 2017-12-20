@@ -118,12 +118,12 @@ public class ICalendarInput {
 					results.add(result);
 					if ((log != null) && (velog != null)) {
 						if (!velog.isEmpty()) {
-							log.addMaster(new MessageLogEntry(LogEntry.Level.WARN, "VEVENT ['{1}', {0}]", ICalendarUtils.getUidValue(ve), ve.getSummary()));
+							log.addMaster(new MessageLogEntry(LogEntry.Level.WARN, "VEVENT [{0}]", ICalendarUtils.print(ve)));
 							log.addAll(velog);
 						}
 					}
 				} catch(Throwable t) {
-					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT ['{1}', {0}]. Reason: {2}", ICalendarUtils.getUidValue(ve), ve.getSummary(), t.getMessage()));
+					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT [{0}]. Reason: {1}", ICalendarUtils.print(ve), t.getMessage()));
 				}
 			}
 		}
