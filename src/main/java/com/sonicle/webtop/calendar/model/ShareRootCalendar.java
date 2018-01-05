@@ -32,31 +32,22 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.webtop.core.model.ShareFolder;
-import com.sonicle.webtop.core.model.SharePermsFolder;
-import com.sonicle.webtop.core.model.SharePermsElements;
+import com.sonicle.webtop.core.model.IncomingShareRoot;
+import com.sonicle.webtop.core.model.SharePermsRoot;
+import com.sonicle.webtop.core.model.ShareRoot;
+import com.sonicle.webtop.core.sdk.UserProfileId;
 
 /**
  *
  * @author malbinola
  */
-public class CalendarFolder extends ShareFolder {
-	private Object data;
+public class ShareRootCalendar extends ShareRoot {
 	
-	public CalendarFolder(String shareId, SharePermsFolder perms, SharePermsElements elsPerms, Calendar calendar) {
-		super(shareId, perms, calendar.isRemoteProvider() ? new SharePermsElements() : elsPerms, calendar);
-		data = null;
-	}
-
-	public Calendar getCalendar() {
-		return (Calendar)object;
+	public ShareRootCalendar(String shareId, SharePermsRoot perms, UserProfileId ownerProfileId, String description) {
+		super(shareId, perms, ownerProfileId, description);
 	}
 	
-	public Object getData() {
-		return data;
-	}
-	
-	public void setData(Object data) {
-		this.data = data;
+	public ShareRootCalendar(IncomingShareRoot share, SharePermsRoot perms) {
+		super(share, perms);
 	}
 }
