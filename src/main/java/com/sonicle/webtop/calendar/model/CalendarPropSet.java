@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2014 Sonicle S.r.l.
+/*
+ * Copyright (C) 2018 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,25 +28,62 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2018 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.webtop.core.model.ShareFolder;
-import com.sonicle.webtop.core.model.SharePermsFolder;
-import com.sonicle.webtop.core.model.SharePermsElements;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author malbinola
  */
-public class ShareFolderCalendar extends ShareFolder {
+public class CalendarPropSet {
+	private Boolean hidden;
+	private String color;
+	private Calendar.Sync sync;
 	
-	public ShareFolderCalendar(String shareId, SharePermsFolder perms, SharePermsElements elsPerms, Calendar calendar) {
-		super(shareId, perms, calendar.isRemoteProvider() ? new SharePermsElements() : elsPerms, calendar);
+	public CalendarPropSet() {}
+
+	public Boolean getHidden() {
+		return hidden;
+	}
+	
+	public boolean getHiddenOrDefault(boolean defaultHidden) {
+		return (hidden == null) ? defaultHidden : getHidden();
 	}
 
-	public Calendar getCalendar() {
-		return (Calendar)object;
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	public String getColor() {
+		return color;
+	}
+	
+	public String getColorOrDefault(String defaultColor) {
+		return StringUtils.isBlank(color) ? defaultColor : getColor();
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public Calendar.Sync getSync() {
+		return sync;
+	}
+	
+	public Calendar.Sync getSyncOrDefault(Calendar.Sync defaultSync) {
+		return (sync == null) ? defaultSync : getSync();
+	}
+
+	public void setSync(Calendar.Sync sync) {
+		this.sync = sync;
+	}
+	
+	public void set(CalendarPropSet obj) {
+		this.hidden = obj.getHidden();
+		this.color = obj.getColor();
+		this.sync = obj.getSync();
 	}
 }
