@@ -72,7 +72,6 @@ public interface ICalendarManager {
 	public Event addEvent(Event event) throws WTException;
 	public Event addEvent(Event event, boolean notifyAttendees) throws WTException;
 	public Event addEventFromICal(int calendarId, net.fortuna.ical4j.model.Calendar ical) throws WTException;
-	public void updateEventFromICalReply(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	public String getEventInstanceKey(int eventId) throws WTException;
 	public EventInstance getEventInstance(String eventKey) throws WTException;
