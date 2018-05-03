@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  *
@@ -69,6 +70,7 @@ public class Event {
 	protected String masterDataId;
 	protected String statMasterDataId;
 	protected Integer causalId;
+	protected String recurrenceRule;
 	protected EventRecurrence recurrence;
 	protected List<EventAttendee> attendees = new ArrayList<>();
 	
@@ -126,16 +128,20 @@ public class Event {
 		return endDate;
 	}
 	
-	public void setEndDate(DateTime value) {
-		endDate = value;
+	public void setEndDate(DateTime endDate) {
+		this.endDate = endDate;
 	}
 
 	public String getTimezone() {
 		return timezone;
 	}
 	
-	public void setTimezone(String value) {
-		timezone = value;
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+	
+	public DateTimeZone getDateTimezone() {
+		return DateTimeZone.forID(timezone);
 	}
 
 	public Boolean getAllDay() {
@@ -268,16 +274,16 @@ public class Event {
 		this.causalId = causalId;
 	}
 	
-	public EventRecurrence getRecurrence() {
-		return recurrence;
+	public String getRecurrenceRule() {
+		return recurrenceRule;
 	}
 	
-	public void setRecurrence(EventRecurrence value) {
-		recurrence = value;
+	public void setRecurrenceRule(String recurrenceRule) {
+		this.recurrenceRule = recurrenceRule;
 	}
 	
 	public boolean hasRecurrence() {
-		return (recurrence != null);
+		return !StringUtils.isEmpty(this.recurrenceRule);
 	}
 	
 	public List<EventAttendee> getAttendees() {

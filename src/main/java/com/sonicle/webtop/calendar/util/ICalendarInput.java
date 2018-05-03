@@ -216,7 +216,8 @@ public class ICalendarInput {
 		// Extract recurrence (real definition or reference to a previous instance)
 		RRule rr = (RRule)ve.getProperty(Property.RRULE);
 		if (rr != null) {
-			event.setRecurrence(fromVEventRRule(rr, dtStart.getZone(), log));
+			event.setRecurrenceRule(rr.toString());
+			//event.setRecurrence(fromVEventRRule(rr, dtStart.getZone(), log));
 		} else {
 			RecurrenceId recurrenceId = (RecurrenceId)ve.getProperty(Property.RECURRENCE_ID);
 			if (recurrenceId != null) {
