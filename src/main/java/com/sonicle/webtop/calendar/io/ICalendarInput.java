@@ -30,20 +30,12 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2018 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar.model;
+package com.sonicle.webtop.calendar.io;
 
 /**
  *
  * @author malbinola
  */
-public class SchedEventInstance extends SchedEvent {
-	protected String key;
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
+public class ICalendarInput {
+	
 }

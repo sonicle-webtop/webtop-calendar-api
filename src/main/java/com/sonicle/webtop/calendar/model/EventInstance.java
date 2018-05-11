@@ -38,49 +38,21 @@ package com.sonicle.webtop.calendar.model;
  */
 public class EventInstance extends Event {
 	protected String key;
-	protected RecurringInfo recurringInfo;
-	
-	public EventInstance(String key) {
-		super();
-		this.key = key;
-	}
-	
-	public EventInstance(String key, RecurringInfo recurringInfo) {
-		super();
-		this.key = key;
-		this.recurringInfo = recurringInfo;
-	}
-	
+	protected RecurInfo recurInfo;
+
 	public String getKey() {
 		return key;
 	}
-	
-	public void setKey(String value) {
-		key = value;
+
+	public void setKey(String key) {
+		this.key = key;
 	}
-	
-	public RecurringInfo getRecurringInfo() {
-		return recurringInfo;
+
+	public RecurInfo getRecurInfo() {
+		return recurInfo;
 	}
-	
-	public static enum RecurringInfo {
-		NONE {
-			@Override
-			public String toString() {
-				return "none";
-			}
-		},
-		BROKEN {
-			@Override
-			public String toString() {
-				return "broken";
-			}
-		},
-		RECURRING {
-			@Override
-			public String toString() {
-				return "recurring";
-			}
-		}
+
+	public void setRecurInfo(RecurInfo recurInfo) {
+		this.recurInfo = recurInfo;
 	}
 }

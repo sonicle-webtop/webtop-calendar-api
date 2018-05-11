@@ -93,8 +93,8 @@ public class ICalendarInput {
 	
 	public ArrayList<EventInput> fromICalendarFile(InputStream is, LogEntries log) throws WTException {
 		try {
-			final Calendar calendar = ICalendarUtils.parseRelaxed(is);
-			return fromICalendarFile(calendar, log);
+			ICalendarUtils.relaxParsingAndCompatibility();
+			return fromICalendarFile(ICalendarUtils.parse(is), log);
 		} catch(IOException | ParserException ex) {
 			throw new WTException(ex, "Unable to read stream");
 		}	
