@@ -75,9 +75,11 @@ import org.joda.time.DateTimeZone;
  */
 public class ICalendarOutput {
 	private final String prodId;
+	private final boolean useTimezoneDates;
 	
-	public ICalendarOutput(String prodId) {
+	public ICalendarOutput(String prodId, boolean useTimezoneDates) {
 		this.prodId = prodId;
+		this.useTimezoneDates = useTimezoneDates;
 	}
 	
 	public String write(Calendar iCalendar) throws IOException {
@@ -120,8 +122,14 @@ public class ICalendarOutput {
 	}
 	
 	public VEvent toVEvent(Method method, Event event) throws WTException {
-		Date start = ICal4jUtils.toIC4jDateTimeUTC(event.getStartDate());
-		Date end = ICal4jUtils.toIC4jDateTimeUTC(event.getEndDate());
+		Date start, end;
+		if (useTimezoneDates) {
+			start = ICal4jUtils.toIC4jDateTimeLocal(event.getStartDate(), event.getDateTimeZone(), true);
+			end = ICal4jUtils.toIC4jDateTimeLocal(event.getEndDate(), event.getDateTimeZone(), true);
+		} else {
+			start = ICal4jUtils.toIC4jDateTimeUTC(event.getStartDate());
+			end = ICal4jUtils.toIC4jDateTimeUTC(event.getEndDate());
+		}
 		VEvent ve = new VEvent(start, end, event.getTitle());
 		
 		// Status: meeting status
