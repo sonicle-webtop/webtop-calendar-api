@@ -82,14 +82,6 @@ public class EventAttendee {
 	public void setRecipient(String value) {
 		recipient = value;
 	}
-	
-	public String getAddress() throws AddressException {
-		return new InternetAddress(recipient).getAddress();
-	}
-	
-	public String getCN() throws AddressException {
-		return new InternetAddress(recipient).getPersonal();
-	}
 
 	public String getRecipientType() {
 		return recipientType;
@@ -128,7 +120,27 @@ public class EventAttendee {
 	}
 	
 	public boolean hasEmailRecipient() {
-		return InternetAddressUtils.toInternetAddress(getRecipient()) != null;
+		return getRecipientAddress() != null;
+	}
+	
+	public String getRecipientAddress() {
+		InternetAddress ia = InternetAddressUtils.toInternetAddress(getRecipient());
+		return (ia != null) ? ia.getAddress() : null;
+	}
+	
+	public String getRecipientCN() {
+		InternetAddress ia = InternetAddressUtils.toInternetAddress(getRecipient());
+		return (ia != null) ? ia.getPersonal() : null;
+	}
+	
+	@Deprecated
+	public String getAddress() throws AddressException {
+		return new InternetAddress(recipient).getAddress();
+	}
+	
+	@Deprecated
+	public String getCN() throws AddressException {
+		return new InternetAddress(recipient).getPersonal();
 	}
 	
 	@Override
