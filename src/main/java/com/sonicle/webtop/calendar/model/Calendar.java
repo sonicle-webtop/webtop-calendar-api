@@ -33,6 +33,7 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.sonicle.commons.EnumUtils;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import org.apache.commons.lang3.StringUtils;
 
@@ -188,8 +189,16 @@ public class Calendar {
 		setUserId(pid.getUser());
 	}
 	
-	public boolean isRemoteProvider() {
-		return Provider.WEBCAL.equals(getProvider()) || Provider.CALDAV.equals(getProvider());
+	public boolean isProviderRemote() {
+		return Calendar.isProviderRemote(getProvider());
+	}
+	
+	public static boolean isProviderRemote(String provider) {
+		return Calendar.isProviderRemote(EnumUtils.forSerializedName(provider, Provider.class));
+	}
+	
+	public static boolean isProviderRemote(Provider provider) {
+		return Provider.WEBCAL.equals(provider) || Provider.CALDAV.equals(provider);
 	}
 	
 	public static String getHexColor(String color) {

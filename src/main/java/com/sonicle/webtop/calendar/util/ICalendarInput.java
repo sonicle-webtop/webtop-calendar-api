@@ -101,8 +101,8 @@ public class ICalendarInput {
 	
 	public ArrayList<EventInput> fromICalendarFile(InputStream is, LogEntries log) throws WTException {
 		try {
-			final Calendar calendar = ICalendarUtils.parseRelaxed(is);
-			return fromICalendarFile(calendar, log);
+			ICalendarUtils.relaxParsingAndCompatibility();
+			return fromICalendarFile(ICalendarUtils.parse(is), log);
 		} catch(IOException | ParserException ex) {
 			throw new WTException(ex, "Unable to read stream");
 		}	
@@ -224,7 +224,7 @@ public class ICalendarInput {
 		// Extract recurrence (real definition or reference to a previous instance)
 		RRule rr = (RRule)ve.getProperty(Property.RRULE);
 		if (rr != null) {
-			event.setRecurrence(fromVEventRRule(rr, dtStart.getZone(), log));
+			event.setRecurrenceRule(rr.getRecur().toString());
 		} else {
 			RecurrenceId recurrenceId = (RecurrenceId)ve.getProperty(Property.RECURRENCE_ID);
 			if (recurrenceId != null) {

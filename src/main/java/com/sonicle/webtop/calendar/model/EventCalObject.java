@@ -32,18 +32,83 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import org.joda.time.DateTime;
+
 /**
  *
  * @author malbinola
  */
-public class SchedEventInstance extends SchedEvent {
-	protected String key;
+public class EventCalObject {
+	protected Integer eventId;
+	protected Integer calendarId;
+	protected Event.RevisionStatus revisionStatus;
+	protected DateTime revisionTimestamp;
+	protected String publicUid;
+	protected String href;
+	protected Integer size;
+	protected String icalendar;
 
-	public String getKey() {
-		return key;
+	public Integer getEventId() {
+		return eventId;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setEventId(Integer eventId) {
+		this.eventId = eventId;
+	}
+
+	public Integer getCalendarId() {
+		return calendarId;
+	}
+
+	public void setCalendarId(Integer calendarId) {
+		this.calendarId = calendarId;
+	}
+
+	public Event.RevisionStatus getRevisionStatus() {
+		return revisionStatus;
+	}
+
+	public void setRevisionStatus(Event.RevisionStatus revisionStatus) {
+		this.revisionStatus = revisionStatus;
+	}
+
+	public DateTime getRevisionTimestamp() {
+		return revisionTimestamp;
+	}
+
+	public void setRevisionTimestamp(DateTime revisionTimestamp) {
+		this.revisionTimestamp = revisionTimestamp;
+	}
+
+	public String getPublicUid() {
+		return publicUid;
+	}
+
+	public void setPublicUid(String publicUid) {
+		this.publicUid = publicUid;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
+
+	public String getIcalendar() {
+		return icalendar;
+	}
+
+	public void setIcalendar(String icalendar) {
+		this.icalendar = icalendar;
 	}
 }

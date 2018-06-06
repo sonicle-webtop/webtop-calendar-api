@@ -42,5 +42,4 @@ public enum GetEventScope {
 	@SerializedName("personal") PERSONAL,
 	@SerializedName("incoming") INCOMING,
 	@SerializedName("persinco") PERSONAL_AND_INCOMING,
-	@SerializedName("all") ALL
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Sonicle S.r.l.
+ * Copyright (C) 2018 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,76 +28,23 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2018 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.webtop.calendar.IEvent;
-import com.sonicle.commons.MailUtils;
 import com.sonicle.webtop.core.sdk.UserProfileId;
-import java.util.Objects;
-import javax.mail.internet.InternetAddress;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  *
  * @author malbinola
  */
-public class SchedEvent implements IEvent {
-	protected Integer eventId;
-	protected Integer originalEventId;
-	protected String publicUid;
-	protected Integer calendarId;
+public class SchedEvent extends BaseEvent {
 	protected String calendarDomainId;
 	protected String calendarUserId;
-	protected Integer recurrenceId;
-	protected DateTime revisionTimestamp;
-	protected DateTime startDate;
-	protected DateTime endDate;
-	protected String timezone;
-	protected Boolean allDay;
-	protected String organizer;
-	protected String title;
-	protected String description;
-	protected String location;
-	protected Boolean isPrivate;
-	protected Boolean busy;
-	protected Integer reminder;
+	protected Integer seriesEventId;
 	protected Boolean hasAttendees;
-	
-	public Integer getEventId() {
-		return eventId;
-	}
-	
-	public void setEventId(Integer eventId) {
-		this.eventId = eventId;
-	}
-	
-	public Integer getOriginalEventId() {
-		return originalEventId;
-	}
+	protected RecurInfo recurInfo;
 
-	public void setOriginalEventId(Integer originalEventId) {
-		this.originalEventId = originalEventId;
-	}
-	
-	public Integer getCalendarId() {
-		return calendarId;
-	}
-
-	public void setCalendarId(Integer calendarId) {
-		this.calendarId = calendarId;
-	}
-	
-	public String getCalendarDomainId() {
-		return calendarDomainId;
-	}
-
-	public void setCalendarDomainId(String calendarDomainId) {
-		this.calendarDomainId = calendarDomainId;
-	}
-	
 	public String getCalendarUserId() {
 		return calendarUserId;
 	}
@@ -105,121 +52,23 @@ public class SchedEvent implements IEvent {
 	public void setCalendarUserId(String calendarUserId) {
 		this.calendarUserId = calendarUserId;
 	}
+
+	public String getCalendarDomainId() {
+		return calendarDomainId;
+	}
 	
-	public Integer getRecurrenceId() {
-		return recurrenceId;
+	public void setCalendarDomainId(String calendarDomainId) {
+		this.calendarDomainId = calendarDomainId;
+	}
+	
+	public Integer getSeriesEventId() {
+		return seriesEventId;
 	}
 
-	public void setRecurrenceId(Integer recurrenceId) {
-		this.recurrenceId = recurrenceId;
-	}
-	
-	public DateTime getRevisionTimestamp() {
-		return revisionTimestamp;
-	}
-	
-	public void setRevisionTimestamp(DateTime revisionTimestamp) {
-		this.revisionTimestamp = revisionTimestamp;
-	}
-	
-	public String getPublicUid() {
-		return publicUid;
-	}
-	
-	public void setPublicUid(String publicUid) {
-		this.publicUid = publicUid;
+	public void setSeriesEventId(Integer seriesEventId) {
+		this.seriesEventId = seriesEventId;
 	}
 
-	@Override
-	public DateTime getStartDate() {
-		return startDate;
-	}
-	
-	public void setStartDate(DateTime startDate) {
-		this.startDate = startDate;
-	}
-	
-	@Override
-	public DateTime getEndDate() {
-		return endDate;
-	}
-	
-	public void setEndDate(DateTime endDate) {
-		this.endDate = endDate;
-	}
-
-	public String getTimezone() {
-		return timezone;
-	}
-	
-	public void setTimezone(String timezone) {
-		this.timezone = timezone;
-	}
-
-	public Boolean getAllDay() {
-		return allDay;
-	}
-	
-	public void setAllDay(Boolean allDay) {
-		this.allDay = allDay;
-	}
-	
-	public String getOrganizer() {
-		return organizer;
-	}
-	
-	public void setOrganizer(String organizer) {
-		this.organizer = organizer;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-	
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-	
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public Boolean getIsPrivate() {
-		return isPrivate;
-	}
-	
-	public void setIsPrivate(Boolean isPrivate) {
-		this.isPrivate = isPrivate;
-	}
-
-	public Boolean getBusy() {
-		return busy;
-	}
-	
-	public void setBusy(Boolean busy) {
-		this.busy = busy;
-	}
-
-	public Integer getReminder() {
-		return reminder;
-	}
-	
-	public void setReminder(Integer reminder) {
-		this.reminder = reminder;
-	}
-	
 	public Boolean getHasAttendees() {
 		return hasAttendees;
 	}
@@ -228,21 +77,33 @@ public class SchedEvent implements IEvent {
 		this.hasAttendees = hasAttendees;
 	}
 	
+	public RecurInfo getRecurInfo() {
+		return recurInfo;
+	}
+
+	public void setRecurInfo(RecurInfo recurInfo) {
+		this.recurInfo = recurInfo;
+	}
+	
+	public void setRecurInfo(boolean isRecurring, boolean isBroken) {
+		if (isRecurring) {
+			setRecurInfo(RecurInfo.RECURRING);
+		} else if (isBroken) {
+			setRecurInfo(RecurInfo.BROKEN);
+		} else {
+			setRecurInfo(RecurInfo.NONE);
+		}
+	}
+	
+	public boolean isEventRecurring() {
+		return RecurInfo.RECURRING.equals(recurInfo);
+	}
+	
+	public Boolean isEventBroken() {
+		return RecurInfo.BROKEN.equals(recurInfo);
+	}
+	
 	public UserProfileId getCalendarProfileId() {
 		return new UserProfileId(calendarDomainId, calendarUserId);
-	}
-	
-	public DateTimeZone getDateTimeZone() {
-		return DateTimeZone.forID(getTimezone());
-	}
-	
-	public boolean isRecurring() {
-		return recurrenceId != null;
-	}
-	
-	public boolean isBroken() {
-		//TODO: estendere l'implementazione per contemplare eventi spezzati con una loro ricorrenza
-		if (isRecurring()) return false;
-		return !Objects.equals(originalEventId, eventId);
 	}
 }

@@ -32,18 +32,39 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import org.joda.time.DateTime;
+
 /**
  *
  * @author malbinola
  */
-public class SchedEventInstance extends SchedEvent {
-	protected String key;
-
-	public String getKey() {
-		return key;
+public class EventCalObjectChanged {
+	protected final Integer eventId;
+	protected final DateTime revisionTimestamp;
+	//protected final String publicUid;
+	protected final String href;
+	
+	public EventCalObjectChanged(int eventId, DateTime revisionTimestamp, String href) {
+		this.eventId = eventId;
+		this.revisionTimestamp = revisionTimestamp;
+		this.href = href;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public Integer getEventId() {
+		return eventId;
+	}
+
+	public DateTime getRevisionTimestamp() {
+		return revisionTimestamp;
+	}
+
+	/*
+	public String getPublicUid() {
+		return publicUid;
+	}
+	*/
+
+	public String getHref() {
+		return href;
 	}
 }
