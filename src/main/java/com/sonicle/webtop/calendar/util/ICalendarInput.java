@@ -86,9 +86,17 @@ import org.joda.time.LocalDate;
  */
 public class ICalendarInput {
 	private final DateTimeZone defaultTz;
+	private final boolean defaultIsPrivate;
+	private final boolean defaultAttendeeNotify;
 	
 	public ICalendarInput(DateTimeZone defaultTz) {
 		this.defaultTz = defaultTz;
+	}
+	
+	public ICalendarInput(DateTimeZone defaultTz, boolean defaultIsPrivate, boolean defaultAttendeeNotify) {
+		this.defaultTz = defaultTz;
+		this.defaultIsPrivate = defaultIsPrivate;
+		this.defaultAttendeeNotify = defaultAttendeeNotify;
 	}
 	
 	public ArrayList<EventInput> fromICalendarFile(InputStream is, LogEntries log) throws WTException {
@@ -196,7 +204,7 @@ public class ICalendarInput {
 			event.setLocation(null);
 		}
 
-		event.setIsPrivate(false);
+		event.setIsPrivate(defaultIsPrivate);
 
 		// Busy flag
 		if (ve.getTransparency() != null) {
@@ -423,7 +431,7 @@ public class ICalendarInput {
 			attendee.setResponseStatus(EventAttendee.RESPONSE_STATUS_NEEDSACTION);
 		}
 		
-		attendee.setNotify(false);
+		attendee.setNotify(defaultAttendeeNotify);
 		return attendee;
 	}
 	
