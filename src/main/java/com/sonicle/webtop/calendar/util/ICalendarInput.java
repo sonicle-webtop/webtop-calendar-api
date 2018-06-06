@@ -90,7 +90,13 @@ public class ICalendarInput {
 	private final boolean defaultAttendeeNotify;
 	
 	public ICalendarInput(DateTimeZone defaultTz) {
+		this(defaultTz, false, false);
+	}
+	
+	public ICalendarInput(DateTimeZone defaultTz, boolean defaultIsPrivate, boolean defaultAttendeeNotify) {
 		this.defaultTz = defaultTz;
+		this.defaultIsPrivate = defaultIsPrivate;
+		this.defaultAttendeeNotify = defaultAttendeeNotify;
 	}
 	
 	public ICalendarInput(DateTimeZone defaultTz, boolean defaultIsPrivate, boolean defaultAttendeeNotify) {
