@@ -99,12 +99,6 @@ public class ICalendarInput {
 		this.defaultAttendeeNotify = defaultAttendeeNotify;
 	}
 	
-	public ICalendarInput(DateTimeZone defaultTz, boolean defaultIsPrivate, boolean defaultAttendeeNotify) {
-		this.defaultTz = defaultTz;
-		this.defaultIsPrivate = defaultIsPrivate;
-		this.defaultAttendeeNotify = defaultAttendeeNotify;
-	}
-	
 	public ArrayList<EventInput> fromICalendarFile(InputStream is, LogEntries log) throws WTException {
 		try {
 			ICalendarUtils.relaxParsingAndCompatibility();
