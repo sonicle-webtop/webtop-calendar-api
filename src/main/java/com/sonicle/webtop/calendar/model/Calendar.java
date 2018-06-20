@@ -56,6 +56,7 @@ public class Calendar {
 	private Boolean defaultBusy;
 	private Integer defaultReminder;
 	private Boolean defaultSendInvitation;
+	public Boolean notifyOnExtUpdate;
 	private String parameters;
 	
 	public Calendar() {}
@@ -170,6 +171,14 @@ public class Calendar {
 
 	public void setDefaultSendInvitation(Boolean defaultSendInvitation) {
 		this.defaultSendInvitation = defaultSendInvitation;
+	}
+	
+	public Boolean getNotifyOnExtUpdate() {
+		return notifyOnExtUpdate;
+	}
+
+	public void setNotifyOnExtUpdate(Boolean notifyOnExtUpdate) {
+		this.notifyOnExtUpdate = notifyOnExtUpdate;
 	}
 	
 	public String getParameters() {

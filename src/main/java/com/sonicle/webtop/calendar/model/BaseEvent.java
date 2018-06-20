@@ -220,6 +220,10 @@ public class BaseEvent {
 		return (ia != null) ? ia.getPersonal() : null;
 	}
 	
+	public EventFootprint getFootprint() {
+		return new EventFootprint(this);
+	}
+	
 	public static enum RevisionStatus {
 		@SerializedName("N") NEW,
 		@SerializedName("M") MODIFIED,
