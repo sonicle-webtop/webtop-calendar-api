@@ -52,6 +52,16 @@ public class EventKey {
 	public Integer eventId;
 	public Integer originalEventId;
 	public LocalDate instanceDate;
+	
+	public EventKey(int eventId) {
+		this(eventId, null, null);
+	}
+	
+	public EventKey(int eventId, Integer originalEventId, LocalDate instanceDate) {
+		this.eventId = eventId;
+		this.originalEventId = originalEventId;
+		this.instanceDate = instanceDate;
+	}
 
 	public EventKey(String eventKey) {
 		String decoded = null;

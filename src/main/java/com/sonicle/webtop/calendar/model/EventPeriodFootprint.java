@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2014 Sonicle S.r.l.
+/*
+ * Copyright (C) 2018 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,41 +28,68 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2018 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.rits.cloning.Cloner;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  *
  * @author malbinola
  */
-public class EventInstance extends Event {
-	protected String key;
-	protected RecurInfo recurInfo;
+public class EventPeriodFootprint {
+	protected final Integer eventId;
+	protected final DateTime startDate;
+	protected final DateTime endDate;
+	protected final String timezone;
+	protected final Boolean allDay;
+	protected final String recurrenceRule;
 	
-	public EventInstance() {}
+	public EventPeriodFootprint(Integer eventId, DateTime startDate, DateTime endDate, String timezone, Boolean allDay, String recurrenceRule) {
+		this.eventId = eventId;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.timezone = timezone;
+		this.allDay = allDay;
+		this.recurrenceRule = recurrenceRule;
+	}
 	
-	public EventInstance(String key, Event event) {
-		super();
-		this.key = key;
-		Cloner.standard().copyPropertiesOfInheritedClass(event, this);
+	public EventPeriodFootprint(Event event) {
+		this.eventId = event.getEventId();
+		this.startDate = event.getStartDate();
+		this.endDate = event.getEndDate();
+		this.timezone = event.getTimezone();
+		this.allDay = event.getAllDay();
+		this.recurrenceRule = event.getRecurrenceRule();
+	}
+	
+	public Integer getEventId() {
+		return eventId;
+	}
+	
+	public DateTime getStartDate() {
+		return startDate;
 	}
 
-	public String getKey() {
-		return key;
+	public DateTime getEndDate() {
+		return endDate;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public String getTimezone() {
+		return timezone;
 	}
 
-	public RecurInfo getRecurInfo() {
-		return recurInfo;
+	public Boolean getAllDay() {
+		return allDay;
 	}
-
-	public void setRecurInfo(RecurInfo recurInfo) {
-		this.recurInfo = recurInfo;
+	
+	public String getRecurrenceRule() {
+		return recurrenceRule;
+	}
+	
+	public DateTimeZone getDateTimeZone() {
+		return DateTimeZone.forID(getTimezone());
 	}
 }

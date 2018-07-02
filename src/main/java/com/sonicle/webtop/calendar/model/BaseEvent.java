@@ -210,18 +210,18 @@ public class BaseEvent {
 		return DateTimeZone.forID(getTimezone());
 	}
 	
+	public InternetAddress getOrganizerInternetAddress() {
+		return InternetAddressUtils.toInternetAddress(getOrganizer());
+	}
+	
 	public String getOrganizerAddress() {
-		InternetAddress ia = InternetAddressUtils.toInternetAddress(getOrganizer());
+		InternetAddress ia = getOrganizerInternetAddress();
 		return (ia != null) ? ia.getAddress() : null;
 	}
 	
 	public String getOrganizerCN() {
-		InternetAddress ia = InternetAddressUtils.toInternetAddress(getOrganizer());
+		InternetAddress ia = getOrganizerInternetAddress();
 		return (ia != null) ? ia.getPersonal() : null;
-	}
-	
-	public EventFootprint getFootprint() {
-		return new EventFootprint(this);
 	}
 	
 	public static enum RevisionStatus {

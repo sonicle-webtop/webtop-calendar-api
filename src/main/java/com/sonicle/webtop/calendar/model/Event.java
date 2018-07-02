@@ -169,6 +169,10 @@ public class Event extends BaseEvent {
 				.toString();
 	}
 	
+	public EventFootprint getFootprint() {
+		return new EventFootprint(this);
+	}
+	
 	private static String trimStringLength(String value, int maxLength, MutableBoolean trimmed) {
 		if (StringUtils.length(value) > maxLength) {
 			trimmed.setTrue();

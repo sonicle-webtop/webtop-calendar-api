@@ -33,58 +33,40 @@
 package com.sonicle.webtop.calendar.model;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  *
  * @author malbinola
  */
-public class EventFootprint {
-	protected final Integer eventId;
+public class EventFootprint extends EventPeriodFootprint {
 	protected final String publicUid;
 	protected final Integer calendarId;
 	protected final DateTime revisionTimestamp;
 	protected final DateTime creationTimestamp;
-	protected final DateTime startDate;
-	protected final DateTime endDate;
-	protected final String timezone;
-	protected final Boolean allDay;
 	protected final String title;
 	protected final String location;
 	
 	public EventFootprint(Integer eventId, String publicUid, Integer calendarId, 
 			DateTime revisionTimestamp, DateTime creationTimestamp, DateTime startDate, 
-			DateTime endDate, String timezone, Boolean allDay, String title, String location) {
+			DateTime endDate, String timezone, Boolean allDay, String rrule, String title, String location) {
 		
-		this.eventId = eventId;
+		super(eventId, startDate, endDate, timezone, allDay, rrule);
 		this.publicUid = publicUid;
 		this.calendarId = calendarId;
 		this.revisionTimestamp = revisionTimestamp;
 		this.creationTimestamp = creationTimestamp;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.timezone = timezone;
-		this.allDay = allDay;
 		this.title = title;
 		this.location = location;
 	}
 	
-	public EventFootprint(BaseEvent event) {
-		this.eventId = event.getEventId();
+	public EventFootprint(Event event) {
+		super(event);
 		this.publicUid = event.getPublicUid();
 		this.calendarId = event.getCalendarId();
 		this.revisionTimestamp = event.getRevisionTimestamp();
 		this.creationTimestamp = event.getCreationTimestamp();
-		this.startDate = event.getStartDate();
-		this.endDate = event.getEndDate();
-		this.timezone = event.getTimezone();
-		this.allDay = event.getAllDay();
 		this.title = event.getTitle();
 		this.location = event.getLocation();
-	}
-	
-	public Integer getEventId() {
-		return eventId;
 	}
 
 	public String getPublicUid() {
@@ -103,31 +85,11 @@ public class EventFootprint {
 		return creationTimestamp;
 	}
 
-	public DateTime getStartDate() {
-		return startDate;
-	}
-
-	public DateTime getEndDate() {
-		return endDate;
-	}
-
-	public String getTimezone() {
-		return timezone;
-	}
-
-	public Boolean getAllDay() {
-		return allDay;
-	}
-
 	public String getTitle() {
 		return title;
 	}
 
 	public String getLocation() {
 		return location;
-	}
-	
-	public DateTimeZone getDateTimeZone() {
-		return DateTimeZone.forID(getTimezone());
 	}
 }

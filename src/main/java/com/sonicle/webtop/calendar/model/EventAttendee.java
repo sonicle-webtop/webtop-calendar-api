@@ -123,13 +123,17 @@ public class EventAttendee {
 		return getRecipientAddress() != null;
 	}
 	
+	public InternetAddress getRecipientInternetAddress() {
+		return InternetAddressUtils.toInternetAddress(getRecipient());
+	}
+	
 	public String getRecipientAddress() {
-		InternetAddress ia = InternetAddressUtils.toInternetAddress(getRecipient());
+		InternetAddress ia = getRecipientInternetAddress();
 		return (ia != null) ? ia.getAddress() : null;
 	}
 	
 	public String getRecipientCN() {
-		InternetAddress ia = InternetAddressUtils.toInternetAddress(getRecipient());
+		InternetAddress ia = getRecipientInternetAddress();
 		return (ia != null) ? ia.getPersonal() : null;
 	}
 	
