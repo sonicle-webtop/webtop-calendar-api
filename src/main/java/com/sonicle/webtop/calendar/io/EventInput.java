@@ -44,10 +44,12 @@ public class EventInput {
 	public final Event event;
 	public final ArrayList<LocalDate> excludedDates;
 	public final LocalDate overwritesRecurringInstance;
+	public final String hash;
 	
-	public EventInput(Event event, ArrayList<LocalDate> excludedDates, LocalDate overwritesRecurringInstance) {
+	public EventInput(Event event, ArrayList<LocalDate> excludedDates, LocalDate overwritesRecurringInstance, String hash) {
 		this.event = event;
 		this.excludedDates = excludedDates;
 		this.overwritesRecurringInstance = overwritesRecurringInstance;
+		this.hash = hash;
 	}
 }

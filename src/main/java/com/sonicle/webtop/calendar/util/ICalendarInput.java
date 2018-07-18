@@ -75,7 +75,7 @@ import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
-import net.fortuna.ical4j.model.property.Uid;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -85,6 +85,7 @@ import org.joda.time.LocalDate;
  * @author malbinola
  */
 public class ICalendarInput {
+	private boolean computeVEventHash = false;
 	private final DateTimeZone defaultTz;
 	private final boolean defaultIsPrivate;
 	private final boolean defaultAttendeeNotify;
@@ -97,6 +98,11 @@ public class ICalendarInput {
 		this.defaultTz = defaultTz;
 		this.defaultIsPrivate = defaultIsPrivate;
 		this.defaultAttendeeNotify = defaultAttendeeNotify;
+	}
+	
+	public ICalendarInput withComputeVEventHash(boolean computeVEventHash) {
+		this.computeVEventHash = computeVEventHash;
+		return this;
 	}
 	
 	public ArrayList<EventInput> fromICalendarFile(InputStream is, LogEntries log) throws WTException {
@@ -264,8 +270,9 @@ public class ICalendarInput {
 			}
 			event.setAttendees(attendees);
 		}
-
-		return new EventInput(event, excludedDates, overwritesRecurringInstance);
+		
+		String hash = computeVEventHash ? DigestUtils.md5Hex(ve.toString()) : null;
+		return new EventInput(event, excludedDates, overwritesRecurringInstance, hash);
 	}
 	
 	public EventRecurrence fromVEventRRule(RRule rr, org.joda.time.DateTimeZone etz, LogEntries log) {
