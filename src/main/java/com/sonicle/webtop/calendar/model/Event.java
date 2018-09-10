@@ -53,6 +53,7 @@ public class Event extends BaseEvent {
 	protected Integer causalId;
 	protected String recurrenceRule;
 	protected List<EventAttendee> attendees = new ArrayList<>();
+	protected List<EventAttachment> attachments = new ArrayList<>();
 	
 	public String getHref() {
 		return href;
@@ -126,12 +127,16 @@ public class Event extends BaseEvent {
 		validate(false);
 	}
 	
-	public boolean hasAttendees() {
-		return ((attendees != null) && !attendees.isEmpty());
-	}
-	
 	public boolean hasRecurrence() {
 		return !StringUtils.isEmpty(recurrenceRule);
+	}
+	
+	public List<EventAttachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<EventAttachment> attachments) {
+		this.attachments = attachments;
 	}
 	
 	public void validate(boolean silent) {

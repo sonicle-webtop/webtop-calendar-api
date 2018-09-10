@@ -30,25 +30,29 @@
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
  * display the words "Copyright (C) 2018 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar;
+package com.sonicle.webtop.calendar.model;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  *
  * @author malbinola
  */
-public class CalendarUtils {
+public class EventAttachmentWithStream extends EventAttachment {
+	private InputStream stream;
 	
-	/**
-	 * Computes calendar days lenght between two dates.
-	 * For events that starts and ends in same date, returned lenght will be 0.
-	 * @param from The start DateTime.
-	 * @param to The end DateTime.
-	 * @return The length in days
-	 */
-	public static int calculateLengthInDays(DateTime from, DateTime to) {
-		return Days.daysBetween(from.toLocalDate(), to.toLocalDate()).getDays();
+	public EventAttachmentWithStream(File file) throws FileNotFoundException {
+		this(new FileInputStream(file));
+	}
+	
+	public EventAttachmentWithStream(InputStream stream) {
+		this.stream = stream;
+	}
+	
+	public InputStream getStream() {
+		return stream;
 	}
 }
