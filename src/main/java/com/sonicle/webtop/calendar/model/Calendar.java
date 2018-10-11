@@ -57,7 +57,6 @@ public class Calendar {
 	private Boolean isPrivate;
 	private Boolean defaultBusy;
 	private Integer defaultReminder;
-	private Boolean defaultSendInvitation;
 	public Boolean notifyOnExtUpdate;
 	private String parameters;
 	private Short remoteSyncFrequency;
@@ -168,14 +167,6 @@ public class Calendar {
 
 	public void setDefaultReminder(Integer defaultReminder) {
 		this.defaultReminder = defaultReminder;
-	}
-
-	public Boolean getDefaultSendInvitation() {
-		return defaultSendInvitation;
-	}
-
-	public void setDefaultSendInvitation(Boolean defaultSendInvitation) {
-		this.defaultSendInvitation = defaultSendInvitation;
 	}
 	
 	public Boolean getNotifyOnExtUpdate() {

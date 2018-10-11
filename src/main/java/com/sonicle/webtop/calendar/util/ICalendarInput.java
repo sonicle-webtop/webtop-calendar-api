@@ -424,59 +424,45 @@ public class ICalendarInput {
 		
 		// Evaluates attendee response status
 		PartStat partstat = (PartStat)att.getParameter(Parameter.PARTSTAT);
-		if (partstat != null) {
-			if (partstat.equals(PartStat.ACCEPTED)) {
-				attendee.setResponseStatus(EventAttendee.RESPONSE_STATUS_ACCEPTED);
-			} else if (partstat.equals(PartStat.TENTATIVE)) {
-				attendee.setResponseStatus(EventAttendee.RESPONSE_STATUS_TENTATIVE);
-			} else if (partstat.equals(PartStat.DECLINED)) {
-				attendee.setResponseStatus(EventAttendee.RESPONSE_STATUS_DECLINED);
-			} else {
-				attendee.setResponseStatus(EventAttendee.RESPONSE_STATUS_NEEDSACTION);
-			}
-		} else {
-			attendee.setResponseStatus(EventAttendee.RESPONSE_STATUS_NEEDSACTION);
-		}
+		attendee.setResponseStatus(partStatToResponseStatus(partstat));
 		
 		attendee.setNotify(defaultAttendeeNotify);
 		return attendee;
 	}
 	
-	public String roleToRecipientRole(Role role) {
-		if (role != null) {
-			if (role.equals(Role.CHAIR)) {
-				return EventAttendee.RECIPIENT_ROLE_CHAIR;
-			} else if (role.equals(Role.REQ_PARTICIPANT)) {
-				return EventAttendee.RECIPIENT_ROLE_REQUIRED;
-			} else if (role.equals(Role.REQ_PARTICIPANT)) {
-				return EventAttendee.RECIPIENT_ROLE_OPTIONAL;
-			}
-		}
-		return EventAttendee.RECIPIENT_ROLE_OPTIONAL;
-	}
-	
-	public String cuTypeToRecipientType(CuType cuType) {
-		if (cuType != null) {
-			if (cuType.equals(CuType.INDIVIDUAL)) {
-				return EventAttendee.RECIPIENT_TYPE_INDIVIDUAL;
-			} else if (cuType.equals(CuType.RESOURCE)) {
-				return EventAttendee.RECIPIENT_TYPE_RESOURCE;
-			} else if (cuType.equals(CuType.ROOM)) {
-				return EventAttendee.RECIPIENT_TYPE_RESOURCE;
-			}
-		}
-		return EventAttendee.RECIPIENT_TYPE_RESOURCE;
-	}
-	
-	public String partStatToResponseStatus(PartStat partStat) {
-		if (partStat.equals(PartStat.ACCEPTED)) {
-			return EventAttendee.RESPONSE_STATUS_ACCEPTED;
-		} else if (partStat.equals(PartStat.TENTATIVE)) {
-			return EventAttendee.RESPONSE_STATUS_TENTATIVE;
-		} else if (partStat.equals(PartStat.DECLINED)) {
-			return EventAttendee.RESPONSE_STATUS_DECLINED;
+	public EventAttendee.RecipientRole roleToRecipientRole(Role role) {
+		if (Role.CHAIR.equals(role)) {
+			return EventAttendee.RecipientRole.CHAIR;
+		} else if (Role.REQ_PARTICIPANT.equals(role)) {
+			return EventAttendee.RecipientRole.REQUIRED;
+		} else if (Role.REQ_PARTICIPANT.equals(role)) {
+			return EventAttendee.RecipientRole.OPTIONAL;
 		} else {
-			return EventAttendee.RESPONSE_STATUS_NEEDSACTION;
+			return EventAttendee.RecipientRole.OPTIONAL;
+		}
+	}
+	
+	public EventAttendee.RecipientType cuTypeToRecipientType(CuType cuType) {
+		if (CuType.INDIVIDUAL.equals(cuType)) {
+			return EventAttendee.RecipientType.INDIVIDUAL;
+		} else if (CuType.RESOURCE.equals(cuType)) {
+			return EventAttendee.RecipientType.RESOURCE;
+		} else if (CuType.ROOM.equals(cuType)) {
+			return EventAttendee.RecipientType.RESOURCE;
+		} else {
+			return EventAttendee.RecipientType.INDIVIDUAL;
+		}
+	}
+	
+	public EventAttendee.ResponseStatus partStatToResponseStatus(PartStat partStat) {
+		if (PartStat.ACCEPTED.equals(partStat)) {
+			return EventAttendee.ResponseStatus.ACCEPTED;
+		} else if (PartStat.TENTATIVE.equals(partStat)) {
+			return EventAttendee.ResponseStatus.TENTATIVE;
+		} else if (PartStat.DECLINED.equals(partStat)) {
+			return EventAttendee.ResponseStatus.DECLINED;
+		} else {
+			return EventAttendee.ResponseStatus.NEEDS_ACTION;
 		}
 	}
 	

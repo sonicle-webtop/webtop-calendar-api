@@ -33,13 +33,24 @@
 package com.sonicle.webtop.calendar;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
+import org.joda.time.Minutes;
+import org.jooq.tools.StringUtils;
 
 /**
  *
  * @author malbinola
  */
 public class CalendarUtils {
+	
+	public static DateTimeZone toDateTimeZone(String timezoneId) {
+		return StringUtils.isBlank(timezoneId) ? null : DateTimeZone.forID(timezoneId);
+	}
+	
+	public static int calculateLengthInMinutes(DateTime from, DateTime to) {
+		return Minutes.minutesBetween(from, to).getMinutes();
+	}
 	
 	/**
 	 * Computes calendar days lenght between two dates.

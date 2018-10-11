@@ -75,11 +75,9 @@ import org.joda.time.DateTimeZone;
  */
 public class ICalendarOutput {
 	private final String prodId;
-	private final boolean useTimezoneDates;
 	
-	public ICalendarOutput(String prodId, boolean useTimezoneDates) {
+	public ICalendarOutput(String prodId) {
 		this.prodId = prodId;
-		this.useTimezoneDates = useTimezoneDates;
 	}
 	
 	public String write(Calendar iCalendar) throws IOException {
@@ -94,19 +92,19 @@ public class ICalendarOutput {
 		}
 	}
 	
-	public Calendar toCalendar(Event event) throws WTException {
-		return toCalendar(null, Arrays.asList(event));
+	public Calendar toCalendar(Event event, boolean useTimezoneDates) throws WTException {
+		return toCalendar(null, Arrays.asList(event), useTimezoneDates);
 	}
 	
-	public Calendar toCalendar(Method method, Event event) throws WTException {
-		return toCalendar(method, Arrays.asList(event));
+	public Calendar toCalendar(Method method, Event event, boolean useTimezoneDates) throws WTException {
+		return toCalendar(method, Arrays.asList(event), useTimezoneDates);
 	}
 	
-	public Calendar toCalendar(Collection<Event> events) throws WTException {
-		return toCalendar(null, events);
+	public Calendar toCalendar(Collection<Event> events, boolean useTimezoneDates) throws WTException {
+		return toCalendar(null, events, useTimezoneDates);
 	}
 	
-	public Calendar toCalendar(Method method, Collection<Event> events) throws WTException {
+	public Calendar toCalendar(Method method, Collection<Event> events, boolean useTimezoneDates) throws WTException {
 		Calendar ical = null;
 		
 		if (method == null) {
@@ -116,12 +114,12 @@ public class ICalendarOutput {
 			ical = ICalendarUtils.newCalendar(prodId, method);
 		}
 		for (Event event : events) {
-			ical.getComponents().add(toVEvent(method, event));
+			ical.getComponents().add(toVEvent(method, event, useTimezoneDates));
 		}
 		return ical;
 	}
 	
-	public VEvent toVEvent(Method method, Event event) throws WTException {
+	public VEvent toVEvent(Method method, Event event, boolean useTimezoneDates) throws WTException {
 		Date start, end;
 		if (useTimezoneDates) {
 			start = ICal4jUtils.toIC4jDateTimeLocal(event.getStartDate(), event.getDateTimeZone(), true);
@@ -229,34 +227,34 @@ public class ICalendarOutput {
 		return new RRule(event.getRecurrenceRule());
 	}
 	
-	public Role toRole(String recipientRole) {
-		if (StringUtils.equals(recipientRole, EventAttendee.RECIPIENT_ROLE_CHAIR)) {
+	public Role toRole(EventAttendee.RecipientRole recipientRole) {
+		if (EventAttendee.RecipientRole.CHAIR.equals(recipientRole)) {
 			return Role.CHAIR;
-		} else if (StringUtils.equals(recipientRole, EventAttendee.RECIPIENT_ROLE_REQUIRED)) {
+		} else if (EventAttendee.RecipientRole.REQUIRED.equals(recipientRole)) {
 			return Role.REQ_PARTICIPANT;
-		} else if (StringUtils.equals(recipientRole, EventAttendee.RECIPIENT_ROLE_OPTIONAL)) {
+		} else if (EventAttendee.RecipientRole.OPTIONAL.equals(recipientRole)) {
 			return Role.OPT_PARTICIPANT;
 		} else {
 			return Role.REQ_PARTICIPANT;
 		}
 	}
 	
-	public CuType toCuType(String recipientType) {
-		if (StringUtils.equals(recipientType, EventAttendee.RECIPIENT_TYPE_INDIVIDUAL)) {
+	public CuType toCuType(EventAttendee.RecipientType recipientType) {
+		if (EventAttendee.RecipientType.INDIVIDUAL.equals(recipientType)) {
 			return CuType.INDIVIDUAL;
-		} else if (StringUtils.equals(recipientType, EventAttendee.RECIPIENT_TYPE_RESOURCE)) {
+		} else if (EventAttendee.RecipientType.RESOURCE.equals(recipientType)) {
 			return CuType.RESOURCE;
 		} else {
 			return CuType.INDIVIDUAL;
 		}
 	}
 	
-	public PartStat toPartStat(String responseStatus) {
-		if (StringUtils.equals(responseStatus, EventAttendee.RESPONSE_STATUS_ACCEPTED)) {
+	public PartStat toPartStat(EventAttendee.ResponseStatus responseStatus) {
+		if (EventAttendee.ResponseStatus.ACCEPTED.equals(responseStatus)) {
 			return PartStat.ACCEPTED;
-		} else if (StringUtils.equals(responseStatus, EventAttendee.RESPONSE_STATUS_TENTATIVE)) {
+		} else if (EventAttendee.ResponseStatus.TENTATIVE.equals(responseStatus)) {
 			return PartStat.TENTATIVE;
-		} else if (StringUtils.equals(responseStatus, EventAttendee.RESPONSE_STATUS_DECLINED)) {
+		} else if (EventAttendee.ResponseStatus.DECLINED.equals(responseStatus)) {
 			return PartStat.DECLINED;
 		} else {
 			return PartStat.NEEDS_ACTION;

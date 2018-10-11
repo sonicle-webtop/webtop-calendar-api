@@ -32,12 +32,11 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.sonicle.commons.InternetAddressUtils;
-import com.sonicle.commons.MailUtils;
 import java.util.ArrayList;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -46,23 +45,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author malbinola
  */
 public class EventAttendee {
-	public static final String RECIPIENT_TYPE_INDIVIDUAL = "IND";
-	public static final String RECIPIENT_TYPE_RESOURCE = "RES";
-	public static final String RECIPIENT_ROLE_CHAIR = "CHA";
-	public static final String RECIPIENT_ROLE_OPTIONAL = "OPT";
-	public static final String RECIPIENT_ROLE_REQUIRED = "REQ";
-	public static final String RESPONSE_STATUS_NEEDSACTION = "NA"; // needsAction
-	public static final String RESPONSE_STATUS_DECLINED = "DE"; // declined
-	public static final String RESPONSE_STATUS_TENTATIVE = "TE"; // tentative
-	public static final String RESPONSE_STATUS_ACCEPTED = "AC"; // accepted
-	//public static final String RESPONSE_STATUS_NONE = "none"; // Synonym of needsAction
-	//public static final String RESPONSE_STATUS_REFUSED = "refused"; // Synonym of declined
-	
 	protected String attendeeId;
 	protected String recipient;
-	protected String recipientType;
-	protected String recipientRole;
-	protected String responseStatus;
+	protected RecipientType recipientType;
+	protected RecipientRole recipientRole;
+	protected ResponseStatus responseStatus;
 	protected Boolean notify;
 	
 	public EventAttendee() {}
@@ -83,28 +70,28 @@ public class EventAttendee {
 		recipient = value;
 	}
 
-	public String getRecipientType() {
+	public RecipientType getRecipientType() {
 		return recipientType;
 	}
 
-	public void setRecipientType(String recipientType) {
+	public void setRecipientType(RecipientType recipientType) {
 		this.recipientType = recipientType;
 	}
 	
-	public String getRecipientRole() {
+	public RecipientRole getRecipientRole() {
 		return recipientRole;
 	}
 
-	public void setRecipientRole(String recipientRole) {
+	public void setRecipientRole(RecipientRole recipientRole) {
 		this.recipientRole = recipientRole;
 	}
 
-	public String getResponseStatus() {
-		return (responseStatus == null) ? RESPONSE_STATUS_NEEDSACTION : responseStatus;
+	public ResponseStatus getResponseStatus() {
+		return (responseStatus == null) ? ResponseStatus.NEEDS_ACTION : responseStatus;
 	}
 
-	public void setResponseStatus(String value) {
-		responseStatus = (value == null) ? RESPONSE_STATUS_NEEDSACTION : value;
+	public void setResponseStatus(ResponseStatus responseStatus) {
+		this.responseStatus = (responseStatus == null) ? ResponseStatus.NEEDS_ACTION : responseStatus;
 	}
 
 	public Boolean getNotify() {
@@ -113,10 +100,6 @@ public class EventAttendee {
 
 	public void setNotify(Boolean value) {
 		notify = value;
-	}
-	
-	public boolean isResource() {
-		return StringUtils.equals(getRecipientType(), RECIPIENT_TYPE_RESOURCE);
 	}
 	
 	public boolean hasEmailRecipient() {
@@ -161,8 +144,8 @@ public class EventAttendee {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof EventAttendee == false) return false;
-		if(this == obj) return true;
+		if (obj instanceof EventAttendee == false) return false;
+		if (this == obj) return true;
 		final EventAttendee otherObject = (EventAttendee) obj;
 		return new EqualsBuilder()
 			.append(getAttendeeId(), otherObject.getAttendeeId())
@@ -173,5 +156,23 @@ public class EventAttendee {
 		public List() {
 			super();
 		}
+	}
+	
+	public static enum RecipientType {
+		@SerializedName("IND") INDIVIDUAL,
+		@SerializedName("RES") RESOURCE
+	}
+	
+	public static enum RecipientRole {
+		@SerializedName("CHA") CHAIR,
+		@SerializedName("OPT") OPTIONAL,
+		@SerializedName("REQ") REQUIRED
+	}
+	
+	public static enum ResponseStatus {
+		@SerializedName("NA") NEEDS_ACTION, //"none"; // Synonym of needsAction
+		@SerializedName("DE") DECLINED, // "refused"; // Synonym of declined
+		@SerializedName("TE") TENTATIVE,
+		@SerializedName("AC") ACCEPTED
 	}
 }

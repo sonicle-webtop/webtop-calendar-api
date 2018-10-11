@@ -40,6 +40,7 @@ import com.sonicle.webtop.calendar.model.ShareRootCalendar;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
 import com.sonicle.webtop.calendar.model.EventInstance;
+import com.sonicle.webtop.calendar.model.EventKey;
 import com.sonicle.webtop.calendar.model.UpdateEventTarget;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import com.sonicle.webtop.core.sdk.WTException;
@@ -79,10 +80,11 @@ public interface ICalendarManager {
 	public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	public String getEventInstanceKey(int eventId) throws WTException;
 	public EventInstance getEventInstance(String eventKey) throws WTException;
-	public void updateEventInstance(UpdateEventTarget target, EventInstance event) throws WTException;
-	public void cloneEventInstance(String eventKey, DateTime startDate, DateTime endDate) throws WTException;
-	public void updateEventInstance(String eventKey, DateTime startDate, DateTime endDate, String title) throws WTException;
-	public void deleteEventInstance(UpdateEventTarget target, String eventKey) throws WTException;
-	public void restoreEventInstance(String eventKey) throws WTException;
-	public void moveEventInstance(boolean copy, String eventKey, int targetCalendarId) throws WTException;
+	public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean notifyAttendees) throws WTException;
+	public void updateEventInstance(UpdateEventTarget target, EventKey key, DateTime newStart, DateTime newEnd, String newTitle, boolean notifyAttendees) throws WTException;
+	public void deleteEventInstance(UpdateEventTarget target, String eventKey, boolean notifyAttendees) throws WTException;
+	public void deleteEventInstance(UpdateEventTarget target, EventKey key, boolean notifyAttendees) throws WTException;
+	public void restoreEventInstance(EventKey key) throws WTException;
+	public void moveEventInstance(EventKey key, int targetCalendarId) throws WTException;
+	public Event cloneEventInstance(EventKey key, Integer newCalendarId, DateTime newStart, DateTime newEnd, boolean notifyAttendees) throws WTException;
 }

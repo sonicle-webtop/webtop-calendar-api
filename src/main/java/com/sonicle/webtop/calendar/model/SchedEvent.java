@@ -42,7 +42,8 @@ public class SchedEvent extends BaseEvent {
 	protected String calendarDomainId;
 	protected String calendarUserId;
 	protected Integer seriesEventId;
-	protected Boolean hasAttendees;
+	protected Integer attendeesCount;
+	protected Integer notifyableAttendeesCount;
 	protected RecurInfo recurInfo;
 
 	public String getCalendarUserId() {
@@ -68,13 +69,21 @@ public class SchedEvent extends BaseEvent {
 	public void setSeriesEventId(Integer seriesEventId) {
 		this.seriesEventId = seriesEventId;
 	}
-
-	public Boolean getHasAttendees() {
-		return hasAttendees;
+	
+	public Integer getAttendeesCount() {
+		return attendeesCount;
 	}
 
-	public void setHasAttendees(Boolean hasAttendees) {
-		this.hasAttendees = hasAttendees;
+	public void setAttendeesCount(Integer attendeesCount) {
+		this.attendeesCount = attendeesCount;
+	}
+	
+	public Integer getNotifyableAttendeesCount() {
+		return notifyableAttendeesCount;
+	}
+
+	public void setNotifyableAttendeesCount(Integer notifyableAttendeesCount) {
+		this.notifyableAttendeesCount = notifyableAttendeesCount;
 	}
 	
 	public RecurInfo getRecurInfo() {
@@ -93,6 +102,14 @@ public class SchedEvent extends BaseEvent {
 		} else {
 			setRecurInfo(RecurInfo.NONE);
 		}
+	}
+	
+	public boolean hasAttendees() {
+		return (attendeesCount != null) && (attendeesCount > 0);
+	}
+	
+	public boolean hasNotifyableAttendees() {
+		return (notifyableAttendeesCount != null) && (notifyableAttendeesCount > 0);
 	}
 	
 	public boolean isEventRecurring() {
