@@ -184,7 +184,8 @@ public class ICalendarInput {
 		if (dtStart.compareTo(dtEnd) > 0) throw new WTException("StartDate [{0}] is not before event EndDate [{1}]", start.toString(), end.toString());
 
 		// Apply dates to event
-		event.setTimezone(dtStart.getZone().getID());
+		DateTimeZone eventTimezone = dtStart.getZone();
+		event.setTimezone(eventTimezone.getID());
 		if (isAllDay(dtStart, dtEnd)) {
 			// Tune-up endDate if we are reading an all-day event
 			event.setAllDay(true);
@@ -238,7 +239,7 @@ public class ICalendarInput {
 		// Extract recurrence (real definition or reference to a previous instance)
 		RRule rr = (RRule)ve.getProperty(Property.RRULE);
 		if (rr != null) {
-			event.setRecurrenceRule(rr.getRecur().toString());
+			event.setRecurrence(rr.getRecur().toString(), event.getStartDate().withZone(eventTimezone).toLocalDate());
 		} else {
 			RecurrenceId recurrenceId = (RecurrenceId)ve.getProperty(Property.RECURRENCE_ID);
 			if (recurrenceId != null) {

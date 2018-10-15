@@ -39,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -52,6 +53,7 @@ public class Event extends BaseEvent {
 	protected String statMasterDataId;
 	protected Integer causalId;
 	protected String recurrenceRule;
+	protected LocalDate recurrenceStartDate;
 	protected List<EventAttendee> attendees = new ArrayList<>();
 	protected List<EventAttachment> attachments = new ArrayList<>();
 	
@@ -106,9 +108,13 @@ public class Event extends BaseEvent {
 	public String getRecurrenceRule() {
 		return recurrenceRule;
 	}
-
-	public void setRecurrenceRule(String recurrenceRule) {
-		this.recurrenceRule = recurrenceRule;
+	
+	public LocalDate getRecurrenceStartDate() {
+		return recurrenceStartDate;
+	}
+	
+	public void setRecurrenceStartDate(LocalDate recurrenceStartDate) {
+		this.recurrenceStartDate = recurrenceStartDate;
 	}
 
 	public List<EventAttendee> getAttendees() {
@@ -125,6 +131,11 @@ public class Event extends BaseEvent {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		validate(false);
+	}
+	
+	public void setRecurrence(String rule, LocalDate startDate) {
+		this.recurrenceRule = rule;
+		this.recurrenceStartDate = startDate;
 	}
 	
 	public boolean hasRecurrence() {
