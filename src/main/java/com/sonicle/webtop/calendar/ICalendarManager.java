@@ -62,6 +62,7 @@ public interface ICalendarManager {
 	public Map<Integer, Calendar> listCalendars() throws WTException;
 	public Map<Integer, DateTime> getCalendarsLastRevision(Collection<Integer> calendarIds) throws WTException;
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
+	public boolean existCalendar(int calendarId) throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;
 	public Calendar addCalendar(Calendar cal) throws WTException;
