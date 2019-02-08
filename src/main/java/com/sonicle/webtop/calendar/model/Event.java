@@ -35,6 +35,7 @@ package com.sonicle.webtop.calendar.model;
 import com.sonicle.commons.time.DateTimeUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -54,6 +55,7 @@ public class Event extends BaseEvent {
 	protected Integer causalId;
 	protected String recurrenceRule;
 	protected LocalDate recurrenceStartDate;
+	protected Set<LocalDate> excludedDates;
 	protected List<EventAttendee> attendees = new ArrayList<>();
 	protected List<EventAttachment> attachments = new ArrayList<>();
 	
@@ -116,6 +118,14 @@ public class Event extends BaseEvent {
 	public void setRecurrenceStartDate(LocalDate recurrenceStartDate) {
 		this.recurrenceStartDate = recurrenceStartDate;
 	}
+	
+	public Set<LocalDate> getExcludedDates() {
+		return excludedDates;
+	}
+	
+	public void setExcludedDates(Set<LocalDate> excludedDates) {
+		this.excludedDates = excludedDates;
+	}
 
 	public List<EventAttendee> getAttendees() {
 		return attendees;
@@ -123,6 +133,14 @@ public class Event extends BaseEvent {
 
 	public void setAttendees(List<EventAttendee> attendees) {
 		this.attendees = attendees;
+	}
+	
+	public List<EventAttachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<EventAttachment> attachments) {
+		this.attachments = attachments;
 	}
 	
 	public void setDatesAndTimes(boolean allDay, String timezone, DateTime startDate, DateTime endDate) {
@@ -133,21 +151,18 @@ public class Event extends BaseEvent {
 		validate(false);
 	}
 	
-	public void setRecurrence(String rule, LocalDate startDate) {
+	public void setRecurrence(String rule, LocalDate startDate, Set<LocalDate> excludedDates) {
 		this.recurrenceRule = rule;
 		this.recurrenceStartDate = startDate;
+		this.excludedDates = excludedDates;
 	}
 	
 	public boolean hasRecurrence() {
 		return !StringUtils.isEmpty(recurrenceRule);
 	}
 	
-	public List<EventAttachment> getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(List<EventAttachment> attachments) {
-		this.attachments = attachments;
+	public boolean hasExcludedDates() {
+		return (excludedDates != null) && !excludedDates.isEmpty();
 	}
 	
 	public void validate(boolean silent) {

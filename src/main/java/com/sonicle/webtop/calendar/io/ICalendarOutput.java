@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar.io;
 
+import com.sonicle.webtop.calendar.CalendarUtils;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttendee;
 import com.sonicle.webtop.core.sdk.WTException;
@@ -43,10 +44,12 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 import javax.mail.internet.AddressException;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
@@ -54,8 +57,10 @@ import net.fortuna.ical4j.model.parameter.CuType;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.parameter.Rsvp;
+import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Method;
@@ -67,7 +72,10 @@ import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  *
@@ -92,19 +100,19 @@ public class ICalendarOutput {
 		}
 	}
 	
-	public Calendar toCalendar(Event event, boolean useTimezoneDates) throws WTException {
-		return toCalendar(null, Arrays.asList(event), useTimezoneDates);
+	public Calendar toCalendar(Event event) throws WTException {
+		return toCalendar(null, Arrays.asList(event));
 	}
 	
-	public Calendar toCalendar(Method method, Event event, boolean useTimezoneDates) throws WTException {
-		return toCalendar(method, Arrays.asList(event), useTimezoneDates);
+	public Calendar toCalendar(Method method, Event event) throws WTException {
+		return toCalendar(method, Arrays.asList(event));
 	}
 	
-	public Calendar toCalendar(Collection<Event> events, boolean useTimezoneDates) throws WTException {
-		return toCalendar(null, events, useTimezoneDates);
+	public Calendar toCalendar(Collection<Event> events) throws WTException {
+		return toCalendar(null, events);
 	}
 	
-	public Calendar toCalendar(Method method, Collection<Event> events, boolean useTimezoneDates) throws WTException {
+	public Calendar toCalendar(Method method, Collection<Event> events) throws WTException {
 		Calendar ical = null;
 		
 		if (method == null) {
@@ -114,20 +122,33 @@ public class ICalendarOutput {
 			ical = ICalendarUtils.newCalendar(prodId, method);
 		}
 		for (Event event : events) {
-			ical.getComponents().add(toVEvent(method, event, useTimezoneDates));
+			ical.getComponents().add(toVEvent(method, event));
 		}
 		return ical;
 	}
 	
-	public VEvent toVEvent(Method method, Event event, boolean useTimezoneDates) throws WTException {
+	public VEvent toVEvent(Method method, Event event) throws WTException {
+		boolean useUTCDateTimes = (method != null);
 		Date start, end;
-		if (useTimezoneDates) {
-			start = ICal4jUtils.toIC4jDateTimeLocal(event.getStartDate(), event.getDateTimeZone(), true);
-			end = ICal4jUtils.toIC4jDateTimeLocal(event.getEndDate(), event.getDateTimeZone(), true);
+		if (event.getAllDay()) {
+			// If event is AD do not include time in start/end, the output will be a date only field (without time)
+			// End date will be set at midnight of the day-after according to duration.
+			int eventDays = CalendarUtils.calculateLengthInDays(event.getStartDate(), event.getEndDate());
+			LocalDate startLocalDate = event.getStartDate().withZone(event.getDateTimeZone()).toLocalDate();
+			start = ICal4jUtils.toIC4jDate(startLocalDate);
+			end = ICal4jUtils.toIC4jDate(startLocalDate.plusDays(eventDays+1));
+			
 		} else {
-			start = ICal4jUtils.toIC4jDateTimeUTC(event.getStartDate());
-			end = ICal4jUtils.toIC4jDateTimeUTC(event.getEndDate());
+			if (useUTCDateTimes) {
+				// Meeting requests should use UTC date/time values instead of notation with local timezones
+				start = ICal4jUtils.toIC4jDateTimeUTC(event.getStartDate());
+				end = ICal4jUtils.toIC4jDateTimeUTC(event.getEndDate());
+			} else {
+				start = ICal4jUtils.toIC4jDateTime(event.getStartDate(), event.getDateTimeZone(), true);
+				end = ICal4jUtils.toIC4jDateTime(event.getEndDate(), event.getDateTimeZone(), true);
+			}
 		}
+			
 		VEvent ve = new VEvent(start, end, event.getTitle());
 		
 		// Status: meeting status
@@ -189,6 +210,10 @@ public class ICalendarOutput {
 			} catch(ParseException ex) {
 				throw new WTException(ex, "Unable to add recurrence");
 			}
+			if (event.hasExcludedDates()) {
+				LocalTime startTime = event.getAllDay() ? null : event.getStartDate().withZone(event.getDateTimeZone()).toLocalTime();
+				ve.getProperties().add(toExDate(useUTCDateTimes, event.getExcludedDates(), event.getDateTimeZone(), startTime));
+			}
 		}
 		
 		return ve;
@@ -225,6 +250,35 @@ public class ICalendarOutput {
 	
 	public RRule toRRule(Event event) throws ParseException {
 		return new RRule(event.getRecurrenceRule());
+	}
+	
+	public ExDate toExDate(boolean useUTCDateTimes, Set<LocalDate> excludedDates, DateTimeZone eventTimezone, LocalTime eventStartTime) {
+		DateList dateList = null;
+		if (eventStartTime != null) {
+			dateList = new DateList(Value.DATE_TIME);
+			// Sets timezone info only if we have time defined, AD events must carry dates only!
+			if (useUTCDateTimes) {
+				dateList.setUtc(true);
+			} else {
+				dateList.setTimeZone(ICal4jUtils.toIC4jTimezone(eventTimezone));
+			}
+		} else {
+			dateList = new DateList(Value.DATE);
+		}
+		for (LocalDate exclDate : excludedDates) {
+			if (Value.DATE_TIME.equals(dateList.getType())) {
+				DateTime dt = exclDate.toDateTime(eventStartTime, eventTimezone);
+				if (useUTCDateTimes) {
+					dateList.add(ICal4jUtils.toIC4jDateTimeUTC(dt));
+				} else {
+					// Skip forcing the zone reference, it's already set above on the collection!
+					dateList.add(ICal4jUtils.toIC4jDateTime(dt, eventTimezone, false));
+				}
+			} else {
+				dateList.add(ICal4jUtils.toIC4jDate(exclDate));
+			}
+		}
+		return new ExDate(dateList);
 	}
 	
 	public Role toRole(EventAttendee.RecipientRole recipientRole) {

@@ -49,4 +49,20 @@ public class ShareFolderCalendar extends ShareFolder {
 	public Calendar getCalendar() {
 		return (Calendar)object;
 	}
+	
+	public SharePermsElements getRealElementsPerms(Calendar.Sync sync) {
+		return realElementsPerms(getElementsPerms(), sync);
+	}
+	
+	public static SharePermsElements realElementsPerms(Calendar.Sync sync) {
+		return realElementsPerms(SharePermsElements.full(), sync);
+	}
+	
+	public static SharePermsElements realElementsPerms(SharePermsElements origPerms, Calendar.Sync sync) {
+		if (Calendar.Sync.READ.equals(sync)) {
+			return new SharePermsElements();
+		} else {
+			return origPerms;
+		}
+	}
 }

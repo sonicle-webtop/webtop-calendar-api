@@ -49,17 +49,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.mail.internet.InternetAddress;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.NumberList;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
-import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -68,13 +70,10 @@ import net.fortuna.ical4j.model.parameter.CuType;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.DtEnd;
-import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -84,18 +83,13 @@ import org.joda.time.LocalDate;
  * @author malbinola
  */
 public class ICalendarInput {
-	private boolean computeVEventHash = false;
 	private DateTimeZone defaultTz;
 	private boolean defaultIsPrivate = false;
 	private boolean defaultAttendeeNotify = false;
+	private boolean includeVEventSourceInOutput = false;
 	
 	public ICalendarInput(DateTimeZone defaultTz) {
 		this.defaultTz = defaultTz;
-	}
-	
-	public ICalendarInput withComputeVEventHash(boolean computeVEventHash) {
-		this.computeVEventHash = computeVEventHash;
-		return this;
 	}
 	
 	public ICalendarInput withDefaultTz(DateTimeZone defaultTz) {
@@ -110,6 +104,11 @@ public class ICalendarInput {
 	
 	public ICalendarInput withDefaultAttendeeNotify(boolean defaultAttendeeNotify) {
 		this.defaultAttendeeNotify = defaultAttendeeNotify;
+		return this;
+	}
+	
+	public ICalendarInput withIncludeVEventSourceInOutput(boolean includeVEventSourceInOutput) {
+		this.includeVEventSourceInOutput = includeVEventSourceInOutput;
 		return this;
 	}
 	
@@ -155,17 +154,49 @@ public class ICalendarInput {
 	public EventInput fromVEvent(VEvent ve, LogEntries log) throws WTException {
 		// See http://www.kanzaki.com/docs/ical/vevent.html
 		Event event = new Event();
-		ArrayList<LocalDate> excludedDates = null;
-		LocalDate overwritesRecurringInstance = null;
+		String exRefersToPublicUid = null;
+		LocalDate addsExceptionOnMaster = null;
 		
-		//TODO: pass string field lengths in constructor of take them from db field definitions
+		//TODO: pass string field lengths in constructor or take them from db field definitions
 		String uid = ICalendarUtils.getUidValue(ve);
 		if (!StringUtils.isBlank(uid)) {
 			event.setPublicUid(uid);
 		} else {
 			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Missing Uid"));
 		}
-
+		
+		DateTimeZone eventTimezone = null;
+		boolean isAllDay = ICal4jUtils.isAllDay(ve);
+		if (isAllDay) {
+			event.setAllDay(true);
+			org.joda.time.LocalDate startLd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDate(ve.getStartDate()));
+			if (startLd == null) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "DTSTART must be set"));
+				throw new WTException("DTSTART must be set");
+			}
+			event.setStartDate(startLd.toDateTimeAtStartOfDay(defaultTz));
+			
+			org.joda.time.LocalDate endLd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDate(ve.getEndDate()));
+			if (endLd == null) endLd = startLd.plusDays(1);
+			event.setEndDate(endLd.minusDays(1).toDateTime(DateTimeUtils.TIME_AT_ENDOFDAY, defaultTz));
+			
+		} else {
+			event.setAllDay(false);
+			org.joda.time.DateTime startDt = ICal4jUtils.toJodaDateTime((DateTime)ICal4jUtils.getDate(ve.getStartDate()), defaultTz);
+			if (startDt == null) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "DTSTART must be set"));
+				throw new WTException("DTSTART must be set");
+			}
+			event.setStartDate(startDt);
+			
+			org.joda.time.DateTime endDt = ICal4jUtils.toJodaDateTime((DateTime)ICal4jUtils.getDate(ve.getEndDate()), defaultTz);
+			if (endDt == null) endDt = startDt.plusHours(1);
+			event.setEndDate(endDt);
+		}
+		eventTimezone = event.getStartDate().getZone();
+		event.setTimezone(eventTimezone.getID());
+		
+		/*
 		// Extracts and converts date-times
 		DtStart start = ve.getStartDate();
 		TimeZone startTz = ICalendarUtils.guessTimeZone(start.getTimeZone(), defaultTz);
@@ -196,6 +227,7 @@ public class ICalendarInput {
 			event.setStartDate(dtStart);
 			event.setEndDate(dtEnd);
 		}
+		*/
 
 		// Title
 		if (ve.getSummary() != null) {
@@ -239,21 +271,25 @@ public class ICalendarInput {
 		// Extract recurrence (real definition or reference to a previous instance)
 		RRule rr = (RRule)ve.getProperty(Property.RRULE);
 		if (rr != null) {
-			event.setRecurrence(rr.getRecur().toString(), event.getStartDate().withZone(eventTimezone).toLocalDate());
-		} else {
-			RecurrenceId recurrenceId = (RecurrenceId)ve.getProperty(Property.RECURRENCE_ID);
-			if (recurrenceId != null) {
-				overwritesRecurringInstance = new LocalDate(recurrenceId.getDate());
+			// Extract exDates
+			Set<LocalDate> excludedDates = null;
+			PropertyList exDates = ve.getProperties(Property.EXDATE); // We can have multiple ExDate occurrence!
+			if (!exDates.isEmpty()) {
+				excludedDates = new LinkedHashSet<>();
+				for (Object o : exDates) {
+					excludedDates.addAll(fromVEventExDate((ExDate)o, eventTimezone, log));
+				}
 			}
+			event.setRecurrence(rr.getRecur().toString(), event.getStartDate().withZone(eventTimezone).toLocalDate(), excludedDates);
+			
 		}
 		
-		// Extract exDates
-		PropertyList exDates = ve.getProperties(Property.EXDATE);
-		if (!exDates.isEmpty()) {
-			excludedDates = new ArrayList<>();
-			for(Object o: exDates) {
-				excludedDates.addAll(fromVEventExDate((ExDate)o, log));
-			}
+		// Recurrence-id property references the date referred to the 
+		// master-event on which operate the exception described by this event
+		RecurrenceId recurrenceId = (RecurrenceId)ve.getProperty(Property.RECURRENCE_ID);
+		if (recurrenceId != null) {
+			exRefersToPublicUid = event.getPublicUid();
+			addsExceptionOnMaster = ICal4jUtils.toJodaLocalDate(recurrenceId.getDate());
 		}
 		
 		// Extracts organizer
@@ -280,8 +316,7 @@ public class ICalendarInput {
 			event.setAttendees(attendees);
 		}
 		
-		String hash = computeVEventHash ? DigestUtils.md5Hex(ve.toString()) : null;
-		return new EventInput(event, excludedDates, overwritesRecurringInstance, hash);
+		return new EventInput(event, exRefersToPublicUid, addsExceptionOnMaster, includeVEventSourceInOutput ? ve : null);
 	}
 	
 	public EventRecurrence fromVEventRRule(RRule rr, org.joda.time.DateTimeZone etz, LogEntries log) {
@@ -376,11 +411,20 @@ public class ICalendarInput {
 		return rec;
 	}
 	
-	public List<LocalDate> fromVEventExDate(ExDate ex, LogEntries log) {
-		ArrayList<LocalDate> dates = new ArrayList<>();
-		Iterator it = ex.getDates().iterator();
-		while(it.hasNext()) {
-			dates.add(new LocalDate(it.next()));
+	public Set<LocalDate> fromVEventExDate(ExDate exDate, DateTimeZone eventTimezone, LogEntries log) {
+		LinkedHashSet<LocalDate> dates = new LinkedHashSet<>();
+		Iterator it = exDate.getDates().iterator();
+		while (it.hasNext()) {
+			Date date = (Date)it.next();
+			if (date instanceof DateTime) {
+				// Firstly the date-time is read using its own timezone; if omitted 
+				// the event timezone will be used instead, and then the resulting
+				// date-time will be moved to the event timezone (the desired one).
+				// Finally a local date can be extracted!
+				dates.add(ICal4jUtils.toJodaDateTime((DateTime)date, eventTimezone).withZone(eventTimezone).toLocalDate());
+			} else {
+				dates.add(ICal4jUtils.toJodaLocalDate(date));
+			}
 		}
 		return dates;
 	}

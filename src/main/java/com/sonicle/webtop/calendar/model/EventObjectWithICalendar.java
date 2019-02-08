@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Sonicle S.r.l.
+ * Copyright (C) 2019 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,87 +28,28 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2018 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2019 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
-import org.joda.time.DateTime;
+import org.apache.commons.io.Charsets;
 
 /**
  *
  * @author malbinola
  */
-public class EventCalObject {
-	protected Integer eventId;
-	protected Integer calendarId;
-	protected Event.RevisionStatus revisionStatus;
-	protected DateTime revisionTimestamp;
-	protected String publicUid;
-	protected String href;
-	protected Integer size;
+public class EventObjectWithICalendar extends EventObject {
 	protected String icalendar;
-
-	public Integer getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(Integer eventId) {
-		this.eventId = eventId;
-	}
-
-	public Integer getCalendarId() {
-		return calendarId;
-	}
-
-	public void setCalendarId(Integer calendarId) {
-		this.calendarId = calendarId;
-	}
-
-	public Event.RevisionStatus getRevisionStatus() {
-		return revisionStatus;
-	}
-
-	public void setRevisionStatus(Event.RevisionStatus revisionStatus) {
-		this.revisionStatus = revisionStatus;
-	}
-
-	public DateTime getRevisionTimestamp() {
-		return revisionTimestamp;
-	}
-
-	public void setRevisionTimestamp(DateTime revisionTimestamp) {
-		this.revisionTimestamp = revisionTimestamp;
-	}
-
-	public String getPublicUid() {
-		return publicUid;
-	}
-
-	public void setPublicUid(String publicUid) {
-		this.publicUid = publicUid;
-	}
-
-	public String getHref() {
-		return href;
-	}
-
-	public void setHref(String href) {
-		this.href = href;
-	}
-
-	public Integer getSize() {
-		return size;
-	}
-
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-
+	
 	public String getIcalendar() {
 		return icalendar;
 	}
 
 	public void setIcalendar(String icalendar) {
 		this.icalendar = icalendar;
+	}
+	
+	public int getSize() {
+		return (icalendar == null) ? -1 : icalendar.getBytes(Charsets.UTF_8).length;
 	}
 }

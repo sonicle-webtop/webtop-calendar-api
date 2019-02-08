@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2014 Sonicle S.r.l.
+/*
+ * Copyright (C) 2019 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,28 +28,22 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2014 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2019 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar.io;
-
-import com.sonicle.webtop.calendar.model.Event;
-import net.fortuna.ical4j.model.component.VEvent;
-import org.joda.time.LocalDate;
+package com.sonicle.webtop.calendar.model;
 
 /**
  *
  * @author malbinola
  */
-public class EventInput {
-	public final Event event;
-	public final String exRefersToPublicUid;
-	public final LocalDate addsExOnMaster;
-	public final VEvent sourceEvent;
+public class EventObjectWithBean extends EventObject {
+	protected Event event;
 	
-	public EventInput(Event event, String exRefersToPublicUid, LocalDate addsExceptionOnMaster, VEvent sourceEvent) {
+	public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
 		this.event = event;
-		this.exRefersToPublicUid = exRefersToPublicUid;
-		this.addsExOnMaster = addsExceptionOnMaster;
-		this.sourceEvent = sourceEvent;
 	}
 }

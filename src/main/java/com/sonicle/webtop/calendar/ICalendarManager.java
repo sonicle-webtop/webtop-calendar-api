@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar;
 
+import com.sonicle.commons.LangUtils;
 import com.sonicle.webtop.calendar.model.GetEventScope;
 import com.sonicle.webtop.calendar.model.Calendar;
 import com.sonicle.webtop.calendar.model.CalendarPropSet;
@@ -41,6 +42,9 @@ import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
 import com.sonicle.webtop.calendar.model.EventInstance;
 import com.sonicle.webtop.calendar.model.EventKey;
+import com.sonicle.webtop.calendar.model.EventObject;
+import com.sonicle.webtop.calendar.model.EventObjectChanged;
+import com.sonicle.webtop.calendar.model.EventObjectWithICalendar;
 import com.sonicle.webtop.calendar.model.UpdateEventTarget;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import com.sonicle.webtop.core.sdk.WTException;
@@ -72,6 +76,15 @@ public interface ICalendarManager {
 	public CalendarPropSet getCalendarCustomProps(int calendarId) throws WTException;
 	public Map<Integer, CalendarPropSet> getCalendarCustomProps(Collection<Integer> calendarIds) throws WTException;
 	public CalendarPropSet updateCalendarCustomProps(int calendarId, CalendarPropSet propertySet) throws WTException;
+	public List<EventObject> listEventObjects(int calendarId, EventObjectOutputType outputType) throws WTException;
+	public List<EventObject> listEventObjects(int calendarId, DateTime since, EventObjectOutputType outputType) throws WTException;
+	public LangUtils.CollectionChangeSet<EventObjectChanged> listEventObjectsChanges(int calendarId, DateTime since, Integer limit) throws WTException;
+	public EventObjectWithICalendar getEventObjectWithICalendar(int calendarId, String href) throws WTException;
+	public List<EventObjectWithICalendar> getEventObjectsWithICalendar(int calendarId, Collection<String> hrefs) throws WTException;
+	public EventObject getEventObject(int calendarId, int eventId, EventObjectOutputType outputType) throws WTException;
+	public void addEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
+	public void updateEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
+	public void deleteEventObject(int calendarId, String href) throws WTException;
 	public Event getEvent(int eventId) throws WTException;
 	public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
 	public EventAttachmentWithBytes getEventAttachment(int eventId, String attachmentId) throws WTException;

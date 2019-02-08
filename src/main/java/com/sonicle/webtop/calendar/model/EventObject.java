@@ -38,33 +38,59 @@ import org.joda.time.DateTime;
  *
  * @author malbinola
  */
-public class EventCalObjectChanged {
-	protected final Integer eventId;
-	protected final DateTime revisionTimestamp;
-	//protected final String publicUid;
-	protected final String href;
-	
-	public EventCalObjectChanged(int eventId, DateTime revisionTimestamp, String href) {
-		this.eventId = eventId;
-		this.revisionTimestamp = revisionTimestamp;
-		this.href = href;
-	}
+public class EventObject {
+	protected Integer eventId;
+	protected Integer calendarId;
+	protected Event.RevisionStatus revisionStatus;
+	protected DateTime revisionTimestamp;
+	protected String publicUid;
+	protected String href;
 
 	public Integer getEventId() {
 		return eventId;
+	}
+
+	public void setEventId(Integer eventId) {
+		this.eventId = eventId;
+	}
+
+	public Integer getCalendarId() {
+		return calendarId;
+	}
+
+	public void setCalendarId(Integer calendarId) {
+		this.calendarId = calendarId;
+	}
+
+	public Event.RevisionStatus getRevisionStatus() {
+		return revisionStatus;
+	}
+
+	public void setRevisionStatus(Event.RevisionStatus revisionStatus) {
+		this.revisionStatus = revisionStatus;
 	}
 
 	public DateTime getRevisionTimestamp() {
 		return revisionTimestamp;
 	}
 
-	/*
+	public void setRevisionTimestamp(DateTime revisionTimestamp) {
+		this.revisionTimestamp = revisionTimestamp;
+	}
+
 	public String getPublicUid() {
 		return publicUid;
 	}
-	*/
+
+	public void setPublicUid(String publicUid) {
+		this.publicUid = publicUid;
+	}
 
 	public String getHref() {
 		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
 	}
 }
