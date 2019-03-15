@@ -34,6 +34,10 @@ package com.sonicle.webtop.calendar.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.sonicle.commons.InternetAddressUtils;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.mail.internet.InternetAddress;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -60,7 +64,7 @@ public class BaseEvent {
 	protected String location;
 	protected Boolean isPrivate;
 	protected Boolean busy;
-	protected Integer reminder;
+	protected Reminder reminder;
 
 	public Integer getEventId() {
 		return eventId;
@@ -198,11 +202,11 @@ public class BaseEvent {
 		this.busy = busy;
 	}
 
-	public Integer getReminder() {
+	public Reminder getReminder() {
 		return reminder;
 	}
 
-	public void setReminder(Integer reminder) {
+	public void setReminder(Reminder reminder) {
 		this.reminder = reminder;
 	}
 	
@@ -234,5 +238,38 @@ public class BaseEvent {
 		@SerializedName("none") NONE,
 		@SerializedName("broken") BROKEN,
 		@SerializedName("recurring") RECURRING;
+	}
+	
+	public static class Reminder {
+		public static final Integer[] VALUES = new Integer[]{0,5,10,15,30,45,60,120,180,240,300,360,420,480,540,600,660,720,1080,1440,2880,10080,20160};
+		private static final Set<Integer> VALID_VALUES = new HashSet<>(Arrays.asList(VALUES));
+		private final int value;
+		
+		public Reminder(int minutes) {
+			if (minutes < 0) {
+				value = VALUES[0];
+			} else {
+				value = VALID_VALUES.contains(minutes) ? minutes : findBestValue(minutes);
+			}
+		}
+		
+		public int getValue() {
+			return value;
+		}
+		
+		private int findBestValue(int minutes) {
+			for (int i=1; i<VALUES.length; i++) {
+				if (minutes < VALUES[i]) return VALUES[i];
+			}
+			return VALUES[VALUES.length-1];
+		}
+		
+		public static Reminder valueOf(Integer minutes) {
+			return (minutes == null || minutes < 0) ? null : new Reminder(minutes);
+		}
+		
+		public static Integer getMinutes(Reminder reminder) {
+			return (reminder == null) ? null : reminder.getValue();
+		}
 	}
 }

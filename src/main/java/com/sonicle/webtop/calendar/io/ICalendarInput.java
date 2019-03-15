@@ -57,6 +57,7 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.NumberList;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
@@ -64,6 +65,7 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.CuType;
@@ -260,9 +262,16 @@ public class ICalendarInput {
 		} else {
 			event.setBusy(false);
 		}
-
+		
+		// Reminder
+		if (!ve.getAlarms().isEmpty()) {
+			if (ve.getAlarms().size() > 1) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Multiple VALARMs found, using the first one"));
+			}
+			event.setReminder(fromVAlarm(ve.getAlarms().get(0), log));
+		}
+		
 		// Others...
-		event.setReminder(null);
 		event.setActivityId(null);
 		event.setMasterDataId(null);
 		event.setStatMasterDataId(null);
@@ -317,6 +326,21 @@ public class ICalendarInput {
 		}
 		
 		return new EventInput(event, exRefersToPublicUid, addsExceptionOnMaster, includeVEventSourceInOutput ? ve : null);
+	}
+	
+	public Event.Reminder fromVAlarm(VAlarm alarm, LogEntries log) {
+		//TODO: Mybe add support to ACTION property [DISPLAY, EMAIL, AUDIO, PROCEDURE]
+		// We only support one time reminders (REPEAT=1)
+		Dur duration = alarm.getTrigger().getDuration();
+		int minutes = (duration.getWeeks() * 7 * 24 * 60) + (duration.getHours() * 24 * 60) + (duration.getHours() * 60) + duration.getMinutes();
+		if (duration.getSeconds() > 0) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "TRIGGER seconds ignored"));
+		}
+		if (!duration.isNegative()) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Ahead TRIGGERs are not supported, using start instant"));
+			minutes = 0;
+		}
+		return Event.Reminder.valueOf(minutes);
 	}
 	
 	public EventRecurrence fromVEventRRule(RRule rr, org.joda.time.DateTimeZone etz, LogEntries log) {

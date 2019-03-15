@@ -50,7 +50,9 @@ import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
+import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.CuType;
@@ -58,6 +60,7 @@ import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.ExDate;
@@ -192,6 +195,11 @@ public class ICalendarOutput {
 		}
 		ve.getProperties().add(organizer);
 		
+		// Alarm
+		if (event.getReminder() != null) {
+			ve.getAlarms().add(toVAlarm(event.getReminder(), event.getTitle()));
+		}
+		
 		// Attendees
 		for (EventAttendee attendee : event.getAttendees()) {
 			try {
@@ -217,6 +225,14 @@ public class ICalendarOutput {
 		}
 		
 		return ve;
+	}
+	
+	public VAlarm toVAlarm(Event.Reminder reminder, String description) {
+		// We only support one time reminders (REPEAT=1)
+		VAlarm alarm = new VAlarm(new Dur(0, 0, -reminder.getValue(), 0));
+		alarm.getProperties().add(Action.DISPLAY);
+		alarm.getProperties().add(new Description(description));
+		return alarm;
 	}
 	
 	public Attendee toAttendee(Method calMethod, EventAttendee attendee) throws AddressException {
