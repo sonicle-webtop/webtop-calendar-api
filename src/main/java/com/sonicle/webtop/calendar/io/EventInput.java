@@ -34,6 +34,7 @@ package com.sonicle.webtop.calendar.io;
 
 import com.sonicle.webtop.calendar.model.Event;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Status;
 import org.joda.time.LocalDate;
 
 /**
@@ -51,5 +52,10 @@ public class EventInput {
 		this.exRefersToPublicUid = exRefersToPublicUid;
 		this.addsExOnMaster = addsExceptionOnMaster;
 		this.sourceEvent = sourceEvent;
+	}
+	
+	public boolean isSourceEventCancelled() {
+		if (sourceEvent == null) return false;
+		return Status.VEVENT_CANCELLED.equals(sourceEvent.getProperty(Status.STATUS));
 	}
 }
