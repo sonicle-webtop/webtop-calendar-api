@@ -180,7 +180,7 @@ public class ICalendarInput {
 			
 			org.joda.time.LocalDate endLd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDate(ve.getEndDate()));
 			if (endLd == null) endLd = startLd.plusDays(1);
-			event.setEndDate(endLd.minusDays(1).toDateTime(DateTimeUtils.TIME_AT_ENDOFDAY, defaultTz));
+			event.setEndDate(endLd.toDateTimeAtStartOfDay(defaultTz));
 			
 		} else {
 			event.setAllDay(false);
@@ -197,39 +197,6 @@ public class ICalendarInput {
 		}
 		eventTimezone = event.getStartDate().getZone();
 		event.setTimezone(eventTimezone.getID());
-		
-		/*
-		// Extracts and converts date-times
-		DtStart start = ve.getStartDate();
-		TimeZone startTz = ICalendarUtils.guessTimeZone(start.getTimeZone(), defaultTz);
-		org.joda.time.DateTime dtStart = ICal4jUtils.fromICal4jDate(start.getDate(), startTz);
-
-		DtEnd end = ve.getEndDate();
-		TimeZone endTz = null;
-		org.joda.time.DateTime dtEnd = null;
-		if (end == null) { // EndDate can be null
-			endTz = startTz;
-			dtEnd = dtStart.toDateTime();
-		} else {
-			endTz = startTz;
-			dtEnd = ICal4jUtils.fromICal4jDate(end.getDate(), endTz).withZone(dtStart.getZone());
-		}
-		if (dtStart.compareTo(dtEnd) > 0) throw new WTException("StartDate [{0}] is not before event EndDate [{1}]", start.toString(), end.toString());
-
-		// Apply dates to event
-		DateTimeZone eventTimezone = dtStart.getZone();
-		event.setTimezone(eventTimezone.getID());
-		if (isAllDay(dtStart, dtEnd)) {
-			// Tune-up endDate if we are reading an all-day event
-			event.setAllDay(true);
-			event.setStartDate(dtStart.withTimeAtStartOfDay());
-			event.setEndDate(DateTimeUtils.withTimeAtEndOfDay(dtStart));
-		} else {
-			event.setAllDay(false);
-			event.setStartDate(dtStart);
-			event.setEndDate(dtEnd);
-		}
-		*/
 
 		// Title
 		if (ve.getSummary() != null) {

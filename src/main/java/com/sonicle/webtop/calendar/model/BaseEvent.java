@@ -36,7 +36,6 @@ import com.google.gson.annotations.SerializedName;
 import com.sonicle.commons.InternetAddressUtils;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.mail.internet.InternetAddress;
 import org.joda.time.DateTime;
@@ -226,6 +225,17 @@ public class BaseEvent {
 	public String getOrganizerCN() {
 		InternetAddress ia = getOrganizerInternetAddress();
 		return (ia != null) ? ia.getPersonal() : null;
+	}
+	
+	public void ensureCoherence() {
+		if ((startDate != null) && (endDate != null)) {
+			// Ensure start < end
+			if (startDate.compareTo(endDate) > 0) {
+				final DateTime dt = endDate;
+				setEndDate(startDate);
+				setStartDate(dt);
+			}
+		}
 	}
 	
 	public static enum RevisionStatus {

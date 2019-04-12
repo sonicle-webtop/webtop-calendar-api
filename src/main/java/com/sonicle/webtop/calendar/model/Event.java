@@ -32,7 +32,6 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.commons.time.DateTimeUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -148,7 +147,7 @@ public class Event extends BaseEvent {
 		this.timezone = timezone;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		validate(false);
+		ensureCoherence();
 	}
 	
 	public void setRecurrence(String rule, LocalDate startDate, Set<LocalDate> excludedDates) {
@@ -163,25 +162,6 @@ public class Event extends BaseEvent {
 	
 	public boolean hasExcludedDates() {
 		return (excludedDates != null) && !excludedDates.isEmpty();
-	}
-	
-	public void validate(boolean silent) {
-		if ((startDate != null) && (endDate != null)) {
-			// Ensure start < end
-			if (startDate.compareTo(endDate) > 0) {
-				final DateTime dt = endDate;
-				setEndDate(startDate);
-				setStartDate(dt);
-			}
-			
-			if (allDay != null) {
-				// If event is all day, take max time as possible
-				if (allDay) {
-					setStartDate(startDate.withTimeAtStartOfDay());
-					setEndDate(DateTimeUtils.withTimeAtEndOfDay(endDate));
-				}
-			}
-		}
 	}
 	
 	public boolean trimFieldLengths() {

@@ -133,22 +133,20 @@ public class ICalendarOutput {
 	public VEvent toVEvent(Method method, Event event) throws WTException {
 		boolean useUTCDateTimes = (method != null);
 		Date start, end;
-		if (event.getAllDay()) {
+		
+		CalendarUtils.EventBoundary eventBoundary = CalendarUtils.getEventBoundary(event);
+		if (eventBoundary.allDay) {
 			// If event is AD do not include time in start/end, the output will be a date only field (without time)
-			// End date will be set at midnight of the day-after according to duration.
-			int eventDays = CalendarUtils.calculateLengthInDays(event.getStartDate(), event.getEndDate());
-			LocalDate startLocalDate = event.getStartDate().withZone(event.getDateTimeZone()).toLocalDate();
-			start = ICal4jUtils.toIC4jDate(startLocalDate);
-			end = ICal4jUtils.toIC4jDate(startLocalDate.plusDays(eventDays+1));
-			
+			start = ICal4jUtils.toIC4jDate(eventBoundary.start.withZone(eventBoundary.timezone).toLocalDate());
+			end = ICal4jUtils.toIC4jDate(eventBoundary.end.withZone(eventBoundary.timezone).toLocalDate());
 		} else {
 			if (useUTCDateTimes) {
 				// Meeting requests should use UTC date/time values instead of notation with local timezones
-				start = ICal4jUtils.toIC4jDateTimeUTC(event.getStartDate());
-				end = ICal4jUtils.toIC4jDateTimeUTC(event.getEndDate());
+				start = ICal4jUtils.toIC4jDateTimeUTC(eventBoundary.start);
+				end = ICal4jUtils.toIC4jDateTimeUTC(eventBoundary.end);
 			} else {
-				start = ICal4jUtils.toIC4jDateTime(event.getStartDate(), event.getDateTimeZone(), true);
-				end = ICal4jUtils.toIC4jDateTime(event.getEndDate(), event.getDateTimeZone(), true);
+				start = ICal4jUtils.toIC4jDateTime(eventBoundary.start, eventBoundary.timezone, true);
+				end = ICal4jUtils.toIC4jDateTime(eventBoundary.end, eventBoundary.timezone, true);
 			}
 		}
 			
