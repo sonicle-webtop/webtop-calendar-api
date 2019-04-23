@@ -171,14 +171,14 @@ public class ICalendarInput {
 		boolean isAllDay = ICal4jUtils.isAllDay(ve);
 		if (isAllDay) {
 			event.setAllDay(true);
-			org.joda.time.LocalDate startLd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDate(ve.getStartDate()));
+			org.joda.time.LocalDate startLd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDate(ve.getStartDate()), DateTimeZone.UTC);
 			if (startLd == null) {
 				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "DTSTART must be set"));
 				throw new WTException("DTSTART must be set");
 			}
 			event.setStartDate(startLd.toDateTimeAtStartOfDay(defaultTz));
 			
-			org.joda.time.LocalDate endLd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDate(ve.getEndDate()));
+			org.joda.time.LocalDate endLd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDate(ve.getEndDate()), DateTimeZone.UTC);
 			if (endLd == null) endLd = startLd.plusDays(1);
 			event.setEndDate(endLd.toDateTimeAtStartOfDay(defaultTz));
 			
@@ -265,7 +265,7 @@ public class ICalendarInput {
 		RecurrenceId recurrenceId = (RecurrenceId)ve.getProperty(Property.RECURRENCE_ID);
 		if (recurrenceId != null) {
 			exRefersToPublicUid = event.getPublicUid();
-			addsExceptionOnMaster = ICal4jUtils.toJodaLocalDate(recurrenceId.getDate());
+			addsExceptionOnMaster = ICal4jUtils.toJodaLocalDate(recurrenceId.getDate(), DateTimeZone.UTC);
 		}
 		
 		// Extracts organizer
@@ -414,7 +414,7 @@ public class ICalendarInput {
 				// Finally a local date can be extracted!
 				dates.add(ICal4jUtils.toJodaDateTime((DateTime)date, eventTimezone).withZone(eventTimezone).toLocalDate());
 			} else {
-				dates.add(ICal4jUtils.toJodaLocalDate(date));
+				dates.add(ICal4jUtils.toJodaLocalDate(date, eventTimezone));
 			}
 		}
 		return dates;
