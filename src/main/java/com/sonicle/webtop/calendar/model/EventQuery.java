@@ -38,7 +38,6 @@ import com.github.rutledgepaulv.qbuilders.properties.concrete.InstantProperty;
 import com.github.rutledgepaulv.qbuilders.properties.concrete.StringProperty;
 import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.commons.web.json.bean.QueryObj;
-import java.time.LocalDate;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 
@@ -81,11 +80,10 @@ public class EventQuery extends QBuilder<EventQuery> {
 	}
 	
 	/**
-	 * Only for backward compatibility: it make possible to use like pattern 
-	 * as query source. (remove when transition to new code is done)
+	 * @deprecated
+	 * Only for backward compatibility: it make possible to use like pattern as query source.
 	 * @param pattern
 	 * @return
-	 * @deprecated
 	 */
 	@Deprecated
 	public static Condition<EventQuery> toCondition(String pattern) {
