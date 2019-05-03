@@ -79,20 +79,12 @@ public class EventQuery extends QBuilder<EventQuery> {
 		return string("any");
 	}
 	
-	/**
-	 * @deprecated
-	 * Only for backward compatibility: it make possible to use like pattern as query source.
-	 * @param pattern
-	 * @return
-	 */
-	@Deprecated
 	public static Condition<EventQuery> toCondition(String pattern) {
-		Condition<EventQuery> result = null;
 		if (!StringUtils.isBlank(pattern)) {
-			EventQuery q = (result == null) ? new EventQuery() : result.and();
-			result = q.any().eq(StringUtils.replace(pattern, "%", "*"));
+			return new EventQuery().any().eq(StringUtils.replace(pattern, "%", "*"));
+		} else {
+			return null;
 		}
-		return result;
 	}
 	
 	public static Condition<EventQuery> toCondition(QueryObj query, DateTimeZone timezone) {
