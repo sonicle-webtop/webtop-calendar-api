@@ -112,10 +112,10 @@ public class EventQuery extends QBuilder<EventQuery> {
 				case "is":
 					switch(queryCondition.value) {
 						case "busy":
-							result = q.isBusy().eq(queryCondition.value);
+							result = q.isBusy().eq("true");
 							break;
 						case "private":
-							result = q.isPrivate().eq(queryCondition.value);
+							result = q.isPrivate().eq("true");
 							break;
 						default:
 							throw new UnsupportedOperationException(queryCondition.keyword + ":" + queryCondition.value);
