@@ -117,7 +117,54 @@ public class CalendarUtils {
 		}
 	}
 	
-	public static EventBoundary getInternalEventBoundary(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+	public static EventBoundary toEventBoundaryForRead(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+		if (allDay) {
+			if (DateTimeUtils.isMidnight(start) && DateTimeUtils.isMidnight(end)) {
+				int daySpan = calculateDaysSpan(start, end, timezone);
+				LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
+				return new EventBoundary(
+						allDay,
+						startLocalDate.toDateTimeAtStartOfDay(timezone),
+						startLocalDate.plusDays(daySpan).toDateTimeAtStartOfDay(timezone),
+						timezone
+				);
+			} else {
+				return new EventBoundary(
+						allDay,
+						start.withZone(timezone).withTimeAtStartOfDay(),
+						end.withZone(timezone).withTimeAtStartOfDay(),
+						timezone
+				);
+			}
+		} else {
+			return new EventBoundary(
+					allDay,
+					start.withZone(timezone),
+					end.withZone(timezone),
+					timezone
+			);
+		}
+	}
+	
+	public static EventBoundary toEventBoundaryForWrite(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+		if (allDay) {
+			return new EventBoundary(
+					allDay,
+					start.toLocalDate().toDateTimeAtStartOfDay(timezone),
+					end.toLocalDate().plusDays(1).toDateTimeAtStartOfDay(timezone),
+					timezone
+			);
+		} else {
+			return new EventBoundary(
+					allDay,
+					start.withZone(timezone),
+					end.withZone(timezone),
+					timezone
+			);
+		}
+	}
+	
+	public static EventBoundary toEventBoundaryForPreview(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
 		if (allDay) {
 			if (DateTimeUtils.isMidnight(start) && DateTimeUtils.isMidnight(end)) {
 				int daySpan = calculateDaysSpan(start, end, timezone);
