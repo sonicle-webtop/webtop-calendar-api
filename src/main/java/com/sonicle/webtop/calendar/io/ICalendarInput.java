@@ -33,7 +33,6 @@
 package com.sonicle.webtop.calendar.io;
 
 import com.sonicle.commons.InternetAddressUtils;
-import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttendee;
 import com.sonicle.webtop.calendar.model.EventRecurrence;
@@ -116,7 +115,6 @@ public class ICalendarInput {
 	
 	public ArrayList<EventInput> fromICalendarFile(InputStream is, LogEntries log) throws WTException {
 		try {
-			ICalendarUtils.relaxParsingAndCompatibility();
 			return fromICalendarFile(ICalendarUtils.parse(is), log);
 		} catch(IOException | ParserException ex) {
 			throw new WTException(ex, "Unable to read stream");
