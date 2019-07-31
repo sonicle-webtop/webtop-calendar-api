@@ -64,6 +64,7 @@ public class BaseEvent {
 	protected Boolean isPrivate;
 	protected Boolean busy;
 	protected Reminder reminder;
+	private boolean censorized = false;
 
 	public Integer getEventId() {
 		return eventId;
@@ -209,6 +210,10 @@ public class BaseEvent {
 		this.reminder = reminder;
 	}
 	
+	public boolean isCensorized() {
+		return censorized;
+	}
+	
 	public DateTimeZone getDateTimeZone() {
 		return DateTimeZone.forID(getTimezone());
 	}
@@ -236,6 +241,14 @@ public class BaseEvent {
 				setStartDate(dt);
 			}
 		}
+	}
+	
+	public void censorize() {
+		this.title = "(***)";
+		this.location = null;
+		this.description = null;
+		this.reminder = null;
+		this.censorized = true;
 	}
 	
 	public static enum RevisionStatus {

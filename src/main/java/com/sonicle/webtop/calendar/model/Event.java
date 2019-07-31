@@ -39,7 +39,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 /**
@@ -183,6 +182,18 @@ public class Event extends BaseEvent {
 	
 	public EventFootprint getFootprint() {
 		return new EventFootprint(this);
+	}
+	
+	@Override
+	public void censorize() {
+		setActivityId(null);
+		setMasterDataId(null);
+		setStatMasterDataId(null);
+		setCausalId(null);
+		setReminder(null);
+		//getAttendees().clear();
+		getAttachments().clear();
+		super.censorize();
 	}
 	
 	private static String trimStringLength(String value, int maxLength, MutableBoolean trimmed) {
