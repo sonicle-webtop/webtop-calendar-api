@@ -303,7 +303,7 @@ public class ICalendarInput {
 		//TODO: Mybe add support to ACTION property [DISPLAY, EMAIL, AUDIO, PROCEDURE]
 		// We only support one time reminders (REPEAT=1)
 		Dur duration = alarm.getTrigger().getDuration();
-		int minutes = (duration.getWeeks() * 7 * 24 * 60) + (duration.getHours() * 24 * 60) + (duration.getHours() * 60) + duration.getMinutes();
+		int minutes = (duration.getWeeks() * 7 * 24 * 60) + (duration.getDays() * 24 * 60) + (duration.getHours() * 60) + duration.getMinutes();
 		if (duration.getSeconds() > 0) {
 			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "TRIGGER seconds ignored"));
 		}
