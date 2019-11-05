@@ -302,16 +302,20 @@ public class ICalendarInput {
 	public Event.Reminder fromVAlarm(VAlarm alarm, LogEntries log) {
 		//TODO: Mybe add support to ACTION property [DISPLAY, EMAIL, AUDIO, PROCEDURE]
 		// We only support one time reminders (REPEAT=1)
-		Dur duration = alarm.getTrigger().getDuration();
-		int minutes = (duration.getWeeks() * 7 * 24 * 60) + (duration.getDays() * 24 * 60) + (duration.getHours() * 60) + duration.getMinutes();
-		if (duration.getSeconds() > 0) {
-			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "TRIGGER seconds ignored"));
+		if ((alarm.getTrigger() != null) && (alarm.getTrigger().getDuration() != null)) {
+			// Perform null-check, trigger could not have value!
+			Dur duration = alarm.getTrigger().getDuration();
+			int minutes = (duration.getWeeks() * 7 * 24 * 60) + (duration.getDays() * 24 * 60) + (duration.getHours() * 60) + duration.getMinutes();
+			if (duration.getSeconds() > 0) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "TRIGGER seconds ignored"));
+			}
+			if (!duration.isNegative()) {
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Ahead TRIGGERs are not supported, using start instant"));
+				minutes = 0;
+			}
+			return Event.Reminder.valueOf(minutes);
 		}
-		if (!duration.isNegative()) {
-			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Ahead TRIGGERs are not supported, using start instant"));
-			minutes = 0;
-		}
-		return Event.Reminder.valueOf(minutes);
+		return null;
 	}
 	
 	public EventRecurrence fromVEventRRule(RRule rr, org.joda.time.DateTimeZone etz, LogEntries log) {
