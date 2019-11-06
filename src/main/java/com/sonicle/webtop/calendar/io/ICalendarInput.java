@@ -87,7 +87,7 @@ public class ICalendarInput {
 	private DateTimeZone defaultTz;
 	private boolean defaultIsPrivate = false;
 	private boolean defaultAttendeeNotify = false;
-	private boolean ignoreReminder = false;
+	private boolean ignoreAlarms = false;
 	private boolean includeVEventSourceInOutput = false;
 	
 	public ICalendarInput(DateTimeZone defaultTz) {
@@ -109,8 +109,8 @@ public class ICalendarInput {
 		return this;
 	}
 	
-	public ICalendarInput withIgnoreReminder(boolean ignoreReminder) {
-		this.ignoreReminder = ignoreReminder;
+	public ICalendarInput withIgnoreAlarms(boolean ignoreAlarms) {
+		this.ignoreAlarms = ignoreAlarms;
 		return this;
 	}
 	
@@ -235,11 +235,17 @@ public class ICalendarInput {
 		}
 		
 		// Reminder
-		if (!ignoreReminder && !ve.getAlarms().isEmpty()) {
+		if (!ignoreAlarms && !ve.getAlarms().isEmpty()) {
 			if (ve.getAlarms().size() > 1) {
-				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Multiple VALARMs found, using the first one"));
+				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Many VALARMs found, the first compatible will be used"));
 			}
-			event.setReminder(fromVAlarm(ve.getAlarms().get(0), log));
+			Event.Reminder rem = null;
+			Iterator it = ve.getAlarms().iterator();
+			while (it.hasNext()) {
+				rem = fromVAlarm((VAlarm)it.next(), log);
+				if (rem != null) break;
+			}
+			event.setReminder(rem);
 		}
 		
 		// Others...
@@ -300,22 +306,30 @@ public class ICalendarInput {
 	}
 	
 	public Event.Reminder fromVAlarm(VAlarm alarm, LogEntries log) {
-		//TODO: Mybe add support to ACTION property [DISPLAY, EMAIL, AUDIO, PROCEDURE]
-		// We only support one time reminders (REPEAT=1)
-		if ((alarm.getTrigger() != null) && (alarm.getTrigger().getDuration() != null)) {
-			// Perform null-check, trigger could not have value!
-			Dur duration = alarm.getTrigger().getDuration();
-			int minutes = (duration.getWeeks() * 7 * 24 * 60) + (duration.getDays() * 24 * 60) + (duration.getHours() * 60) + duration.getMinutes();
-			if (duration.getSeconds() > 0) {
-				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "TRIGGER seconds ignored"));
-			}
-			if (!duration.isNegative()) {
-				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Ahead TRIGGERs are not supported, using start instant"));
-				minutes = 0;
-			}
-			return Event.Reminder.valueOf(minutes);
+		//TODO: Maybe add support to ACTION property [DISPLAY, EMAIL, AUDIO, PROCEDURE]
+		// We only support one time reminders (REPEAT=1), we'll treat all in this way!
+		if (alarm.getTrigger() == null) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Invalid TRIGGER"));
+			return null;
 		}
-		return null;
+		if ((alarm.getTrigger().getDate() != null) || (alarm.getTrigger().getDateTime()!= null)) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Date/Time TRIGGERs are not supported"));
+		}
+		if (alarm.getTrigger().getDuration() == null) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Invalid TRIGGER: duration is missing"));
+			return null;
+		}
+		
+		Dur duration = alarm.getTrigger().getDuration();
+		int minutes = (duration.getWeeks() * 7 * 24 * 60) + (duration.getDays() * 24 * 60) + (duration.getHours() * 60) + duration.getMinutes();
+		if (duration.getSeconds() > 0) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "TRIGGER seconds ignored"));
+		}
+		if (!duration.isNegative()) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Ahead TRIGGERs are not supported, start instant will be used"));
+			minutes = 0;
+		}
+		return Event.Reminder.valueOf(minutes);
 	}
 	
 	public EventRecurrence fromVEventRRule(RRule rr, org.joda.time.DateTimeZone etz, LogEntries log) {
