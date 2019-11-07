@@ -87,7 +87,6 @@ public class ICalendarInput {
 	private DateTimeZone defaultTz;
 	private boolean defaultIsPrivate = false;
 	private boolean defaultAttendeeNotify = false;
-	private boolean ignoreAlarms = false;
 	private boolean includeVEventSourceInOutput = false;
 	
 	public ICalendarInput(DateTimeZone defaultTz) {
@@ -106,11 +105,6 @@ public class ICalendarInput {
 	
 	public ICalendarInput withDefaultAttendeeNotify(boolean defaultAttendeeNotify) {
 		this.defaultAttendeeNotify = defaultAttendeeNotify;
-		return this;
-	}
-	
-	public ICalendarInput withIgnoreAlarms(boolean ignoreAlarms) {
-		this.ignoreAlarms = ignoreAlarms;
 		return this;
 	}
 	
@@ -235,7 +229,7 @@ public class ICalendarInput {
 		}
 		
 		// Reminder
-		if (!ignoreAlarms && !ve.getAlarms().isEmpty()) {
+		if (!ve.getAlarms().isEmpty()) {
 			if (ve.getAlarms().size() > 1) {
 				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Many VALARMs found, the first compatible will be used"));
 			}
