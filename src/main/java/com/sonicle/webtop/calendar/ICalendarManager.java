@@ -56,6 +56,7 @@ import com.sonicle.webtop.core.sdk.WTException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -67,8 +68,8 @@ public interface ICalendarManager {
 	
 	public List<ShareRootCalendar> listIncomingCalendarRoots() throws WTException;
 	public Map<Integer, ShareFolderCalendar> listIncomingCalendarFolders(String rootShareId) throws WTException;	
-	public List<Integer> listCalendarIds() throws WTException;
-	public List<Integer> listIncomingCalendarIds() throws WTException;
+	public Set<Integer> listCalendarIds() throws WTException;
+	public Set<Integer> listIncomingCalendarIds() throws WTException;
 	public Map<Integer, Calendar> listCalendars() throws WTException;
 	public Map<Integer, DateTime> getCalendarsLastRevision(Collection<Integer> calendarIds) throws WTException;
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
