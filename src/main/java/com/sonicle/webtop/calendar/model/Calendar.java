@@ -33,6 +33,7 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.rits.cloning.Cloner;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.webtop.core.sdk.UserProfileId;
@@ -228,6 +229,17 @@ public class Calendar {
 	
 	public boolean isProviderRemote() {
 		return Calendar.isProviderRemote(getProvider());
+	}
+	
+	public Calendar applyPropSet(CalendarPropSet propSet) {
+		if (propSet != null) {
+			Calendar clone = Cloner.standard().deepClone(this);
+			clone.setColor(propSet.getColorOrDefault(clone.getColor()));
+			clone.setSync(propSet.getSyncOrDefault(clone.getSync()));
+			return clone;
+		} else {
+			return this;
+		}
 	}
 	
 	public static boolean isProviderRemote(String provider) {
