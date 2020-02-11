@@ -35,6 +35,7 @@ package com.sonicle.webtop.calendar.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -48,6 +49,7 @@ import org.joda.time.LocalDate;
 public class Event extends BaseEvent {
 	protected String href;
 	protected String etag;
+	protected Set<String> tags;
 	protected Integer activityId;
 	protected String masterDataId;
 	protected String statMasterDataId;
@@ -72,6 +74,28 @@ public class Event extends BaseEvent {
 
 	public void setEtag(String etag) {
 		this.etag = etag;
+	}
+	
+	public Set<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<String> tags) {
+		this.tags = tags;
+	}
+	
+	public Event addTag(String tagId) {
+		if (tags != null) {
+			tags.add(Check.notNull(tagId, "tagId"));
+		}
+		return this;
+	}
+	
+	public Event removeTag(String tagId) {
+		if (tags != null) {
+			tags.remove(Check.notNull(tagId, "tagId"));
+		}
+		return this;
 	}
 
 	public Integer getActivityId() {
@@ -156,12 +180,20 @@ public class Event extends BaseEvent {
 		this.excludedDates = excludedDates;
 	}
 	
+	public boolean hasTags() {
+		return tags != null;
+	}
+	
 	public boolean hasRecurrence() {
 		return !StringUtils.isEmpty(recurrenceRule);
 	}
 	
 	public boolean hasExcludedDates() {
 		return (excludedDates != null) && !excludedDates.isEmpty();
+	}
+	
+	public boolean hasAttachments() {
+		return attachments != null;
 	}
 	
 	public boolean trimFieldLengths() {

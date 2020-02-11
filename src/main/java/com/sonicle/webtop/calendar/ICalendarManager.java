@@ -51,6 +51,7 @@ import com.sonicle.webtop.calendar.model.EventObjectWithICalendar;
 import com.sonicle.webtop.calendar.model.EventQuery;
 import com.sonicle.webtop.calendar.model.SchedEventInstance;
 import com.sonicle.webtop.calendar.model.UpdateEventTarget;
+import com.sonicle.webtop.calendar.model.UpdateTagsOperation;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import com.sonicle.webtop.core.sdk.WTException;
 import java.util.Collection;
@@ -70,6 +71,7 @@ public interface ICalendarManager {
 	public Map<Integer, ShareFolderCalendar> listIncomingCalendarFolders(String rootShareId) throws WTException;	
 	public Set<Integer> listCalendarIds() throws WTException;
 	public Set<Integer> listIncomingCalendarIds() throws WTException;
+	public Set<Integer> listAllCalendarIds() throws WTException;
 	public Map<Integer, Calendar> listCalendars() throws WTException;
 	public Map<Integer, DateTime> getCalendarsLastRevision(Collection<Integer> calendarIds) throws WTException;
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
@@ -110,11 +112,13 @@ public interface ICalendarManager {
 	public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	public String getEventInstanceKey(int eventId) throws WTException;
 	public EventInstance getEventInstance(String eventKey) throws WTException;
-	public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean notifyAttendees) throws WTException;
+	public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean processTags, boolean notifyAttendees) throws WTException;
 	public void updateEventInstance(UpdateEventTarget target, EventKey key, DateTime newStart, DateTime newEnd, String newTitle, boolean notifyAttendees) throws WTException;
 	public void deleteEventInstance(UpdateEventTarget target, String eventKey, boolean notifyAttendees) throws WTException;
 	public void deleteEventInstance(UpdateEventTarget target, EventKey key, boolean notifyAttendees) throws WTException;
 	public void restoreEventInstance(EventKey key) throws WTException;
 	public void moveEventInstance(EventKey key, int targetCalendarId) throws WTException;
 	public Event cloneEventInstance(EventKey key, Integer newCalendarId, DateTime newStart, DateTime newEnd, boolean notifyAttendees) throws WTException;
+	public void updateEventTags(UpdateTagsOperation operation, int calendarId, Set<String> tagIds) throws WTException;
+	public void updateEventTags(UpdateTagsOperation operation, Collection<Integer> eventIds, Set<String> tagIds) throws WTException;
 }

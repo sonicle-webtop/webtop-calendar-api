@@ -39,12 +39,21 @@ import com.sonicle.webtop.core.sdk.UserProfileId;
  * @author malbinola
  */
 public class SchedEvent extends BaseEvent {
+	protected String tags;
 	protected String calendarDomainId;
 	protected String calendarUserId;
 	protected Integer seriesEventId;
 	protected Integer attendeesCount;
 	protected Integer notifyableAttendeesCount;
 	protected RecurInfo recurInfo;
+	
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 
 	public String getCalendarUserId() {
 		return calendarUserId;
