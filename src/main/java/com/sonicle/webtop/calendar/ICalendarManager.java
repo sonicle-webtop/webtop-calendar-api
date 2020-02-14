@@ -119,6 +119,6 @@ public interface ICalendarManager {
 	public void restoreEventInstance(EventKey key) throws WTException;
 	public void moveEventInstance(EventKey key, int targetCalendarId) throws WTException;
 	public Event cloneEventInstance(EventKey key, Integer newCalendarId, DateTime newStart, DateTime newEnd, boolean notifyAttendees) throws WTException;
-	public void updateEventTags(UpdateTagsOperation operation, int calendarId, Set<String> tagIds) throws WTException;
+	public void updateEventCalendarTags(UpdateTagsOperation operation, int calendarId, Set<String> tagIds) throws WTException;
 	public void updateEventTags(UpdateTagsOperation operation, Collection<Integer> eventIds, Set<String> tagIds) throws WTException;
 }
