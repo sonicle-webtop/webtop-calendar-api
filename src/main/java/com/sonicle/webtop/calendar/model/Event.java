@@ -32,9 +32,14 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.webtop.core.model.CustomFieldValue;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -59,6 +64,7 @@ public class Event extends BaseEvent {
 	protected Set<LocalDate> excludedDates;
 	protected List<EventAttendee> attendees = new ArrayList<>();
 	protected List<EventAttachment> attachments = new ArrayList<>();
+	protected Map<String, CustomFieldValue> customValues = new LinkedHashMap<>();
 	
 	public String getHref() {
 		return href;
@@ -166,6 +172,20 @@ public class Event extends BaseEvent {
 		this.attachments = attachments;
 	}
 	
+	public Map<String, CustomFieldValue> getCustomValues() {
+		return customValues;
+	}
+	
+	public void setCustomValues(Map<String, CustomFieldValue> customValues) {
+		this.customValues = customValues;
+	}
+	
+	public void setCustomValues(Collection<CustomFieldValue> customValues) {
+		this.customValues = customValues.stream()
+				.filter(item -> item.getFieldId() != null)
+				.collect(Collectors.toMap(item -> item.getFieldId(), item -> item, (ov, nv) -> nv, LinkedHashMap::new));
+	}
+	
 	public void setDatesAndTimes(boolean allDay, String timezone, DateTime startDate, DateTime endDate) {
 		this.allDay = allDay;
 		this.timezone = timezone;
@@ -194,6 +214,10 @@ public class Event extends BaseEvent {
 	
 	public boolean hasAttachments() {
 		return attachments != null;
+	}
+	
+	public boolean hasCustomValues() {
+		return customValues != null;
 	}
 	
 	public boolean trimFieldLengths() {
