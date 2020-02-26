@@ -112,6 +112,8 @@ public interface ICalendarManager {
 	public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	public String getEventInstanceKey(int eventId) throws WTException;
 	public EventInstance getEventInstance(String eventKey) throws WTException;
+	@Deprecated
+	public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean notifyAttendees) throws WTException;
 	public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean processTags, boolean processCustomValues, boolean notifyAttendees) throws WTException;
 	public void updateEventInstance(UpdateEventTarget target, EventKey key, DateTime newStart, DateTime newEnd, String newTitle, boolean notifyAttendees) throws WTException;
 	public void deleteEventInstance(UpdateEventTarget target, String eventKey, boolean notifyAttendees) throws WTException;
