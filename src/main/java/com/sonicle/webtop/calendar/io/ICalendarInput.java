@@ -71,10 +71,12 @@ import net.fortuna.ical4j.model.parameter.CuType;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.property.Attendee;
+import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Transp;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -86,6 +88,7 @@ import org.joda.time.LocalDate;
 public class ICalendarInput {
 	private DateTimeZone defaultTz;
 	private boolean defaultIsPrivate = false;
+	private boolean defaultBusy = false;
 	private boolean defaultAttendeeNotify = false;
 	private boolean includeVEventSourceInOutput = false;
 	
@@ -100,6 +103,11 @@ public class ICalendarInput {
 	
 	public ICalendarInput withDefaultIsPrivate(boolean defaultIsPrivate) {
 		this.defaultIsPrivate = defaultIsPrivate;
+		return this;
+	}
+	
+	public ICalendarInput withDefaultBusy(boolean defaultBusy) {
+		this.defaultBusy = defaultBusy;
 		return this;
 	}
 	
@@ -217,15 +225,21 @@ public class ICalendarInput {
 		} else {
 			event.setLocation(null);
 		}
-
-		event.setIsPrivate(defaultIsPrivate);
+		
+		// Private flag
+		if (ve.getClassification() != null) {
+			String clazz = ve.getClassification().getValue();
+			event.setIsPrivate(StringUtils.equals(clazz, Clazz.CONFIDENTIAL.getValue()) || StringUtils.equals(clazz, Clazz.PRIVATE.getValue()));
+		} else {
+			event.setIsPrivate(defaultIsPrivate);
+		}
 
 		// Busy flag
 		if (ve.getTransparency() != null) {
 			String transparency = ve.getTransparency().getValue();
-			event.setBusy(!StringUtils.equals(transparency, "TRANSPARENT"));
+			event.setBusy(!StringUtils.equals(transparency, Transp.TRANSPARENT.getValue()));
 		} else {
-			event.setBusy(false);
+			event.setBusy(defaultBusy);
 		}
 		
 		// Reminder

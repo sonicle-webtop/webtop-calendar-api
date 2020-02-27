@@ -62,6 +62,7 @@ import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.Attendee;
+import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
@@ -180,6 +181,11 @@ public class ICalendarOutput {
 		if (!StringUtils.isEmpty(event.getLocation())) {
 			ICal4jUtils.addProperty(ve, new Location(event.getLocation()));
 		}
+		
+		// Classification: provides a method of capturing the scope of the access the calendar owner intends for information within an individual calendar entry
+		// https://www.kanzaki.com/docs/ical/class.html
+		// https://appgenix.uservoice.com/forums/280499-business-calendar-2/suggestions/18698599-i-would-like-to-see-another-privacy-option-confid
+		ICal4jUtils.addProperty(ve, event.getIsPrivate() ? Clazz.CONFIDENTIAL : Clazz.PUBLIC);
 		
 		// Transparency: defines whether an event is transparent or not to busy time searches
 		// http://www.kanzaki.com/docs/ical/transp.html
