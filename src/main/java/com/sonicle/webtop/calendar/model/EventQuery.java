@@ -32,13 +32,19 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.github.rutledgepaulv.qbuilders.builders.QBuilder;
 import com.github.rutledgepaulv.qbuilders.conditions.Condition;
+import com.github.rutledgepaulv.qbuilders.properties.concrete.BooleanProperty;
 import com.github.rutledgepaulv.qbuilders.properties.concrete.InstantProperty;
 import com.github.rutledgepaulv.qbuilders.properties.concrete.StringProperty;
 import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.web.json.CompId;
 import com.sonicle.commons.web.json.bean.QueryObj;
+import com.sonicle.webtop.core.app.sdk.QBuilderWithCValues;
 import com.sonicle.webtop.core.app.sdk.WTUnsupportedOperationException;
+import com.sonicle.webtop.core.model.CustomField;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 
@@ -46,7 +52,7 @@ import org.joda.time.DateTimeZone;
  *
  * @author malbinola
  */
-public class EventQuery extends QBuilder<EventQuery> {
+public class EventQuery extends QBuilderWithCValues<EventQuery> {
 	
 	public StringProperty<EventQuery> title() {
 		return string("title");
@@ -68,12 +74,12 @@ public class EventQuery extends QBuilder<EventQuery> {
 		return instant("before");
 	}
 
-	public StringProperty<EventQuery> isBusy() {
-		return string("busy");
+	public BooleanProperty<EventQuery> isBusy() {
+		return bool("busy");
 	}
 	
-	public StringProperty<EventQuery> isPrivate() {
-		return string("private");
+	public BooleanProperty<EventQuery> isPrivate() {
+		return bool("private");
 	}
 	
 	public StringProperty<EventQuery> tag() {
@@ -92,47 +98,62 @@ public class EventQuery extends QBuilder<EventQuery> {
 		}
 	}
 	
-	public static Condition<EventQuery> toCondition(QueryObj query, DateTimeZone timezone) {
+	public static Condition<EventQuery> toCondition(QueryObj query, Map<String, CustomField.Type> customFieldTypeMapping, DateTimeZone timezone) {
 		Condition<EventQuery> result = null;
-		for (QueryObj.Condition queryCondition : query.conditions) {
+		
+		for (Map.Entry<String, Collection<QueryObj.Condition>> entry : query.getConditionsMap().entrySet()) {
 			EventQuery q = (result == null) ? new EventQuery() : result.and();
-			switch(queryCondition.keyword) {
-				case "title":
-					result = q.title().eq(queryCondition.value);
-					break;
-				case "location":
-					result = q.location().eq(queryCondition.value);
-					break;
-				case "description":
-					result = q.description().eq(queryCondition.value);
-					break;
-				case "after":
+			
+			ArrayList<Condition<EventQuery>> cndts = new ArrayList<>();
+			for (QueryObj.Condition queryCondition : entry.getValue()) {
+				if ("title".equals(queryCondition.keyword)) {
+					cndts.add(new EventQuery().title().eq(queryCondition.value));
+					
+				} else if ("location".equals(queryCondition.keyword)) {
+					cndts.add(new EventQuery().location().eq(queryCondition.value));
+					
+				} else if ("description".equals(queryCondition.keyword)) {
+					cndts.add(new EventQuery().description().eq(queryCondition.value));
+					
+				} else if ("after".equals(queryCondition.keyword)) {
 					String after = StringUtils.replace(queryCondition.value, "/", "-");
-					result = q.after().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(after), DateTimeUtils.toZoneId(timezone)));
-					break;
-				case "before":
+					cndts.add(new EventQuery().after().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(after), DateTimeUtils.toZoneId(timezone))));
+					
+				} else if ("before".equals(queryCondition.keyword)) {
 					String before = StringUtils.replace(queryCondition.value, "/", "-");
-					result = q.before().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(before), DateTimeUtils.toZoneId(timezone)));
-					break;
-				case "is":
-					switch(queryCondition.value) {
+					cndts.add(new EventQuery().before().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(before), DateTimeUtils.toZoneId(timezone))));
+					
+				} else if ("is".equals(queryCondition.keyword)) {
+					switch (queryCondition.value) {
 						case "busy":
-							result = q.isBusy().eq("true");
+							cndts.add(new EventQuery().isBusy().isTrue());
 							break;
 						case "private":
-							result = q.isPrivate().eq("true");
+							cndts.add(new EventQuery().isPrivate().isTrue());
 							break;
 						default:
 							throw new UnsupportedOperationException(queryCondition.keyword + ":" + queryCondition.value);
 					}
-					break;
-				case "tag":
-					result = q.tag().eq(queryCondition.value);
-					break;
 					
-				default:
+				} else if ("tag".equals(queryCondition.keyword)) {
+					cndts.add(new EventQuery().tag().eq(queryCondition.value));
+					
+				} else if (StringUtils.startsWith(queryCondition.keyword, "cfield")) {
+					Condition<EventQuery> cond = null;
+					CompId cf = new CompId(2).parse(queryCondition.keyword, false);
+					if (!cf.isTokenEmpty(1)) {
+						String cfId = cf.getToken(1);
+						if (customFieldTypeMapping.containsKey(cfId)) {
+							cond = new EventQuery().customValueCondition(cfId, customFieldTypeMapping.get(cfId), queryCondition.value, queryCondition.negated, timezone);
+						}
+					}
+					if (cond != null) cndts.add(cond);					
+					
+				} else {
 					throw new WTUnsupportedOperationException("Unsupported keyword '{}'", queryCondition.keyword);
+				}
 			}
+			result = q.or(cndts);
 		}
 		
 		if (!StringUtils.isBlank(query.allText)) {
