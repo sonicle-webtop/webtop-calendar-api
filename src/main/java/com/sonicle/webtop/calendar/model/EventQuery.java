@@ -39,7 +39,7 @@ import com.github.rutledgepaulv.qbuilders.properties.concrete.StringProperty;
 import com.sonicle.commons.time.DateTimeUtils;
 import com.sonicle.commons.web.json.CompId;
 import com.sonicle.commons.web.json.bean.QueryObj;
-import com.sonicle.webtop.core.app.sdk.QBuilderWithCValues;
+import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCValues;
 import com.sonicle.webtop.core.app.sdk.WTUnsupportedOperationException;
 import com.sonicle.webtop.core.model.CustomField;
 import java.util.ArrayList;
@@ -52,7 +52,11 @@ import org.joda.time.DateTimeZone;
  *
  * @author malbinola
  */
-public class EventQuery extends QBuilderWithCValues<EventQuery> {
+public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
+
+	public EventQuery() {
+		super(true);
+	}
 	
 	public StringProperty<EventQuery> title() {
 		return string("title");
@@ -107,10 +111,10 @@ public class EventQuery extends QBuilderWithCValues<EventQuery> {
 			ArrayList<Condition<EventQuery>> cndts = new ArrayList<>();
 			for (QueryObj.Condition queryCondition : entry.getValue()) {
 				if ("title".equals(queryCondition.keyword)) {
-					cndts.add(new EventQuery().title().eq(queryCondition.value));
+					cndts.add(new EventQuery().title().eq(q.prepareStringValue(queryCondition.value)));
 					
 				} else if ("location".equals(queryCondition.keyword)) {
-					cndts.add(new EventQuery().location().eq(queryCondition.value));
+					cndts.add(new EventQuery().location().eq(q.prepareStringValue(queryCondition.value)));
 					
 				} else if ("description".equals(queryCondition.keyword)) {
 					cndts.add(new EventQuery().description().eq(queryCondition.value));
@@ -158,7 +162,7 @@ public class EventQuery extends QBuilderWithCValues<EventQuery> {
 		
 		if (!StringUtils.isBlank(query.allText)) {
 			EventQuery q = (result == null) ? new EventQuery() : result.and();
-			result = q.any().eq(query.allText);
+			result = q.any().eq(q.prepareStringValue(query.allText));
 		}
 		
 		return result;
