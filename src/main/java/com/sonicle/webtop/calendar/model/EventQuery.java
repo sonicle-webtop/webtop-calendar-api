@@ -111,10 +111,10 @@ public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
 			ArrayList<Condition<EventQuery>> cndts = new ArrayList<>();
 			for (QueryObj.Condition queryCondition : entry.getValue()) {
 				if ("title".equals(queryCondition.keyword)) {
-					cndts.add(new EventQuery().title().eq(q.prepareStringValue(queryCondition.value)));
+					cndts.add(new EventQuery().title().eq(q.asSmartStringValue(queryCondition.value)));
 					
 				} else if ("location".equals(queryCondition.keyword)) {
-					cndts.add(new EventQuery().location().eq(q.prepareStringValue(queryCondition.value)));
+					cndts.add(new EventQuery().location().eq(q.asSmartStringValue(queryCondition.value)));
 					
 				} else if ("description".equals(queryCondition.keyword)) {
 					cndts.add(new EventQuery().description().eq(queryCondition.value));
@@ -162,7 +162,7 @@ public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
 		
 		if (!StringUtils.isBlank(query.allText)) {
 			EventQuery q = (result == null) ? new EventQuery() : result.and();
-			result = q.any().eq(q.prepareStringValue(query.allText));
+			result = q.any().eq(q.asSmartStringValue(query.allText));
 		}
 		
 		return result;
