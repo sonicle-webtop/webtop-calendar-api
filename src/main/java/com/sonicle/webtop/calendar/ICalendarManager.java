@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.calendar;
 
-import com.github.rutledgepaulv.qbuilders.conditions.Condition;
+import com.sonicle.commons.qbuilders.conditions.Condition;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.commons.time.DateRange;
 import com.sonicle.commons.time.DateTimeRange;
