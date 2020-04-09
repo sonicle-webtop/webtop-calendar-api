@@ -52,6 +52,7 @@ import com.sonicle.webtop.calendar.model.EventQuery;
 import com.sonicle.webtop.calendar.model.SchedEventInstance;
 import com.sonicle.webtop.calendar.model.UpdateEventTarget;
 import com.sonicle.webtop.calendar.model.UpdateTagsOperation;
+import com.sonicle.webtop.core.model.CustomFieldValue;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import com.sonicle.webtop.core.sdk.WTException;
 import java.util.Collection;
@@ -106,6 +107,7 @@ public interface ICalendarManager {
 	public Event getEvent(int eventId) throws WTException;
 	public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
 	public EventAttachmentWithBytes getEventAttachment(int eventId, String attachmentId) throws WTException;
+	public Map<String, CustomFieldValue> getEventCustomValues(int eventId) throws WTException;
 	public Event addEvent(Event event) throws WTException;
 	public Event addEvent(Event event, boolean notifyAttendees) throws WTException;
 	public Event addEventFromICal(int calendarId, net.fortuna.ical4j.model.Calendar ical) throws WTException;
