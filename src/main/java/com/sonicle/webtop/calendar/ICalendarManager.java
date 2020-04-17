@@ -79,6 +79,7 @@ public interface ICalendarManager {
 	public boolean existCalendar(int calendarId) throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;
+	public Integer getDefaultCalendarId() throws WTException;
 	public Calendar addCalendar(Calendar cal) throws WTException;
 	public Calendar addBuiltInCalendar() throws WTException;
 	public void updateCalendar(Calendar cal) throws WTException;
