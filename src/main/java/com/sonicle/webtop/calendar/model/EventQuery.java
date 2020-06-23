@@ -37,12 +37,11 @@ import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
 import com.sonicle.commons.time.DateTimeUtils;
-import com.sonicle.commons.web.json.CompId;
+import com.sonicle.commons.web.json.CId;
 import com.sonicle.commons.web.json.bean.QueryObj;
 import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCValues;
 import com.sonicle.webtop.core.app.sdk.WTUnsupportedOperationException;
 import com.sonicle.webtop.core.model.CustomField;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -143,7 +142,7 @@ public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
 					last = q.tag().eq(queryCondition.value);
 					
 				} else if (StringUtils.startsWith(queryCondition.keyword, "cfield")) {
-					CompId cf = new CompId(2).parse(queryCondition.keyword, false);
+					CId cf = new CId(queryCondition.keyword, 2);
 					if (!cf.isTokenEmpty(1)) {
 						String cfId = cf.getToken(1);
 						if (customFieldTypeMapping.containsKey(cfId)) {
