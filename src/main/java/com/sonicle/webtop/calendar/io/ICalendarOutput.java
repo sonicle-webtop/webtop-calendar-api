@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Date;
@@ -244,10 +245,13 @@ public class ICalendarOutput {
 		ParameterList params = att.getParameters();
 		
 		// CN and email: attendee main details
-		String mailto = "mailto:" + attendee.getAddress();
-		att.setCalAddress(URI.create(mailto));
-		if (!StringUtils.isBlank(attendee.getCN())) {
-			params.add(new Cn(attendee.getCN()));
+		InternetAddress iaRecipient = attendee.getRecipientInternetAddress();
+		if (iaRecipient != null) {
+			String mailto = "mailto:" + iaRecipient.getAddress();
+			att.setCalAddress(URI.create(mailto));
+			if (!StringUtils.isBlank(iaRecipient.getPersonal())) {
+				params.add(new Cn(iaRecipient.getPersonal()));
+			}
 		}
 		
 		// CuType: calendar user type (INDIVIDUAL, RESOURCE, etc...)
