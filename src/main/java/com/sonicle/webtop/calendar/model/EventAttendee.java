@@ -35,8 +35,8 @@ package com.sonicle.webtop.calendar.model;
 import com.google.gson.annotations.SerializedName;
 import com.sonicle.commons.InternetAddressUtils;
 import java.util.ArrayList;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

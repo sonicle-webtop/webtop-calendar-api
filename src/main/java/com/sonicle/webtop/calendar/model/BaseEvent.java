@@ -37,7 +37,7 @@ import com.sonicle.commons.InternetAddressUtils;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetAddress;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
