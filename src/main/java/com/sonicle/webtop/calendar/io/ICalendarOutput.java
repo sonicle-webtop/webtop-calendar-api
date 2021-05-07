@@ -93,6 +93,10 @@ public class ICalendarOutput {
 		this.prodId = prodId;
 	}
 	
+	/**
+	 * @deprecated use ICalendarUtils.print() instead
+	 */
+	@Deprecated
 	public String write(Calendar iCalendar) throws IOException {
 		ByteArrayOutputStream baos = null;
 		try {
