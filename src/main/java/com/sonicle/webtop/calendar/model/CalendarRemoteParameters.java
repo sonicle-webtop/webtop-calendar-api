@@ -48,11 +48,11 @@ public class CalendarRemoteParameters {
 	
 	public static CalendarRemoteParameters fromJson(String value) {
 		if (value == null) return null;
-		return JsonResult.gson.fromJson(value, CalendarRemoteParameters.class);
+		return JsonResult.gson().fromJson(value, CalendarRemoteParameters.class);
 	}
 	
 	public static String toJson(CalendarRemoteParameters value) {
 		if (value == null) return null;
-		return JsonResult.gson.toJson(value, CalendarRemoteParameters.class);
+		return JsonResult.gson().toJson(value, CalendarRemoteParameters.class);
 	}
 }
