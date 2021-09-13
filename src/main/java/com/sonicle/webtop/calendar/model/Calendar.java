@@ -54,7 +54,6 @@ public class Calendar {
 	private String description;
 	private String color;
 	private Sync sync;
-	private Boolean isDefault;
 	private Boolean isPrivate;
 	private Boolean defaultBusy;
 	private Integer defaultReminder;
@@ -136,14 +135,6 @@ public class Calendar {
 
 	public void setSync(Sync sync) {
 		this.sync = sync;
-	}
-	
-	public Boolean getIsDefault() {
-		return isDefault;
-	}
-
-	public void setIsDefault(Boolean isDefault) {
-		this.isDefault = isDefault;
 	}
 
 	public Boolean getIsPrivate() {

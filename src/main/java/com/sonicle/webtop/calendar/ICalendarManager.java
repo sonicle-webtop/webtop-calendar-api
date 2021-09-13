@@ -70,16 +70,19 @@ public interface ICalendarManager {
 	
 	public List<ShareRootCalendar> listIncomingCalendarRoots() throws WTException;
 	public Map<Integer, ShareFolderCalendar> listIncomingCalendarFolders(String rootShareId) throws WTException;	
+	@Deprecated
 	public Set<Integer> listCalendarIds() throws WTException;
+	public Set<Integer> listMyCalendarIds() throws WTException;
 	public Set<Integer> listIncomingCalendarIds() throws WTException;
 	public Set<Integer> listAllCalendarIds() throws WTException;
 	public Map<Integer, Calendar> listCalendars() throws WTException;
 	public Map<Integer, DateTime> getCalendarsLastRevision(Collection<Integer> calendarIds) throws WTException;
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
+	public Integer getDefaultCalendarId() throws WTException;
+	public Integer getBuiltInCalendarId() throws WTException;
 	public boolean existCalendar(int calendarId) throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;
-	public Integer getDefaultCalendarId() throws WTException;
 	public Calendar addCalendar(Calendar cal) throws WTException;
 	public Calendar addBuiltInCalendar() throws WTException;
 	public void updateCalendar(Calendar cal) throws WTException;
