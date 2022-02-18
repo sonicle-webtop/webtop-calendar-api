@@ -238,7 +238,7 @@ public class ICalendarOutput {
 	
 	public VAlarm toVAlarm(Event.Reminder reminder, String description) {
 		// We only support one time reminders (REPEAT=1)
-		VAlarm alarm = new VAlarm(new Dur(0, 0, -reminder.getValue(), 0));
+		VAlarm alarm = new VAlarm(new Dur(0, 0, -reminder.getMinutesValue(), 0));
 		alarm.getProperties().add(Action.DISPLAY);
 		alarm.getProperties().add(new Description(description));
 		return alarm;

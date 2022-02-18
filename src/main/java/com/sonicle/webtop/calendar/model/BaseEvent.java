@@ -264,35 +264,39 @@ public class BaseEvent {
 	}
 	
 	public static class Reminder {
-		public static final Integer[] VALUES = new Integer[]{0,5,10,15,30,45,60,120,180,240,300,360,420,480,540,600,660,720,1080,1440,2880,10080,20160};
+		private static final Integer[] VALUES = new Integer[]{0,5,10,15,30,45,60,120,180,240,300,360,420,480,540,600,660,720,1080,1440,2880,10080,20160,43200};
 		private static final Set<Integer> VALID_VALUES = new HashSet<>(Arrays.asList(VALUES));
-		private final int value;
+		private final int minutes;
 		
 		public Reminder(int minutes) {
 			if (minutes < 0) {
-				value = VALUES[0];
+				this.minutes = VALUES[0];
 			} else {
-				value = VALID_VALUES.contains(minutes) ? minutes : findBestValue(minutes);
+				this.minutes = findNearestMinutesValue(minutes);
 			}
 		}
 		
-		public int getValue() {
-			return value;
+		public int getMinutesValue() {
+			return minutes;
 		}
 		
-		private int findBestValue(int minutes) {
-			for (int i=1; i<VALUES.length; i++) {
-				if (minutes < VALUES[i]) return VALUES[i];
+		public static int findNearestMinutesValue(int minutes) {
+			if (VALID_VALUES.contains(minutes)) {
+				return minutes;
+			} else {
+				for (int i=1; i < VALUES.length; i++) {
+					if (minutes < VALUES[i]) return VALUES[i];
+				}
+				return VALUES[VALUES.length-1];
 			}
-			return VALUES[VALUES.length-1];
 		}
 		
 		public static Reminder valueOf(Integer minutes) {
-			return (minutes == null || minutes < 0) ? null : new Reminder(minutes);
+			return (minutes == null) ? null : new Reminder(minutes);
 		}
 		
-		public static Integer getMinutes(Reminder reminder) {
-			return (reminder == null) ? null : reminder.getValue();
+		public static Integer getMinutesValue(Reminder reminder) {
+			return (reminder == null) ? null : reminder.getMinutesValue();
 		}
 	}
 }
