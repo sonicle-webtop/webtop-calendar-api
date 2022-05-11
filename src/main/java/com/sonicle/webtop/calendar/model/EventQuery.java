@@ -83,6 +83,22 @@ public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
 		return bool("private");
 	}
 	
+	public StringProperty<EventQuery> masterDataId() {
+		return string("masterDataId");
+	}
+	
+	public StringProperty<EventQuery> statMasterDataId() {
+		return string("statMasterDataId");
+	}
+	
+	public StringProperty<EventQuery> activityId() {
+		return string("activityId");
+	}
+	
+	public StringProperty<EventQuery> causalId() {
+		return string("causalId");
+	}
+	
 	public StringProperty<EventQuery> tag() {
 		return string("tag");
 	}
@@ -142,6 +158,18 @@ public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
 		} else if ("before".equals(condition.keyword)) {
 			String before = StringUtils.replace(value, "/", "-");
 			return new EventQuery().before().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(before), DateTimeUtils.toZoneId(timezone)));
+
+		} else if ("masterDataId".equals(condition.keyword)) {
+			return new EventQuery().masterDataId().eq(asStringValue(value, smartStringComparison));
+
+		} else if ("statMasterDataId".equals(condition.keyword)) {
+			return new EventQuery().masterDataId().eq(asStringValue(value, smartStringComparison));
+
+		} else if ("activityId".equals(condition.keyword)) {
+			return new EventQuery().activityId().eq(asStringValue(value, smartStringComparison));
+
+		} else if ("causalId".equals(condition.keyword)) {
+			return new EventQuery().causalId().eq(asStringValue(value, smartStringComparison));
 
 		} else if ("busy".equals(condition.keyword)) {
 			return condition.negated ? new EventQuery().isBusy().isFalse() : new EventQuery().isBusy().isTrue();
