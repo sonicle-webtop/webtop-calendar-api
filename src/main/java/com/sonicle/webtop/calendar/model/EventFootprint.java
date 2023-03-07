@@ -38,7 +38,7 @@ import org.joda.time.DateTime;
  *
  * @author malbinola
  */
-public class EventFootprint extends EventPeriodFootprint {
+public class EventFootprint extends EventFootprintBase {
 	protected final String publicUid;
 	protected final Integer calendarId;
 	protected final DateTime revisionTimestamp;

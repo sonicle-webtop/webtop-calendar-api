@@ -206,8 +206,8 @@ public class Calendar {
 	}
 	
 	public void setProfileId(UserProfileId pid) {
-		setDomainId(pid.getDomain());
-		setUserId(pid.getUser());
+		setDomainId(pid.getDomainId());
+		setUserId(pid.getUserId());
 	}
 	
 	public <T> T getParametersAsObject(T defaultValue, Class<T> type) {

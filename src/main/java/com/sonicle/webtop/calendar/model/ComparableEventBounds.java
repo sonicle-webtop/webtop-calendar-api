@@ -32,20 +32,29 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.commons.time.DateTimeRange2;
+import com.sonicle.commons.time.InstantRange;
+import net.sf.qualitycheck.Check;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 /**
  *
  * @author malbinola
  */
-public interface EventPeriodFootprint {
-	
-	public Integer getEventId();
-	public DateTime getStartDate();
-	public DateTime getEndDate();
-	public String getTimezone();
-	public Boolean getAllDay();
-	public String getRecurrenceRule();
-	public DateTimeZone getDateTimeZone();
+public class ComparableEventBounds extends DateTimeRange2 implements Comparable {
+	protected final EventInstanceId id;
+
+	public ComparableEventBounds(DateTime start, DateTime end, EventInstanceId id) {
+		super(Check.notNull(start, "start"), Check.notNull(end, "end"));
+		this.id = id;
+	}
+
+	public EventInstanceId getId() {
+		return id;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return getStart().compareTo(((DateTimeRange2)o).getStart());
+	}
 }

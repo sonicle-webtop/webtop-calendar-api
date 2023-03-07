@@ -87,6 +87,9 @@ import org.joda.time.LocalDate;
  */
 public class ICalendarInput {
 	private DateTimeZone defaultTz;
+	private boolean ignoreClassification = false;
+	private boolean ignoreTrasparency = false;
+	private boolean ignoreAlarms = false;
 	private boolean defaultIsPrivate = false;
 	private boolean defaultBusy = false;
 	private boolean defaultAttendeeNotify = false;
@@ -98,6 +101,21 @@ public class ICalendarInput {
 	
 	public ICalendarInput withDefaultTz(DateTimeZone defaultTz) {
 		this.defaultTz = defaultTz;
+		return this;
+	}
+	
+	public ICalendarInput withIgnoreClassification(boolean ignoreClassification) {
+		this.ignoreClassification = ignoreClassification;
+		return this;
+	}
+	
+	public ICalendarInput withIgnoreTransparency(boolean ignoreTrasparency) {
+		this.ignoreTrasparency = ignoreTrasparency;
+		return this;
+	}
+	
+	public ICalendarInput withIgnoreAlarms(boolean ignoreAlarms) {
+		this.ignoreAlarms = ignoreAlarms;
 		return this;
 	}
 	
@@ -151,8 +169,8 @@ public class ICalendarInput {
 							log.addAll(velog);
 						}
 					}
-				} catch(Throwable t) {
-					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT [{0}]. Reason: {1}", ICalendarUtils.print(ve), t.getMessage()));
+				} catch (Exception ex) {
+					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT [{0}]. Reason: {1}", ICalendarUtils.print(ve), ex.getMessage()));
 				}
 			}
 		}
@@ -227,7 +245,7 @@ public class ICalendarInput {
 		}
 		
 		// Private flag
-		if (ve.getClassification() != null) {
+		if (!ignoreClassification && ve.getClassification() != null) {
 			String clazz = ve.getClassification().getValue();
 			event.setIsPrivate(StringUtils.equals(clazz, Clazz.CONFIDENTIAL.getValue()) || StringUtils.equals(clazz, Clazz.PRIVATE.getValue()));
 		} else {
@@ -235,7 +253,7 @@ public class ICalendarInput {
 		}
 
 		// Busy flag
-		if (ve.getTransparency() != null) {
+		if (!ignoreTrasparency && ve.getTransparency() != null) {
 			String transparency = ve.getTransparency().getValue();
 			event.setBusy(!StringUtils.equals(transparency, Transp.TRANSPARENT.getValue()));
 		} else {
@@ -243,7 +261,7 @@ public class ICalendarInput {
 		}
 		
 		// Reminder
-		if (!ve.getAlarms().isEmpty()) {
+		if (!ignoreAlarms && !ve.getAlarms().isEmpty()) {
 			if (ve.getAlarms().size() > 1) {
 				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, "Many VALARMs found, the first compatible will be used"));
 			}
@@ -287,13 +305,11 @@ public class ICalendarInput {
 		}
 		
 		// Extracts organizer
-		Organizer org = (Organizer)ve.getProperty(Property.ORGANIZER);
-		if (org != null) {
-			try {
-				event.setOrganizer(fromVEventOrganizer(org, log));
-			} catch(Throwable t) {
-				if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, t.getMessage()));
-			}
+		try {
+			InternetAddress iaOrg = ICalendarUtils.getOrganizerAddress(ve);
+			if (iaOrg != null) event.setOrganizer(InternetAddressUtils.toFullAddress(iaOrg));
+		} catch (Exception ex) {
+			if (log != null) log.add(new MessageLogEntry(LogEntry.Level.WARN, ex.getMessage()));
 		}
 
 		// Extracts partecipants
@@ -450,6 +466,7 @@ public class ICalendarInput {
 		return dates;
 	}
 	
+	/*
 	public String fromVEventOrganizer(Organizer org, LogEntries log) throws UnsupportedEncodingException, WTException {
 		InternetAddress ia = null;
 		// See http://www.kanzaki.com/docs/ical/organizer.html
@@ -469,6 +486,7 @@ public class ICalendarInput {
 		
 		return InternetAddressUtils.toFullAddress(ia);
 	}
+	*/
 	
 	public EventAttendee fromVEventAttendee(Attendee att, LogEntries log) throws Exception {
 		EventAttendee attendee = new EventAttendee();
@@ -484,7 +502,7 @@ public class ICalendarInput {
 			InternetAddress ia = InternetAddressUtils.toInternetAddress(address, (cn == null) ? address : cn.getValue());
 			attendee.setRecipient(InternetAddressUtils.toFullAddress(ia));
 		} else {
-			throw new WTException("Attendee must be valid [{0}]", att.toString());
+			throw new WTException("Attendee must be valid [{}]", att.toString());
 			//log.add(new MessageLogEntry(LogEntry.Level.WARN, "Attendee must have a valid address [{0}]", attendee.toString()));
 		}
 		
@@ -504,7 +522,7 @@ public class ICalendarInput {
 		return attendee;
 	}
 	
-	public EventAttendee.RecipientRole roleToRecipientRole(Role role) {
+	public static EventAttendee.RecipientRole roleToRecipientRole(Role role) {
 		if (Role.CHAIR.equals(role)) {
 			return EventAttendee.RecipientRole.CHAIR;
 		} else if (Role.REQ_PARTICIPANT.equals(role)) {
@@ -516,7 +534,7 @@ public class ICalendarInput {
 		}
 	}
 	
-	public EventAttendee.RecipientType cuTypeToRecipientType(CuType cuType) {
+	public static EventAttendee.RecipientType cuTypeToRecipientType(CuType cuType) {
 		if (CuType.INDIVIDUAL.equals(cuType)) {
 			return EventAttendee.RecipientType.INDIVIDUAL;
 		} else if (CuType.RESOURCE.equals(cuType)) {
@@ -528,7 +546,7 @@ public class ICalendarInput {
 		}
 	}
 	
-	public EventAttendee.ResponseStatus partStatToResponseStatus(PartStat partStat) {
+	public static EventAttendee.ResponseStatus partStatToResponseStatus(PartStat partStat) {
 		if (PartStat.ACCEPTED.equals(partStat)) {
 			return EventAttendee.ResponseStatus.ACCEPTED;
 		} else if (PartStat.TENTATIVE.equals(partStat)) {
@@ -591,7 +609,7 @@ public class ICalendarInput {
 							log.addAll(ilog);
 						}
 					}
-				} catch(Throwable t) {
+				} catch(Exception ex) {
 					if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT ['{1}', {0}]. Reason: {3}", ve.getUid(), ve.getSummary(), t.getMessage()));
 				} finally {
 					try {

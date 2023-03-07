@@ -32,20 +32,26 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import com.sonicle.webtop.core.app.model.FolderShare;
+import com.sonicle.webtop.core.app.model.FolderShareFolder;
 
 /**
  *
  * @author malbinola
  */
-public interface EventPeriodFootprint {
+public class CalendarFSFolder extends FolderShareFolder<Integer> {
+	private final Calendar calendar;
 	
-	public Integer getEventId();
-	public DateTime getStartDate();
-	public DateTime getEndDate();
-	public String getTimezone();
-	public Boolean getAllDay();
-	public String getRecurrenceRule();
-	public DateTimeZone getDateTimeZone();
+	public CalendarFSFolder(int calendarId, FolderShare.Permissions permissions, Calendar calendar) {
+		this(calendarId, calendar.getName(), permissions, calendar);
+	}
+	
+	public CalendarFSFolder(int calendarId, String displayName, FolderShare.Permissions permissions, Calendar calendar) {
+		super(calendarId, displayName, calendar.isProviderRemote() ? new FolderShare.Permissions(permissions.getFolderPermissions()) : permissions);
+		this.calendar = calendar;
+	}
+	
+	public Calendar getCalendar() {
+		return calendar;
+	}
 }
