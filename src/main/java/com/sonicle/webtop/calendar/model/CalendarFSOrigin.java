@@ -33,17 +33,17 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.sonicle.webtop.core.app.model.FolderShare;
-import com.sonicle.webtop.core.app.model.FolderShareOrigin;
+import com.sonicle.webtop.core.app.model.ShareOrigin;
 
 /**
  *
  * @author malbinola
  */
-public class CalendarFSOrigin extends FolderShareOrigin {
+public class CalendarFSOrigin extends ShareOrigin {
 	protected final FolderShare.Permissions wildcardPermissions;
 	protected final boolean isResource;
 	
-	public CalendarFSOrigin(FolderShareOrigin origin, FolderShare.Permissions wildcardPermissions, boolean isResource) {
+	public CalendarFSOrigin(ShareOrigin origin, FolderShare.Permissions wildcardPermissions, boolean isResource) {
 		super(origin);
 		this.wildcardPermissions = wildcardPermissions;
 		this.isResource = isResource;
