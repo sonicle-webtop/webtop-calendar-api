@@ -82,8 +82,8 @@ public interface ICalendarManager {
 	@Deprecated public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	@Deprecated public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean notifyAttendees) throws WTException;
 	
-	public List<FolderSharing.SubjectRights> getFolderShareConfiguration(final UserProfileId originProfileId, final FolderSharing.Scope scope) throws WTException;
-	public void updateFolderShareConfiguration(final UserProfileId originProfileId, final FolderSharing.Scope scope, final List<FolderSharing.SubjectRights> rights) throws WTException;
+	public Set<FolderSharing.SubjectConfiguration> getFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope) throws WTException;
+	public void updateFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope, final Set<FolderSharing.SubjectConfiguration> configurations) throws WTException;
 	public Map<UserProfileId, CalendarFSOrigin> listIncomingCalendarOrigins() throws WTException;
 	public CalendarFSOrigin getIncomingCalendarOriginByFolderId(final int calendarId) throws WTException;
 	public Map<Integer, CalendarFSFolder> listIncomingCalendarFolders(final CalendarFSOrigin origin) throws WTException;
