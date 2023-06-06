@@ -22,6 +22,11 @@ public class Tables {
     public static final com.sonicle.webtop.calendar.jooq.tables.Calendars CALENDARS = com.sonicle.webtop.calendar.jooq.tables.Calendars.CALENDARS;
 
     /**
+     * The table <code>calendar.calendars_changes</code>.
+     */
+    public static final com.sonicle.webtop.calendar.jooq.tables.CalendarsChanges CALENDARS_CHANGES = com.sonicle.webtop.calendar.jooq.tables.CalendarsChanges.CALENDARS_CHANGES;
+
+    /**
      * The table <code>calendar.events</code>.
      */
     public static final com.sonicle.webtop.calendar.jooq.tables.Events EVENTS = com.sonicle.webtop.calendar.jooq.tables.Events.EVENTS;

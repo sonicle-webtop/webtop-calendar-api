@@ -17,6 +17,11 @@ public class Sequences {
     public static final org.jooq.Sequence<java.lang.Long> SEQ_CALENDARS = org.jooq.impl.Internal.createSequence("seq_calendars", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>calendar.seq_calendars_changes</code>
+     */
+    public static final org.jooq.Sequence<java.lang.Long> SEQ_CALENDARS_CHANGES = org.jooq.impl.Internal.createSequence("seq_calendars_changes", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>calendar.seq_events</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_EVENTS = org.jooq.impl.Internal.createSequence("seq_events", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
