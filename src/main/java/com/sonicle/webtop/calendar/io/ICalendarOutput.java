@@ -34,7 +34,10 @@ package com.sonicle.webtop.calendar.io;
 
 import com.sonicle.webtop.calendar.CalendarUtils;
 import com.sonicle.webtop.calendar.model.Event;
+import com.sonicle.webtop.calendar.model.EventAttachment;
+import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
 import com.sonicle.webtop.calendar.model.EventAttendee;
+import com.sonicle.webtop.core.model.CustomFieldValue;
 import com.sonicle.webtop.core.sdk.WTException;
 import com.sonicle.webtop.core.util.ICal4jUtils;
 import com.sonicle.webtop.core.util.ICalendarUtils;
@@ -47,11 +50,20 @@ import java.util.Collection;
 import java.util.Set;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.Dur;
+import net.fortuna.ical4j.model.Parameter;
+import net.fortuna.ical4j.model.ParameterFactoryImpl;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -62,6 +74,7 @@ import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Action;
+import net.fortuna.ical4j.model.property.Attach;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.Description;
@@ -75,6 +88,7 @@ import net.fortuna.ical4j.model.property.Sequence;
 import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.XProperty;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -233,6 +247,42 @@ public class ICalendarOutput {
 			}
 		}
 		
+		// ATTACHMENTS
+		if (event.hasAttachments()) {
+			for(EventAttachment att: event.getAttachmentsOrEmpty()) {
+				if (att instanceof EventAttachmentWithBytes) {
+					EventAttachmentWithBytes attb = (EventAttachmentWithBytes)att;
+					Attach ap=new Attach(attb.getBytes());
+					ve.getProperties().add(ap);
+				}
+			}
+		}
+		
+		// EXTENDED PROPERTIES
+		for(XProperty xp: toXProperties(event)) {
+			ve.getProperties().add(xp);
+		}
+		
+		// CUSTOM FIELDS AS EXTENDED PROPERTIES
+		Map<String, CustomFieldValue> cv = event.getCustomValues();
+		if (cv!=null) {
+			for (Entry<String, CustomFieldValue> e: cv.entrySet()) {
+				CustomFieldValue cfv = e.getValue();
+				String uid = e.getKey();
+				DateFormat df = new SimpleDateFormat("yyyyMMdd");
+				Boolean bv = cfv.getBooleanValue();
+				DateTime dv = cfv.getDateValue();
+				Double nv = cfv.getNumberValue();
+				String sv = cfv.getStringValue();
+				String tv = cfv.getTextValue();
+				if (bv!=null) ve.getProperties().add(toCustomFieldProperty(uid, "boolean", ""+bv));
+				if (dv!=null) ve.getProperties().add(toCustomFieldProperty(uid, "date", df.format(dv.toDate())));
+				if (nv!=null) ve.getProperties().add(toCustomFieldProperty(uid, "number", ""+nv));
+				if (!StringUtils.isEmpty(sv)) ve.getProperties().add(toCustomFieldProperty(uid, "string", ""+sv));
+				if (!StringUtils.isEmpty(tv)) ve.getProperties().add(toCustomFieldProperty(uid, "text", ""+tv));
+			}
+		}		
+		
 		return ve;
 	}
 	
@@ -342,6 +392,36 @@ public class ICalendarOutput {
 			return PartStat.NEEDS_ACTION;
 		}
 	}
+	
+	public ParameterList toCustomFieldParameterList(String type, String value) {
+		try {
+			ParameterFactoryImpl pfi = ParameterFactoryImpl.getInstance();
+			ParameterList pl = new ParameterList();
+			pl.add(pfi.createParameter("TYPE",type));
+			pl.add(pfi.createParameter("VALUE",value));
+			return pl;
+		} catch(URISyntaxException exc) {
+			return null;
+		}
+	}
+	
+	public XProperty toCustomFieldProperty(String uid, String type, String value) {
+		return new XProperty("X-WT-CUSTOMFIELD", toCustomFieldParameterList(type, value), uid);
+	}
+	
+	public List<XProperty> toXProperties(Event e) {
+		List<XProperty> props = new ArrayList<>();
+		
+		String tags = StringUtils.join(e.getTagsOrEmpty(), ",");
+		addPropIfValued(props, "X-WT-TAGS", ""+tags);
+		return props;
+	}
+
+	private void addPropIfValued(List<XProperty> props, String name, String value) {
+		if (!StringUtils.isBlank(value))
+			props.add(new XProperty(name, value));
+	}
+	
 	
 	private void ensureMethodRequestOrCancel(Method method) throws WTException {
 		if (!Method.REQUEST.equals(method) && !Method.CANCEL.equals(method)) {

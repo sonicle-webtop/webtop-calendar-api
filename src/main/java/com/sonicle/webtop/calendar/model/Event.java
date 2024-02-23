@@ -36,6 +36,7 @@ import com.sonicle.webtop.core.model.CustomFieldValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,6 +89,10 @@ public class Event extends BaseEvent {
 
 	public void setTags(Set<String> tags) {
 		this.tags = tags;
+	}
+	
+	public Set<String> getTagsOrEmpty() {
+		return this.tags != null ? tags : new LinkedHashSet<>(0);
 	}
 	
 	public Event addTag(String tagId) {
@@ -166,6 +171,10 @@ public class Event extends BaseEvent {
 	
 	public List<EventAttachment> getAttachments() {
 		return attachments;
+	}
+	
+	public List<EventAttachment> getAttachmentsOrEmpty() {
+		return this.attachments != null ? attachments : new ArrayList<>(0);
 	}
 
 	public void setAttachments(List<EventAttachment> attachments) {
