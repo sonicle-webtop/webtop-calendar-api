@@ -69,10 +69,12 @@ import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.CuType;
+import net.fortuna.ical4j.model.parameter.Encoding;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.model.parameter.XParameter;
 import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.Attach;
 import net.fortuna.ical4j.model.property.Attendee;
@@ -252,7 +254,11 @@ public class ICalendarOutput {
 			for(EventAttachment att: event.getAttachmentsOrEmpty()) {
 				if (att instanceof EventAttachmentWithBytes) {
 					EventAttachmentWithBytes attb = (EventAttachmentWithBytes)att;
-					Attach ap=new Attach(attb.getBytes());
+					ParameterList pl = new ParameterList();
+					pl.add(Value.BINARY);
+					pl.add(Encoding.BASE64);
+					pl.add(new XParameter("FILENAME", att.getFilename()));
+					Attach ap=new Attach(pl, attb.getBytes());
 					ve.getProperties().add(ap);
 				}
 			}
@@ -393,12 +399,12 @@ public class ICalendarOutput {
 		}
 	}
 	
-	public ParameterList toCustomFieldParameterList(String type, String value) {
+	public ParameterList toCustomFieldParameterList(String uid, String type) {
 		try {
 			ParameterFactoryImpl pfi = ParameterFactoryImpl.getInstance();
 			ParameterList pl = new ParameterList();
+			pl.add(pfi.createParameter("UID",uid));
 			pl.add(pfi.createParameter("TYPE",type));
-			pl.add(pfi.createParameter("VALUE",value));
 			return pl;
 		} catch(URISyntaxException exc) {
 			return null;
@@ -406,7 +412,7 @@ public class ICalendarOutput {
 	}
 	
 	public XProperty toCustomFieldProperty(String uid, String type, String value) {
-		return new XProperty("X-WT-CUSTOMFIELD", toCustomFieldParameterList(type, value), uid);
+		return new XProperty("X-WT-CUSTOMFIELDVALUE", toCustomFieldParameterList(uid, type), value);
 	}
 	
 	public List<XProperty> toXProperties(Event e) {

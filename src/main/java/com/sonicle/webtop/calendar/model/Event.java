@@ -96,9 +96,8 @@ public class Event extends BaseEvent {
 	}
 	
 	public Event addTag(String tagId) {
-		if (tags != null) {
-			tags.add(Check.notNull(tagId, "tagId"));
-		}
+		if (tags == null) tags = new LinkedHashSet<String>();
+		tags.add(Check.notNull(tagId, "tagId"));
 		return this;
 	}
 	

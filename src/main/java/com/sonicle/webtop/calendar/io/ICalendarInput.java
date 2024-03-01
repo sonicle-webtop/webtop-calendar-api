@@ -36,6 +36,7 @@ import com.sonicle.commons.InternetAddressUtils;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttendee;
 import com.sonicle.webtop.calendar.model.EventRecurrence;
+import com.sonicle.webtop.core.app.ical4j.LazyCalendarComponentConsumer;
 import com.sonicle.webtop.core.sdk.WTException;
 import com.sonicle.webtop.core.util.ICal4jUtils;
 import com.sonicle.webtop.core.util.ICalendarUtils;
@@ -64,6 +65,7 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
@@ -175,6 +177,37 @@ public class ICalendarInput {
 			}
 		}
 		return results;
+	}
+	
+	public void fromICalendarStream(InputStream is, LogEntries log, EventInputConsumer consumer) throws WTException, ParserException, IOException {
+		
+		ICalendarUtils.createLazyCalendarBuilder(
+				new LazyCalendarComponentConsumer() {
+					@Override
+					public void consume(CalendarComponent component) {
+						if (component instanceof VEvent) {
+							final VEvent ve = (VEvent)component;
+							final LogEntries velog = (log != null) ? new LogEntries() : null;
+
+							try {
+								final EventInput result = fromVEvent(ve, velog);
+								if (result.event.trimFieldLengths()) {
+									if (velog != null) velog.add(new MessageLogEntry(LogEntry.Level.WARN, "Some fields were truncated due to max-length"));
+								}
+								consumer.consume(result);
+								if ((log != null) && (velog != null)) {
+									if (!velog.isEmpty()) {
+										log.addMaster(new MessageLogEntry(LogEntry.Level.WARN, "VEVENT [{0}]", ICalendarUtils.print(ve)));
+										log.addAll(velog);
+									}
+								}
+							} catch (Exception ex) {
+								if (log != null) log.addMaster(new MessageLogEntry(LogEntry.Level.ERROR, "VEVENT [{0}]. Reason: {1}", ICalendarUtils.print(ve), ex.getMessage()));
+							}
+						}
+					}					
+				}
+		).build(is);
 	}
 	
 	public EventInput fromVEvent(VEvent ve, LogEntries log) throws WTException {
