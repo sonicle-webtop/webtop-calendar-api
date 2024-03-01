@@ -104,11 +104,17 @@ import org.joda.time.LocalTime;
  */
 public class ICalendarOutput {
 	private final String prodId;
+	private Map<String, String> tagNamesByIdMap = null;
+
 	
 	public ICalendarOutput(String prodId) {
 		this.prodId = prodId;
 	}
 	
+	public ICalendarOutput(String prodId, Map<String, String> tagNamesByIdMap) {
+		this.prodId = prodId;
+		this.tagNamesByIdMap = tagNamesByIdMap;
+	}
 	/**
 	 * @deprecated use ICalendarUtils.print() instead
 	 */
@@ -418,17 +424,17 @@ public class ICalendarOutput {
 	public List<XProperty> toXProperties(Event e) {
 		List<XProperty> props = new ArrayList<>();
 		
-		String tags = StringUtils.join(e.getTagsOrEmpty(), ",");
-		addPropIfValued(props, "X-WT-TAGS", ""+tags);
+		for(String tag: e.getTagsOrEmpty()) {
+			String tagName = null;
+			if (tagNamesByIdMap!=null) tagName = tagNamesByIdMap.get(tag);
+			if (tagName==null) tagName=tag;
+			ParameterList pl = new ParameterList();
+			pl.add(new XParameter("UID", tag));
+			props.add(new XProperty("X-WT-TAG", pl, tagName));
+		}
 		return props;
 	}
 
-	private void addPropIfValued(List<XProperty> props, String name, String value) {
-		if (!StringUtils.isBlank(value))
-			props.add(new XProperty(name, value));
-	}
-	
-	
 	private void ensureMethodRequestOrCancel(Method method) throws WTException {
 		if (!Method.REQUEST.equals(method) && !Method.CANCEL.equals(method)) {
 			throw new WTException("Invalid method: only REQUEST or CANCEL are supported");

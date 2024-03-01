@@ -52,6 +52,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import jakarta.mail.internet.InternetAddress;
+import java.util.List;
+import java.util.Map;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -96,9 +98,17 @@ public class ICalendarInput {
 	private boolean defaultBusy = false;
 	private boolean defaultAttendeeNotify = false;
 	private boolean includeVEventSourceInOutput = false;
+	private Map<String, String> tagNamesById = null;
+	private Map<String, List<String>> tagIdsByName = null;
 	
 	public ICalendarInput(DateTimeZone defaultTz) {
 		this.defaultTz = defaultTz;
+	}
+	
+	public ICalendarInput(DateTimeZone defaultTz, Map<String, String> tagNamesById, Map<String, List<String>> tagIdsByName) {
+		this.defaultTz = defaultTz;
+		this.tagNamesById = tagNamesById;
+		this.tagIdsByName = tagIdsByName;
 	}
 	
 	public ICalendarInput withDefaultTz(DateTimeZone defaultTz) {
