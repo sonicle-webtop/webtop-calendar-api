@@ -41,7 +41,7 @@ import org.joda.time.DateTimeZone;
  */
 public interface EventPeriodFootprint {
 	
-	public Integer getEventId();
+	public String getEventId();
 	public DateTime getStartDate();
 	public DateTime getEndDate();
 	public String getTimezone();

@@ -39,7 +39,7 @@ public class CalendarsChanges extends org.jooq.impl.TableImpl<com.sonicle.webtop
     /**
      * The column <code>calendar.calendars_changes.event_id</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsChangesRecord, java.lang.Integer> EVENT_ID = createField(org.jooq.impl.DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsChangesRecord, java.lang.String> EVENT_ID = createField(org.jooq.impl.DSL.name("event_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>calendar.calendars_changes.timestamp</code>.
@@ -105,20 +105,6 @@ public class CalendarsChanges extends org.jooq.impl.TableImpl<com.sonicle.webtop
     }
 
     @java.lang.Override
-    public java.util.List<org.jooq.ForeignKey<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsChangesRecord, ?>> getReferences() {
-        return java.util.Arrays.<org.jooq.ForeignKey<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsChangesRecord, ?>>asList(com.sonicle.webtop.calendar.jooq.Keys.CALENDARS_CHANGES__CALENDARS_CHANGES_CALENDAR_ID_FKEY);
-    }
-
-    private transient com.sonicle.webtop.calendar.jooq.tables.Calendars _calendars;
-
-    public com.sonicle.webtop.calendar.jooq.tables.Calendars calendars() {
-        if (_calendars == null)
-            _calendars = new com.sonicle.webtop.calendar.jooq.tables.Calendars(this, com.sonicle.webtop.calendar.jooq.Keys.CALENDARS_CHANGES__CALENDARS_CHANGES_CALENDAR_ID_FKEY);
-
-        return _calendars;
-    }
-
-    @java.lang.Override
     public CalendarsChanges as(java.lang.String alias) {
         return new CalendarsChanges(org.jooq.impl.DSL.name(alias), this);
     }
@@ -149,7 +135,7 @@ public class CalendarsChanges extends org.jooq.impl.TableImpl<com.sonicle.webtop
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row5<java.lang.Long, java.lang.Integer, java.lang.Integer, org.joda.time.DateTime, java.lang.String> fieldsRow() {
+    public org.jooq.Row5<java.lang.Long, java.lang.Integer, java.lang.String, org.joda.time.DateTime, java.lang.String> fieldsRow() {
         return (org.jooq.Row5) super.fieldsRow();
     }
 }

@@ -13,10 +13,10 @@ public class RecurrencesBroken implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private java.lang.Integer       eventId;
+    private java.lang.String        eventId;
     private java.lang.Integer       recurrenceId;
     private org.joda.time.LocalDate eventDate;
-    private java.lang.Integer       newEventId;
+    private java.lang.String        newEventId;
 
     public RecurrencesBroken() {}
 
@@ -28,10 +28,10 @@ public class RecurrencesBroken implements java.io.Serializable {
     }
 
     public RecurrencesBroken(
-        java.lang.Integer       eventId,
+        java.lang.String        eventId,
         java.lang.Integer       recurrenceId,
         org.joda.time.LocalDate eventDate,
-        java.lang.Integer       newEventId
+        java.lang.String        newEventId
     ) {
         this.eventId = eventId;
         this.recurrenceId = recurrenceId;
@@ -42,14 +42,14 @@ public class RecurrencesBroken implements java.io.Serializable {
     /**
      * Getter for <code>calendar.recurrences_broken.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.recurrences_broken.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 
@@ -84,14 +84,14 @@ public class RecurrencesBroken implements java.io.Serializable {
     /**
      * Getter for <code>calendar.recurrences_broken.new_event_id</code>.
      */
-    public java.lang.Integer getNewEventId() {
+    public java.lang.String getNewEventId() {
         return this.newEventId;
     }
 
     /**
      * Setter for <code>calendar.recurrences_broken.new_event_id</code>.
      */
-    public void setNewEventId(java.lang.Integer newEventId) {
+    public void setNewEventId(java.lang.String newEventId) {
         this.newEventId = newEventId;
     }
 

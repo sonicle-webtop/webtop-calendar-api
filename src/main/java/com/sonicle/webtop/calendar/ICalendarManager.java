@@ -41,6 +41,7 @@ import com.sonicle.commons.time.DateTimeRange;
 import com.sonicle.commons.time.DateTimeRange2;
 import com.sonicle.webtop.calendar.model.GetEventScope;
 import com.sonicle.webtop.calendar.model.Calendar;
+import com.sonicle.webtop.calendar.model.CalendarBase;
 import com.sonicle.webtop.calendar.model.CalendarFSFolder;
 import com.sonicle.webtop.calendar.model.CalendarFSOrigin;
 import com.sonicle.webtop.calendar.model.CalendarPropSet;
@@ -99,11 +100,11 @@ public interface ICalendarManager {
 	public boolean existCalendar(int calendarId) throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;
-	public Calendar addCalendar(Calendar cal) throws WTException;
+	public Calendar addCalendar(final CalendarBase calendar) throws WTException;
 	public Calendar addBuiltInCalendar() throws WTException;
 	public Calendar addBuiltInCalendar(final String color) throws WTException;
-	public void updateCalendar(Calendar cal) throws WTNotFoundException, WTException;
-	public void deleteCalendar(int calendarId) throws WTNotFoundException, WTException;
+	public void updateCalendar(final int calendarId, final CalendarBase calendar) throws WTNotFoundException, WTException;
+	public void deleteCalendar(final int calendarId) throws WTNotFoundException, WTException;
 	public CalendarPropSet getCalendarCustomProps(int calendarId) throws WTException;
 	public Map<Integer, CalendarPropSet> getCalendarCustomProps(Collection<Integer> calendarIds) throws WTException;
 	public CalendarPropSet updateCalendarCustomProps(int calendarId, CalendarPropSet propertySet) throws WTException;
@@ -113,7 +114,7 @@ public interface ICalendarManager {
 	public LangUtils.CollectionChangeSet<EventObjectChanged> listEventObjectsChanges(int calendarId, DateTime since, Integer limit) throws WTException;
 	public EventObjectWithICalendar getEventObjectWithICalendar(int calendarId, String href) throws WTException;
 	public List<EventObjectWithICalendar> getEventObjectsWithICalendar(int calendarId, Collection<String> hrefs) throws WTException;
-	public EventObject getEventObject(int calendarId, int eventId, EventObjectOutputType outputType) throws WTException;
+	public EventObject getEventObject(int calendarId, String eventId, EventObjectOutputType outputType) throws WTException;
 	public void addEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
 	public void updateEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTNotFoundException, WTException;
 	public void deleteEventObject(int calendarId, String href) throws WTNotFoundException, WTException;
@@ -126,14 +127,14 @@ public interface ICalendarManager {
 	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
 	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeRange range, DateTimeZone targetTimezone, boolean sort) throws WTException;
 	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeRange range, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public Event getEvent(int eventId) throws WTException;
+	public Event getEvent(String eventId) throws WTException;
 	public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
-	public EventAttachmentWithBytes getEventAttachment(int eventId, String attachmentId) throws WTNotFoundException, WTException;
-	public Map<String, CustomFieldValue> getEventCustomValues(int eventId) throws WTException;
+	public EventAttachmentWithBytes getEventAttachment(String eventId, String attachmentId) throws WTNotFoundException, WTException;
+	public Map<String, CustomFieldValue> getEventCustomValues(String eventId) throws WTException;
 	public Event addEvent(Event event) throws WTException;
 	public Event addEvent(Event event, boolean notifyAttendees) throws WTException;
 	public Event handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar ical, final Integer calendarId, final BitFlags<HandleICalInviationOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
-	public String getEventInstanceKey(int eventId) throws WTException;
+	public String getEventInstanceKey(String eventId) throws WTException;
 	public EventInstance getEventInstance(String eventKey) throws WTException;
 	public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean processTags, boolean processCustomValues, boolean notifyAttendees) throws WTException;
 	public void updateEventInstance(UpdateEventTarget target, EventKey key, DateTime newStart, DateTime newEnd, String newTitle, boolean notifyAttendees) throws WTException;
@@ -143,7 +144,7 @@ public interface ICalendarManager {
 	public void moveEventInstance(EventKey key, int targetCalendarId) throws WTNotFoundException, WTException;
 	public Event cloneEventInstance(EventKey key, Integer newCalendarId, DateTime newStart, DateTime newEnd, boolean notifyAttendees) throws WTException;
 	public void updateEventCalendarTags(UpdateTagsOperation operation, int calendarId, Set<String> tagIds) throws WTException;
-	public void updateEventTags(UpdateTagsOperation operation, Collection<Integer> eventIds, Set<String> tagIds) throws WTException;
+	public void updateEventTags(UpdateTagsOperation operation, Collection<String> eventIds, Set<String> tagIds) throws WTException;
 	public void deleteEvent(String publicUid, Integer calendarId, boolean notifyAttendees) throws WTException;
 	
 	public static enum HandleICalInviationOption implements BitFlagsEnum<HandleICalInviationOption> {

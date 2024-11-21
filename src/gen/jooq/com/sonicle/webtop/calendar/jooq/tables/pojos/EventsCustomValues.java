@@ -13,7 +13,7 @@ public class EventsCustomValues implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private java.lang.Integer      eventId;
+    private java.lang.String       eventId;
     private java.lang.String       customFieldId;
     private java.lang.String       stringValue;
     private java.lang.Double       numberValue;
@@ -34,7 +34,7 @@ public class EventsCustomValues implements java.io.Serializable {
     }
 
     public EventsCustomValues(
-        java.lang.Integer      eventId,
+        java.lang.String       eventId,
         java.lang.String       customFieldId,
         java.lang.String       stringValue,
         java.lang.Double       numberValue,
@@ -54,14 +54,14 @@ public class EventsCustomValues implements java.io.Serializable {
     /**
      * Getter for <code>calendar.events_custom_values.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.events_custom_values.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 

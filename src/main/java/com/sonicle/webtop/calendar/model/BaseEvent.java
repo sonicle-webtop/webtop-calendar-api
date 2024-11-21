@@ -46,7 +46,7 @@ import org.joda.time.DateTimeZone;
  * @author malbinola
  */
 public class BaseEvent {
-	protected Integer eventId;
+	protected String eventId;
 	protected String publicUid;
 	protected Integer calendarId;
 	protected RevisionStatus revisionStatus;
@@ -66,11 +66,11 @@ public class BaseEvent {
 	protected Reminder reminder;
 	private boolean censorized = false;
 
-	public Integer getEventId() {
+	public String getEventId() {
 		return eventId;
 	}
 
-	public void setEventId(Integer eventId) {
+	public void setEventId(String eventId) {
 		this.eventId = eventId;
 	}
 

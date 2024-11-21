@@ -40,14 +40,14 @@ import org.joda.time.DateTimeZone;
  * @author malbinola
  */
 public class EventFootprintBase implements EventPeriodFootprint {
-	protected final Integer eventId;
+	protected final String eventId;
 	protected final DateTime startDate;
 	protected final DateTime endDate;
 	protected final String timezone;
 	protected final Boolean allDay;
 	protected final String recurrenceRule;
 	
-	public EventFootprintBase(Integer eventId, DateTime startDate, DateTime endDate, String timezone, Boolean allDay, String recurrenceRule) {
+	public EventFootprintBase(String eventId, DateTime startDate, DateTime endDate, String timezone, Boolean allDay, String recurrenceRule) {
 		this.eventId = eventId;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -66,7 +66,7 @@ public class EventFootprintBase implements EventPeriodFootprint {
 	}
 	
 	@Override
-	public Integer getEventId() {
+	public String getEventId() {
 		return eventId;
 	}
 	

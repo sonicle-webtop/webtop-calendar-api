@@ -29,7 +29,7 @@ public class Events extends org.jooq.impl.TableImpl<com.sonicle.webtop.calendar.
     /**
      * The column <code>calendar.events.event_id</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord, java.lang.Integer> EVENT_ID = createField(org.jooq.impl.DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('calendar.seq_events'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord, java.lang.String> EVENT_ID = createField(org.jooq.impl.DSL.name("event_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('calendar.seq_events'::regclass)", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>calendar.events.calendar_id</code>.

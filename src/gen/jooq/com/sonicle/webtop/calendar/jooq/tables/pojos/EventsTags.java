@@ -13,8 +13,8 @@ public class EventsTags implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private java.lang.Integer eventId;
-    private java.lang.String  tagId;
+    private java.lang.String eventId;
+    private java.lang.String tagId;
 
     public EventsTags() {}
 
@@ -24,8 +24,8 @@ public class EventsTags implements java.io.Serializable {
     }
 
     public EventsTags(
-        java.lang.Integer eventId,
-        java.lang.String  tagId
+        java.lang.String eventId,
+        java.lang.String tagId
     ) {
         this.eventId = eventId;
         this.tagId = tagId;
@@ -34,14 +34,14 @@ public class EventsTags implements java.io.Serializable {
     /**
      * Getter for <code>calendar.events_tags.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.events_tags.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 

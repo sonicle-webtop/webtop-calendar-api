@@ -39,18 +39,18 @@ import org.joda.time.DateTime;
  * @author malbinola
  */
 public class EventObjectChanged {
-	protected final Integer eventId;
+	protected final String eventId;
 	protected final DateTime revisionTimestamp;
 	//protected final String publicUid;
 	protected final String href;
 	
-	public EventObjectChanged(int eventId, DateTime revisionTimestamp, String href) {
+	public EventObjectChanged(String eventId, DateTime revisionTimestamp, String href) {
 		this.eventId = eventId;
 		this.revisionTimestamp = revisionTimestamp;
 		this.href = href;
 	}
 
-	public Integer getEventId() {
+	public String getEventId() {
 		return eventId;
 	}
 

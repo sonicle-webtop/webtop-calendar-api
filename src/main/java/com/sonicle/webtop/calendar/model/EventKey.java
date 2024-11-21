@@ -46,18 +46,14 @@ import org.joda.time.format.DateTimeFormatter;
  * @author malbinola
  */
 public class EventKey {
-	private static final Pattern PATTERN_GENID = Pattern.compile("^([0-9]+)_([0-9]+)$");
-	private static final Pattern PATTERN_GENID_RECURRING = Pattern.compile("^([0-9]+)_([0-9]+)_([0-9]+)$");
+	private static final Pattern PATTERN_GENID = Pattern.compile("^([a-z0-9]+)_([a-z0-9]+)$");
+	private static final Pattern PATTERN_GENID_RECURRING = Pattern.compile("^([a-z0-9]+)_([a-z0-9]+)_([0-9]+)$");
 
-	public Integer eventId;
-	public Integer originalEventId;
+	public String eventId;
+	public String originalEventId;
 	public LocalDate instanceDate;
 	
-	public EventKey(int eventId) {
-		this(eventId, null, null);
-	}
-	
-	public EventKey(int eventId, Integer originalEventId, LocalDate instanceDate) {
+	public EventKey(String eventId, String originalEventId, LocalDate instanceDate) {
 		this.eventId = eventId;
 		this.originalEventId = originalEventId;
 		this.instanceDate = instanceDate;
@@ -73,24 +69,24 @@ public class EventKey {
 		
 		Matcher matcher = null;
 		if((matcher = PATTERN_GENID_RECURRING.matcher(decoded)).matches()) {
-			originalEventId = Integer.valueOf(matcher.group(1));
-			eventId = Integer.valueOf(matcher.group(2));
+			originalEventId = matcher.group(1);
+			eventId = matcher.group(2);
 			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd").withZone(DateTimeZone.UTC);
 			instanceDate = formatter.parseDateTime(matcher.group(3)).toLocalDate();
 		} else if((matcher = PATTERN_GENID.matcher(decoded)).matches()) {
-			originalEventId = Integer.valueOf(matcher.group(1));
-			eventId = Integer.valueOf(matcher.group(2));
+			originalEventId = matcher.group(1);
+			eventId = matcher.group(2);
 		}
 	}
 	
-	public static String buildKey(Integer eventId, Integer originalEventId) {
-		Integer origId = (originalEventId == null) ? eventId : originalEventId;
+	public static String buildKey(String eventId, String originalEventId) {
+		String origId = (originalEventId == null) ? eventId : originalEventId;
 		String str = origId + "_" + eventId;
 		return Hex.encodeHexString(str.getBytes());
 	}
 	
-	public static String buildKey(Integer eventId, Integer originalEventId, LocalDate date) {
-		Integer origId = (originalEventId == null) ? eventId : originalEventId;
+	public static String buildKey(String eventId, String originalEventId, LocalDate date) {
+		String origId = (originalEventId == null) ? eventId : originalEventId;
 		String str = origId + "_" + eventId + "_" + date.toString("yyyyMMdd");
 		return Hex.encodeHexString(str.getBytes());
 	}

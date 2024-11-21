@@ -13,8 +13,8 @@ public class EventsIcalendars implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private java.lang.Integer eventId;
-    private java.lang.String  rawData;
+    private java.lang.String eventId;
+    private java.lang.String rawData;
 
     public EventsIcalendars() {}
 
@@ -24,8 +24,8 @@ public class EventsIcalendars implements java.io.Serializable {
     }
 
     public EventsIcalendars(
-        java.lang.Integer eventId,
-        java.lang.String  rawData
+        java.lang.String eventId,
+        java.lang.String rawData
     ) {
         this.eventId = eventId;
         this.rawData = rawData;
@@ -34,14 +34,14 @@ public class EventsIcalendars implements java.io.Serializable {
     /**
      * Getter for <code>calendar.events_icalendars.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.events_icalendars.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 

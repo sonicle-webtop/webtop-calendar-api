@@ -46,7 +46,7 @@ public class EventFootprint extends EventFootprintBase {
 	protected final String title;
 	protected final String location;
 	
-	public EventFootprint(Integer eventId, String publicUid, Integer calendarId, 
+	public EventFootprint(String eventId, String publicUid, Integer calendarId, 
 			DateTime revisionTimestamp, DateTime creationTimestamp, DateTime startDate, 
 			DateTime endDate, String timezone, Boolean allDay, String rrule, String title, String location) {
 		

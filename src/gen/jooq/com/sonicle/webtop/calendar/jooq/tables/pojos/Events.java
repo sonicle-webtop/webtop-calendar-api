@@ -13,7 +13,7 @@ public class Events implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private java.lang.Integer      eventId;
+    private java.lang.String       eventId;
     private java.lang.Integer      calendarId;
     private java.lang.String       revisionStatus;
     private org.joda.time.DateTime revisionTimestamp;
@@ -76,7 +76,7 @@ public class Events implements java.io.Serializable {
     }
 
     public Events(
-        java.lang.Integer      eventId,
+        java.lang.String       eventId,
         java.lang.Integer      calendarId,
         java.lang.String       revisionStatus,
         org.joda.time.DateTime revisionTimestamp,
@@ -138,14 +138,14 @@ public class Events implements java.io.Serializable {
     /**
      * Getter for <code>calendar.events.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.events.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 

@@ -14,7 +14,7 @@ public class EventsAttendees implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     private java.lang.String  attendeeId;
-    private java.lang.Integer eventId;
+    private java.lang.String  eventId;
     private java.lang.String  recipient;
     private java.lang.String  recipientType;
     private java.lang.String  recipientRole;
@@ -35,7 +35,7 @@ public class EventsAttendees implements java.io.Serializable {
 
     public EventsAttendees(
         java.lang.String  attendeeId,
-        java.lang.Integer eventId,
+        java.lang.String  eventId,
         java.lang.String  recipient,
         java.lang.String  recipientType,
         java.lang.String  recipientRole,
@@ -68,14 +68,14 @@ public class EventsAttendees implements java.io.Serializable {
     /**
      * Getter for <code>calendar.events_attendees.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.events_attendees.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 

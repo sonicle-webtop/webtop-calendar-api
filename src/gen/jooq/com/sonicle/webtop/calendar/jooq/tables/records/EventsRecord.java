@@ -16,15 +16,15 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
     /**
      * Setter for <code>calendar.events.event_id</code>.
      */
-    public void setEventId(java.lang.Integer value) {
+    public void setEventId(java.lang.String value) {
         set(0, value);
     }
 
     /**
      * Getter for <code>calendar.events.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
-        return (java.lang.Integer) get(0);
+    public java.lang.String getEventId() {
+        return (java.lang.String) get(0);
     }
 
     /**
@@ -410,7 +410,7 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Record1<java.lang.Integer> key() {
+    public org.jooq.Record1<java.lang.String> key() {
         return (org.jooq.Record1) super.key();
     }
 
@@ -428,7 +428,7 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
     /**
      * Create a detached, initialised EventsRecord
      */
-    public EventsRecord(java.lang.Integer eventId, java.lang.Integer calendarId, java.lang.String revisionStatus, org.joda.time.DateTime revisionTimestamp, java.lang.Integer revisionSequence, org.joda.time.DateTime creationTimestamp, java.lang.String publicUid, java.lang.Integer recurrenceId, java.lang.Boolean readOnly, org.joda.time.DateTime startDate, org.joda.time.DateTime endDate, java.lang.String timezone, java.lang.Boolean allDay, java.lang.String organizer, java.lang.String title, java.lang.String description, java.lang.String location, java.lang.Boolean isPrivate, java.lang.Boolean busy, java.lang.Integer reminder, org.joda.time.DateTime remindedOn, java.lang.String href, java.lang.String etag, java.lang.Integer activityId, java.lang.String masterDataId, java.lang.String statMasterDataId, java.lang.Integer causalId, java.lang.Boolean handleInvitation) {
+    public EventsRecord(java.lang.String eventId, java.lang.Integer calendarId, java.lang.String revisionStatus, org.joda.time.DateTime revisionTimestamp, java.lang.Integer revisionSequence, org.joda.time.DateTime creationTimestamp, java.lang.String publicUid, java.lang.Integer recurrenceId, java.lang.Boolean readOnly, org.joda.time.DateTime startDate, org.joda.time.DateTime endDate, java.lang.String timezone, java.lang.Boolean allDay, java.lang.String organizer, java.lang.String title, java.lang.String description, java.lang.String location, java.lang.Boolean isPrivate, java.lang.Boolean busy, java.lang.Integer reminder, org.joda.time.DateTime remindedOn, java.lang.String href, java.lang.String etag, java.lang.Integer activityId, java.lang.String masterDataId, java.lang.String statMasterDataId, java.lang.Integer causalId, java.lang.Boolean handleInvitation) {
         super(com.sonicle.webtop.calendar.jooq.tables.Events.EVENTS);
 
         setEventId(eventId);

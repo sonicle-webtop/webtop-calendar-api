@@ -42,7 +42,7 @@ public class SchedEvent extends BaseEvent {
 	protected String tags;
 	protected String calendarDomainId;
 	protected String calendarUserId;
-	protected Integer seriesEventId;
+	protected String seriesEventId;
 	protected Integer attendeesCount;
 	protected Integer notifyableAttendeesCount;
 	protected RecurInfo recurInfo;
@@ -71,11 +71,11 @@ public class SchedEvent extends BaseEvent {
 		this.calendarDomainId = calendarDomainId;
 	}
 	
-	public Integer getSeriesEventId() {
+	public String getSeriesEventId() {
 		return seriesEventId;
 	}
 
-	public void setSeriesEventId(Integer seriesEventId) {
+	public void setSeriesEventId(String seriesEventId) {
 		this.seriesEventId = seriesEventId;
 	}
 	

@@ -15,7 +15,7 @@ public class CalendarsChanges implements java.io.Serializable {
 
     private java.lang.Long         id;
     private java.lang.Integer      calendarId;
-    private java.lang.Integer      eventId;
+    private java.lang.String       eventId;
     private org.joda.time.DateTime timestamp;
     private java.lang.String       operation;
 
@@ -32,7 +32,7 @@ public class CalendarsChanges implements java.io.Serializable {
     public CalendarsChanges(
         java.lang.Long         id,
         java.lang.Integer      calendarId,
-        java.lang.Integer      eventId,
+        java.lang.String       eventId,
         org.joda.time.DateTime timestamp,
         java.lang.String       operation
     ) {
@@ -74,14 +74,14 @@ public class CalendarsChanges implements java.io.Serializable {
     /**
      * Getter for <code>calendar.calendars_changes.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.calendars_changes.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 

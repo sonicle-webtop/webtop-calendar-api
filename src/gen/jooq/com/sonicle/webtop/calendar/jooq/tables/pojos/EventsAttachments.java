@@ -14,7 +14,7 @@ public class EventsAttachments implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     private java.lang.String       eventAttachmentId;
-    private java.lang.Integer      eventId;
+    private java.lang.String       eventId;
     private org.joda.time.DateTime revisionTimestamp;
     private java.lang.Short        revisionSequence;
     private java.lang.String       filename;
@@ -35,7 +35,7 @@ public class EventsAttachments implements java.io.Serializable {
 
     public EventsAttachments(
         java.lang.String       eventAttachmentId,
-        java.lang.Integer      eventId,
+        java.lang.String       eventId,
         org.joda.time.DateTime revisionTimestamp,
         java.lang.Short        revisionSequence,
         java.lang.String       filename,
@@ -68,14 +68,14 @@ public class EventsAttachments implements java.io.Serializable {
     /**
      * Getter for <code>calendar.events_attachments.event_id</code>.
      */
-    public java.lang.Integer getEventId() {
+    public java.lang.String getEventId() {
         return this.eventId;
     }
 
     /**
      * Setter for <code>calendar.events_attachments.event_id</code>.
      */
-    public void setEventId(java.lang.Integer eventId) {
+    public void setEventId(java.lang.String eventId) {
         this.eventId = eventId;
     }
 

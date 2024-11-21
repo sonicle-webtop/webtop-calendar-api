@@ -32,38 +32,14 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.google.gson.annotations.SerializedName;
 import com.rits.cloning.Cloner;
-import com.sonicle.commons.EnumUtils;
-import com.sonicle.commons.LangUtils;
-import com.sonicle.webtop.core.sdk.UserProfileId;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 
 /**
  *
  * @author malbinola
  */
-public class Calendar {
-	private Integer calendarId;
-	private String domainId;
-	private String userId;
-	private Boolean builtIn;
-	private Provider provider;
-	private String name;
-	private String description;
-	private String color;
-	private Sync sync;
-	private Boolean isPrivate;
-	private Boolean defaultBusy;
-	private Integer defaultReminder;
-	public Boolean notifyOnExtUpdate;
-	private String parameters;
-	private Short remoteSyncFrequency;
-	private DateTime remoteSyncTimestamp;
-	private String remoteSyncTag;
-	
-	public Calendar() {}
+public class Calendar extends CalendarBase {
+	protected Integer calendarId;
 
 	public Integer getCalendarId() {
 		return calendarId;
@@ -72,188 +48,13 @@ public class Calendar {
 	public void setCalendarId(Integer calendarId) {
 		this.calendarId = calendarId;
 	}
-
-	public String getDomainId() {
-		return domainId;
-	}
-
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public Boolean getBuiltIn() {
-		return builtIn;
-	}
-
-	public void setBuiltIn(Boolean builtIn) {
-		this.builtIn = builtIn;
-	}
 	
-	public Provider getProvider() {
-		return provider;
-	}
-
-	public void setProvider(Provider provider) {
-		this.provider = provider;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-	public Sync getSync() {
-		return sync;
-	}
-
-	public void setSync(Sync sync) {
-		this.sync = sync;
-	}
-
-	public Boolean getIsPrivate() {
-		return isPrivate;
-	}
-
-	public void setIsPrivate(Boolean isPrivate) {
-		this.isPrivate = isPrivate;
-	}
-
-	public Boolean getDefaultBusy() {
-		return defaultBusy;
-	}
-
-	public void setDefaultBusy(Boolean defaultBusy) {
-		this.defaultBusy = defaultBusy;
-	}
-
-	public Integer getDefaultReminder() {
-		return defaultReminder;
-	}
-
-	public void setDefaultReminder(Integer defaultReminder) {
-		this.defaultReminder = defaultReminder;
-	}
-	
-	public Boolean getNotifyOnExtUpdate() {
-		return notifyOnExtUpdate;
-	}
-
-	public void setNotifyOnExtUpdate(Boolean notifyOnExtUpdate) {
-		this.notifyOnExtUpdate = notifyOnExtUpdate;
-	}
-	
-	public String getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(String parameters) {
-		this.parameters = parameters;
-	}
-	
-	public Short getRemoteSyncFrequency() {
-		return remoteSyncFrequency;
-	}
-
-	public void setRemoteSyncFrequency(Short remoteSyncFrequency) {
-		this.remoteSyncFrequency = remoteSyncFrequency;
-	}
-	
-	public DateTime getRemoteSyncTimestamp() {
-		return remoteSyncTimestamp;
-	}
-
-	public void setRemoteSyncTimestamp(DateTime remoteSyncTimestamp) {
-		this.remoteSyncTimestamp = remoteSyncTimestamp;
-	}
-	
-	public String getRemoteSyncTag() {
-		return remoteSyncTag;
-	}
-
-	public void setRemoteSyncTag(String remoteSyncTag) {
-		this.remoteSyncTag = remoteSyncTag;
-	}
-	
-	public UserProfileId getProfileId() {
-		return new UserProfileId(getDomainId(), getUserId());
-	}
-	
-	public void setProfileId(UserProfileId pid) {
-		setDomainId(pid.getDomainId());
-		setUserId(pid.getUserId());
-	}
-	
-	public <T> T getParametersAsObject(T defaultValue, Class<T> type) {
-		return LangUtils.deserialize(getParameters(), defaultValue, type);
-	}
-	
-	public <T> void setParametersAsObject(T value, Class<T> type) {
-		setParameters(LangUtils.serialize(value, type));
-	}
-	
-	public boolean isProviderRemote() {
-		return Calendar.isProviderRemote(getProvider());
-	}
-	
-	public Calendar applyPropSet(CalendarPropSet propSet) {
+	public static Calendar cloneAndSetProps(Calendar source, CalendarPropSet propSet) {
+		Calendar clone = Cloner.standard().deepClone(source);
 		if (propSet != null) {
-			Calendar clone = Cloner.standard().deepClone(this);
 			clone.setColor(propSet.getColorOrDefault(clone.getColor()));
 			clone.setSync(propSet.getSyncOrDefault(clone.getSync()));
-			return clone;
-		} else {
-			return this;
 		}
-	}
-	
-	public static boolean isProviderRemote(String provider) {
-		return Calendar.isProviderRemote(EnumUtils.forSerializedName(provider, Provider.class));
-	}
-	
-	public static boolean isProviderRemote(Provider provider) {
-		return Provider.WEBCAL.equals(provider) || Provider.CALDAV.equals(provider);
-	}
-	
-	public static String getHexColor(String color) {
-		return (StringUtils.indexOf(color, "#") == 0) ? StringUtils.substring(color, 1) : color;
-	}
-	
-	public static enum Provider {
-		@SerializedName("local") LOCAL,
-		@SerializedName("webcal") WEBCAL,
-		@SerializedName("caldav") CALDAV;
-	}
-	
-	public static enum Sync {
-		@SerializedName("O") OFF,
-		@SerializedName("R") READ,
-		@SerializedName("W") WRITE;
+		return clone;
 	}
 }

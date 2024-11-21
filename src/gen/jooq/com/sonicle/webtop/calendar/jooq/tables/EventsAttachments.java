@@ -34,7 +34,7 @@ public class EventsAttachments extends org.jooq.impl.TableImpl<com.sonicle.webto
     /**
      * The column <code>calendar.events_attachments.event_id</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttachmentsRecord, java.lang.Integer> EVENT_ID = createField(org.jooq.impl.DSL.name("event_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttachmentsRecord, java.lang.String> EVENT_ID = createField(org.jooq.impl.DSL.name("event_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>calendar.events_attachments.revision_timestamp</code>.
@@ -159,7 +159,7 @@ public class EventsAttachments extends org.jooq.impl.TableImpl<com.sonicle.webto
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row7<java.lang.String, java.lang.Integer, org.joda.time.DateTime, java.lang.Short, java.lang.String, java.lang.Long, java.lang.String> fieldsRow() {
+    public org.jooq.Row7<java.lang.String, java.lang.String, org.joda.time.DateTime, java.lang.Short, java.lang.String, java.lang.Long, java.lang.String> fieldsRow() {
         return (org.jooq.Row7) super.fieldsRow();
     }
 }
