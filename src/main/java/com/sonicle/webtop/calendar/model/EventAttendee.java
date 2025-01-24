@@ -134,11 +134,6 @@ public class EventAttendee {
 	public int hashCode() {
 		return new HashCodeBuilder()
 			.append(getAttendeeId())
-			.append(getRecipient())
-			.append(getRecipientType())
-			.append(getRecipientRole())
-			.append(getResponseStatus())
-			.append(getNotify())
 			.toHashCode();
 	}
 	
