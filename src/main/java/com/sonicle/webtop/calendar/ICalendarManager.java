@@ -51,8 +51,6 @@ import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
 import com.sonicle.webtop.calendar.model.EventInstance;
 import com.sonicle.webtop.calendar.model.EventKey;
 import com.sonicle.webtop.calendar.model.EventObject;
-import com.sonicle.webtop.calendar.model.EventObjectChanged;
-import com.sonicle.webtop.calendar.model.EventObjectWithICalendar;
 import com.sonicle.webtop.calendar.model.EventQuery;
 import com.sonicle.webtop.calendar.model.SchedEventInstance;
 import com.sonicle.webtop.calendar.model.UpdateEventTarget;
@@ -82,7 +80,6 @@ public interface ICalendarManager {
 	@Deprecated public Event addEventFromICal(int calendarId, net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	@Deprecated public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
 	@Deprecated public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean notifyAttendees) throws WTException;
-	
 	public Set<FolderSharing.SubjectConfiguration> getFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope) throws WTException;
 	public void updateFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope, final Set<FolderSharing.SubjectConfiguration> configurations) throws WTException;
 	public Map<UserProfileId, CalendarFSOrigin> listIncomingCalendarOrigins() throws WTException;
@@ -93,7 +90,7 @@ public interface ICalendarManager {
 	public Set<Integer> listIncomingCalendarIds() throws WTException;
 	public Set<Integer> listAllCalendarIds() throws WTException;
 	public Map<Integer, Calendar> listMyCalendars() throws WTException;
-	public Map<Integer, DateTime> getCalendarsLastRevision(Collection<Integer> calendarIds) throws WTException;
+	public Map<Integer, DateTime> getCalendarsItemsLastRevision(Collection<Integer> calendarIds) throws WTException;
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
 	public Integer getDefaultCalendarId() throws WTException;
 	public Integer getBuiltInCalendarId() throws WTException;
@@ -111,9 +108,7 @@ public interface ICalendarManager {
 	public List<ComparableEventBounds> listEventsBounds(final Collection<Integer> calendarIds, final DateTimeRange2 viewRange, final DateTimeZone targetTimezone) throws WTException;
 	public List<EventObject> listEventObjects(int calendarId, EventObjectOutputType outputType) throws WTException;
 	public List<EventObject> listEventObjects(int calendarId, DateTime since, EventObjectOutputType outputType) throws WTException;
-	public LangUtils.CollectionChangeSet<EventObjectChanged> listEventObjectsChanges(int calendarId, DateTime since, Integer limit) throws WTException;
-	public EventObjectWithICalendar getEventObjectWithICalendar(int calendarId, String href) throws WTException;
-	public List<EventObjectWithICalendar> getEventObjectsWithICalendar(int calendarId, Collection<String> hrefs) throws WTException;
+	public List<EventObject> getEventObjects(final int calendarId, final Collection<String> hrefs, final EventObjectOutputType outputType) throws WTException;
 	public EventObject getEventObject(int calendarId, String eventId, EventObjectOutputType outputType) throws WTException;
 	public void addEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
 	public void updateEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTNotFoundException, WTException;
@@ -147,8 +142,26 @@ public interface ICalendarManager {
 	public void updateEventTags(UpdateTagsOperation operation, Collection<String> eventIds, Set<String> tagIds) throws WTException;
 	public void deleteEvent(String publicUid, Integer calendarId, boolean notifyAttendees) throws WTException;
 	
+	public static enum EventGetOption implements BitFlagsEnum<EventGetOption> {
+		ATTACHMENTS(1<<0), TAGS(1<<1), CUSTOM_VALUES(1<<2);
+		
+		private int mask = 0;
+		private EventGetOption(int mask) { this.mask = mask; }
+		@Override
+		public long mask() { return this.mask; }
+	}
+	
+	public static enum EventUpdateOption implements BitFlagsEnum<EventUpdateOption> {
+		ATTACHMENTS(1<<0), TAGS(1<<1), CUSTOM_VALUES(1<<2);
+		
+		private int mask = 0;
+		private EventUpdateOption(int mask) { this.mask = mask; }
+		@Override
+		public long mask() { return this.mask; }
+	}
+	
 	public static enum HandleICalInviationOption implements BitFlagsEnum<HandleICalInviationOption> {
-		CONSTRAIN_AVAILABILITY(1 << 1), EVENT_LOOKUP_SCOPE_STRICT(1 << 2), IGNORE_ICAL_CLASSIFICATION(1 << 3), IGNORE_ICAL_TRASPARENCY(1 << 3), IGNORE_ICAL_ALARMS(1 << 4);
+		CONSTRAIN_AVAILABILITY(1<<1), EVENT_LOOKUP_SCOPE_STRICT(1<<2), IGNORE_ICAL_CLASSIFICATION(1<<3), IGNORE_ICAL_TRASPARENCY(1<<3), IGNORE_ICAL_ALARMS(1<<4);
 		
 		private int mask = 0;
 		private HandleICalInviationOption(int mask) { this.mask = mask; }

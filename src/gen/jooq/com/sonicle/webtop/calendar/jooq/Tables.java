@@ -22,11 +22,6 @@ public class Tables {
     public static final com.sonicle.webtop.calendar.jooq.tables.Calendars CALENDARS = com.sonicle.webtop.calendar.jooq.tables.Calendars.CALENDARS;
 
     /**
-     * The table <code>calendar.calendars_changes</code>.
-     */
-    public static final com.sonicle.webtop.calendar.jooq.tables.CalendarsChanges CALENDARS_CHANGES = com.sonicle.webtop.calendar.jooq.tables.CalendarsChanges.CALENDARS_CHANGES;
-
-    /**
      * The table <code>calendar.events</code>.
      */
     public static final com.sonicle.webtop.calendar.jooq.tables.Events EVENTS = com.sonicle.webtop.calendar.jooq.tables.Events.EVENTS;
@@ -60,6 +55,16 @@ public class Tables {
      * The table <code>calendar.events_tags</code>.
      */
     public static final com.sonicle.webtop.calendar.jooq.tables.EventsTags EVENTS_TAGS = com.sonicle.webtop.calendar.jooq.tables.EventsTags.EVENTS_TAGS;
+
+    /**
+     * The table <code>calendar.history_calendars</code>.
+     */
+    public static final com.sonicle.webtop.calendar.jooq.tables.HistoryCalendars HISTORY_CALENDARS = com.sonicle.webtop.calendar.jooq.tables.HistoryCalendars.HISTORY_CALENDARS;
+
+    /**
+     * The table <code>calendar.history_events</code>.
+     */
+    public static final com.sonicle.webtop.calendar.jooq.tables.HistoryEvents HISTORY_EVENTS = com.sonicle.webtop.calendar.jooq.tables.HistoryEvents.HISTORY_EVENTS;
 
     /**
      * The table <code>calendar.recurrences</code>.

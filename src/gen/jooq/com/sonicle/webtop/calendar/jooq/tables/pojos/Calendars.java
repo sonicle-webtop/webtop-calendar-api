@@ -32,6 +32,8 @@ public class Calendars implements java.io.Serializable {
     private java.lang.Short        remoteSyncFrequency;
     private org.joda.time.DateTime remoteSyncTimestamp;
     private java.lang.String       remoteSyncTag;
+    private org.joda.time.DateTime revisionTimestamp;
+    private org.joda.time.DateTime creationTimestamp;
 
     public Calendars() {}
 
@@ -55,6 +57,8 @@ public class Calendars implements java.io.Serializable {
         this.remoteSyncFrequency = value.remoteSyncFrequency;
         this.remoteSyncTimestamp = value.remoteSyncTimestamp;
         this.remoteSyncTag = value.remoteSyncTag;
+        this.revisionTimestamp = value.revisionTimestamp;
+        this.creationTimestamp = value.creationTimestamp;
     }
 
     public Calendars(
@@ -76,7 +80,9 @@ public class Calendars implements java.io.Serializable {
         java.lang.String       parameters,
         java.lang.Short        remoteSyncFrequency,
         org.joda.time.DateTime remoteSyncTimestamp,
-        java.lang.String       remoteSyncTag
+        java.lang.String       remoteSyncTag,
+        org.joda.time.DateTime revisionTimestamp,
+        org.joda.time.DateTime creationTimestamp
     ) {
         this.calendarId = calendarId;
         this.domainId = domainId;
@@ -97,6 +103,8 @@ public class Calendars implements java.io.Serializable {
         this.remoteSyncFrequency = remoteSyncFrequency;
         this.remoteSyncTimestamp = remoteSyncTimestamp;
         this.remoteSyncTag = remoteSyncTag;
+        this.revisionTimestamp = revisionTimestamp;
+        this.creationTimestamp = creationTimestamp;
     }
 
     /**
@@ -365,6 +373,34 @@ public class Calendars implements java.io.Serializable {
         this.remoteSyncTag = remoteSyncTag;
     }
 
+    /**
+     * Getter for <code>calendar.calendars.revision_timestamp</code>.
+     */
+    public org.joda.time.DateTime getRevisionTimestamp() {
+        return this.revisionTimestamp;
+    }
+
+    /**
+     * Setter for <code>calendar.calendars.revision_timestamp</code>.
+     */
+    public void setRevisionTimestamp(org.joda.time.DateTime revisionTimestamp) {
+        this.revisionTimestamp = revisionTimestamp;
+    }
+
+    /**
+     * Getter for <code>calendar.calendars.creation_timestamp</code>.
+     */
+    public org.joda.time.DateTime getCreationTimestamp() {
+        return this.creationTimestamp;
+    }
+
+    /**
+     * Setter for <code>calendar.calendars.creation_timestamp</code>.
+     */
+    public void setCreationTimestamp(org.joda.time.DateTime creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("Calendars (");
@@ -388,6 +424,8 @@ public class Calendars implements java.io.Serializable {
         sb.append(", ").append(remoteSyncFrequency);
         sb.append(", ").append(remoteSyncTimestamp);
         sb.append(", ").append(remoteSyncTag);
+        sb.append(", ").append(revisionTimestamp);
+        sb.append(", ").append(creationTimestamp);
 
         sb.append(")");
         return sb.toString();

@@ -166,6 +166,11 @@ public class Events extends org.jooq.impl.TableImpl<com.sonicle.webtop.calendar.
      */
     public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord, java.lang.Boolean> HANDLE_INVITATION = createField(org.jooq.impl.DSL.name("handle_invitation"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
+    /**
+     * The column <code>calendar.events.description_type</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord, java.lang.String> DESCRIPTION_TYPE = createField(org.jooq.impl.DSL.name("description_type"), org.jooq.impl.SQLDataType.VARCHAR(4).nullable(false).defaultValue(org.jooq.impl.DSL.field("'text'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
     private Events(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord> aliased) {
         this(alias, aliased, null);
     }

@@ -41,6 +41,7 @@ public class Events implements java.io.Serializable {
     private java.lang.String       statMasterDataId;
     private java.lang.Integer      causalId;
     private java.lang.Boolean      handleInvitation;
+    private java.lang.String       descriptionType;
 
     public Events() {}
 
@@ -73,6 +74,7 @@ public class Events implements java.io.Serializable {
         this.statMasterDataId = value.statMasterDataId;
         this.causalId = value.causalId;
         this.handleInvitation = value.handleInvitation;
+        this.descriptionType = value.descriptionType;
     }
 
     public Events(
@@ -103,7 +105,8 @@ public class Events implements java.io.Serializable {
         java.lang.String       masterDataId,
         java.lang.String       statMasterDataId,
         java.lang.Integer      causalId,
-        java.lang.Boolean      handleInvitation
+        java.lang.Boolean      handleInvitation,
+        java.lang.String       descriptionType
     ) {
         this.eventId = eventId;
         this.calendarId = calendarId;
@@ -133,6 +136,7 @@ public class Events implements java.io.Serializable {
         this.statMasterDataId = statMasterDataId;
         this.causalId = causalId;
         this.handleInvitation = handleInvitation;
+        this.descriptionType = descriptionType;
     }
 
     /**
@@ -527,6 +531,20 @@ public class Events implements java.io.Serializable {
         this.handleInvitation = handleInvitation;
     }
 
+    /**
+     * Getter for <code>calendar.events.description_type</code>.
+     */
+    public java.lang.String getDescriptionType() {
+        return this.descriptionType;
+    }
+
+    /**
+     * Setter for <code>calendar.events.description_type</code>.
+     */
+    public void setDescriptionType(java.lang.String descriptionType) {
+        this.descriptionType = descriptionType;
+    }
+
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("Events (");
@@ -559,6 +577,7 @@ public class Events implements java.io.Serializable {
         sb.append(", ").append(statMasterDataId);
         sb.append(", ").append(causalId);
         sb.append(", ").append(handleInvitation);
+        sb.append(", ").append(descriptionType);
 
         sb.append(")");
         return sb.toString();

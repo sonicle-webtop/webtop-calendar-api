@@ -29,11 +29,6 @@ public class Calendar extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.calendar.jooq.tables.Calendars CALENDARS = com.sonicle.webtop.calendar.jooq.tables.Calendars.CALENDARS;
 
     /**
-     * The table <code>calendar.calendars_changes</code>.
-     */
-    public final com.sonicle.webtop.calendar.jooq.tables.CalendarsChanges CALENDARS_CHANGES = com.sonicle.webtop.calendar.jooq.tables.CalendarsChanges.CALENDARS_CHANGES;
-
-    /**
      * The table <code>calendar.events</code>.
      */
     public final com.sonicle.webtop.calendar.jooq.tables.Events EVENTS = com.sonicle.webtop.calendar.jooq.tables.Events.EVENTS;
@@ -69,6 +64,16 @@ public class Calendar extends org.jooq.impl.SchemaImpl {
     public final com.sonicle.webtop.calendar.jooq.tables.EventsTags EVENTS_TAGS = com.sonicle.webtop.calendar.jooq.tables.EventsTags.EVENTS_TAGS;
 
     /**
+     * The table <code>calendar.history_calendars</code>.
+     */
+    public final com.sonicle.webtop.calendar.jooq.tables.HistoryCalendars HISTORY_CALENDARS = com.sonicle.webtop.calendar.jooq.tables.HistoryCalendars.HISTORY_CALENDARS;
+
+    /**
+     * The table <code>calendar.history_events</code>.
+     */
+    public final com.sonicle.webtop.calendar.jooq.tables.HistoryEvents HISTORY_EVENTS = com.sonicle.webtop.calendar.jooq.tables.HistoryEvents.HISTORY_EVENTS;
+
+    /**
      * The table <code>calendar.recurrences</code>.
      */
     public final com.sonicle.webtop.calendar.jooq.tables.Recurrences RECURRENCES = com.sonicle.webtop.calendar.jooq.tables.Recurrences.RECURRENCES;
@@ -97,6 +102,8 @@ public class Calendar extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.calendar.jooq.Sequences.SEQ_CALENDARS,
             com.sonicle.webtop.calendar.jooq.Sequences.SEQ_CALENDARS_CHANGES,
             com.sonicle.webtop.calendar.jooq.Sequences.SEQ_EVENTS,
+            com.sonicle.webtop.calendar.jooq.Sequences.SEQ_HISTORY_CALENDARS,
+            com.sonicle.webtop.calendar.jooq.Sequences.SEQ_HISTORY_EVENTS,
             com.sonicle.webtop.calendar.jooq.Sequences.SEQ_RECURRENCES);
     }
 
@@ -105,7 +112,6 @@ public class Calendar extends org.jooq.impl.SchemaImpl {
         return java.util.Arrays.<org.jooq.Table<?>>asList(
             com.sonicle.webtop.calendar.jooq.tables.CalendarProps.CALENDAR_PROPS,
             com.sonicle.webtop.calendar.jooq.tables.Calendars.CALENDARS,
-            com.sonicle.webtop.calendar.jooq.tables.CalendarsChanges.CALENDARS_CHANGES,
             com.sonicle.webtop.calendar.jooq.tables.Events.EVENTS,
             com.sonicle.webtop.calendar.jooq.tables.EventsAttachments.EVENTS_ATTACHMENTS,
             com.sonicle.webtop.calendar.jooq.tables.EventsAttachmentsData.EVENTS_ATTACHMENTS_DATA,
@@ -113,6 +119,8 @@ public class Calendar extends org.jooq.impl.SchemaImpl {
             com.sonicle.webtop.calendar.jooq.tables.EventsCustomValues.EVENTS_CUSTOM_VALUES,
             com.sonicle.webtop.calendar.jooq.tables.EventsIcalendars.EVENTS_ICALENDARS,
             com.sonicle.webtop.calendar.jooq.tables.EventsTags.EVENTS_TAGS,
+            com.sonicle.webtop.calendar.jooq.tables.HistoryCalendars.HISTORY_CALENDARS,
+            com.sonicle.webtop.calendar.jooq.tables.HistoryEvents.HISTORY_EVENTS,
             com.sonicle.webtop.calendar.jooq.tables.Recurrences.RECURRENCES,
             com.sonicle.webtop.calendar.jooq.tables.RecurrencesBroken.RECURRENCES_BROKEN);
     }
