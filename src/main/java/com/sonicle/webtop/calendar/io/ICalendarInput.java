@@ -45,7 +45,6 @@ import com.sonicle.webtop.core.util.LogEntry;
 import com.sonicle.webtop.core.util.MessageLogEntry;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -77,7 +76,6 @@ import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.ExDate;
-import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Transp;
@@ -95,7 +93,7 @@ public class ICalendarInput {
 	private boolean ignoreTrasparency = false;
 	private boolean ignoreAlarms = false;
 	private boolean defaultIsPrivate = false;
-	private boolean defaultBusy = false;
+	private boolean defaultBusy = true;
 	private boolean defaultAttendeeNotify = false;
 	private boolean includeVEventSourceInOutput = false;
 	private Map<String, String> tagNamesById = null;
@@ -289,16 +287,28 @@ public class ICalendarInput {
 		
 		// Private flag
 		if (!ignoreClassification && ve.getClassification() != null) {
+			boolean isPrivate = defaultIsPrivate;
 			String clazz = ve.getClassification().getValue();
-			event.setIsPrivate(StringUtils.equals(clazz, Clazz.CONFIDENTIAL.getValue()) || StringUtils.equals(clazz, Clazz.PRIVATE.getValue()));
+			if (StringUtils.equals(clazz, Clazz.CONFIDENTIAL.getValue()) || StringUtils.equals(clazz, Clazz.PRIVATE.getValue())) {
+				isPrivate = true;
+			} else if (StringUtils.equals(clazz, Clazz.PUBLIC.getValue())) {
+				isPrivate = false;
+			}
+			event.setIsPrivate(isPrivate);
 		} else {
 			event.setIsPrivate(defaultIsPrivate);
 		}
 
 		// Busy flag
 		if (!ignoreTrasparency && ve.getTransparency() != null) {
+			boolean busy = defaultBusy;
 			String transparency = ve.getTransparency().getValue();
-			event.setBusy(!StringUtils.equals(transparency, Transp.TRANSPARENT.getValue()));
+			if (StringUtils.equals(transparency, Transp.TRANSPARENT.getValue())) {
+				busy = false;
+			} else if (StringUtils.equals(transparency, Transp.OPAQUE.getValue())) {
+				busy = true;
+			}
+			event.setBusy(busy);
 		} else {
 			event.setBusy(defaultBusy);
 		}
