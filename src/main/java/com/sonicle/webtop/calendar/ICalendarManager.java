@@ -39,6 +39,8 @@ import com.sonicle.commons.flags.BitFlagsEnum;
 import com.sonicle.commons.time.DateRange;
 import com.sonicle.commons.time.DateTimeRange;
 import com.sonicle.commons.time.DateTimeRange2;
+import com.sonicle.commons.time.DateTimeWindow;
+import com.sonicle.commons.time.DateWindow;
 import com.sonicle.webtop.calendar.model.GetEventScope;
 import com.sonicle.webtop.calendar.model.Calendar;
 import com.sonicle.webtop.calendar.model.CalendarBase;
@@ -90,6 +92,7 @@ public interface ICalendarManager {
 	public Set<Integer> listIncomingCalendarIds() throws WTException;
 	public Set<Integer> listAllCalendarIds() throws WTException;
 	public Map<Integer, Calendar> listMyCalendars() throws WTException;
+	public Map<Integer, Calendar> listMyCalendars(final Collection<Integer> calendarIds) throws WTException;
 	public Map<Integer, DateTime> getCalendarsItemsLastRevision(Collection<Integer> calendarIds) throws WTException;
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
 	public Integer getDefaultCalendarId() throws WTException;
@@ -117,11 +120,16 @@ public interface ICalendarManager {
 	public List<SchedEventInstance> listUpcomingEventInstances(Collection<Integer> calendarIds, DateTime now, DateTimeZone targetTimezone) throws WTException;
 	public List<SchedEventInstance> listUpcomingEventInstances(Collection<Integer> calendarIds, DateTime now, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
 	public List<SchedEventInstance> listUpcomingEventInstances(Collection<Integer> calendarIds, DateTime now, int days, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
+	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
 	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateRange range, DateTimeZone targetTimezone, boolean sort) throws WTException;
 	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateRange range, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
 	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeRange range, DateTimeZone targetTimezone, boolean sort) throws WTException;
 	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeRange range, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
+	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateWindow timeWindow, DateTimeZone targetTimezone, boolean sort) throws WTException;
+	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateWindow timeWindow, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
+	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeWindow timeWindow, DateTimeZone targetTimezone, boolean sort) throws WTException;
+	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeWindow timeWindow, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
+	
 	public Event getEvent(String eventId) throws WTException;
 	public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
 	public EventAttachmentWithBytes getEventAttachment(String eventId, String attachmentId) throws WTNotFoundException, WTException;
