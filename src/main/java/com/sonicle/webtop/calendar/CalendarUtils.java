@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.calendar;
 
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.webtop.calendar.model.BaseEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -70,7 +70,7 @@ public class CalendarUtils {
 	
 	public static int calculateDaysSpan(DateTime start, DateTime end, DateTimeZone timezone) {
 		int daysSpan;
-		if (DateTimeUtils.isMidnight(start) && DateTimeUtils.isMidnight(end)) {
+		if (JodaTimeUtils.isMidnight(start) && JodaTimeUtils.isMidnight(end)) {
 			// world convention: 00:00:00 -> 00:00:00+1
 			daysSpan = calculateLengthInDays(start, end) -1;
 		} else {
@@ -119,7 +119,7 @@ public class CalendarUtils {
 	
 	public static EventBoundary toEventBoundaryForRead(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
 		if (allDay) {
-			if (DateTimeUtils.isMidnight(start) && DateTimeUtils.isMidnight(end)) {
+			if (JodaTimeUtils.isMidnight(start) && JodaTimeUtils.isMidnight(end)) {
 				int daySpan = calculateDaysSpan(start, end, timezone);
 				LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
 				return new EventBoundary(
@@ -166,13 +166,13 @@ public class CalendarUtils {
 	
 	public static EventBoundary toEventBoundaryForPreview(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
 		if (allDay) {
-			if (DateTimeUtils.isMidnight(start) && DateTimeUtils.isMidnight(end)) {
+			if (JodaTimeUtils.isMidnight(start) && JodaTimeUtils.isMidnight(end)) {
 				int daySpan = calculateDaysSpan(start, end, timezone);
 				LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
 				return new EventBoundary(
 						allDay,
 						startLocalDate.toDateTimeAtStartOfDay(timezone),
-						DateTimeUtils.withTimeAtEndOfDay(startLocalDate.plusDays(daySpan).toDateTimeAtStartOfDay(timezone)),
+						JodaTimeUtils.withTimeAtEndOfDay(startLocalDate.plusDays(daySpan).toDateTimeAtStartOfDay(timezone)),
 						timezone
 				);
 			} else {

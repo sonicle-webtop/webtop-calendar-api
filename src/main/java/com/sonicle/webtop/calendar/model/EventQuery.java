@@ -36,7 +36,7 @@ import com.sonicle.commons.qbuilders.conditions.Condition;
 import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JavaTimeUtils;
 import com.sonicle.commons.web.json.CId;
 import com.sonicle.commons.web.json.bean.QueryObj;
 import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCValues;
@@ -153,11 +153,11 @@ public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
 
 		} else if ("after".equals(condition.keyword)) {
 			String after = StringUtils.replace(value, "/", "-");
-			return new EventQuery().after().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(after), DateTimeUtils.toZoneId(timezone)));
+			return new EventQuery().after().eq(JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalDateYMD(after), JavaTimeUtils.toZoneId(timezone)));
 
 		} else if ("before".equals(condition.keyword)) {
 			String before = StringUtils.replace(value, "/", "-");
-			return new EventQuery().before().eq(DateTimeUtils.toInstant(DateTimeUtils.parseLocalDate(before), DateTimeUtils.toZoneId(timezone)));
+			return new EventQuery().before().eq(JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalDateYMD(before), JavaTimeUtils.toZoneId(timezone)));
 
 		} else if ("masterDataId".equals(condition.keyword)) {
 			return new EventQuery().masterDataId().eq(asStringValue(value, smartStringComparison));
