@@ -190,8 +190,8 @@ public class Event extends BaseEvent {
 	
 	public void setCustomValues(Collection<CustomFieldValue> customValues) {
 		this.customValues = customValues.stream()
-				.filter(item -> item.getFieldId() != null)
-				.collect(Collectors.toMap(item -> item.getFieldId(), item -> item, (ov, nv) -> nv, LinkedHashMap::new));
+			.filter(item -> item.getFieldId() != null)
+			.collect(Collectors.toMap(item -> item.getFieldId(), item -> item, (ov, nv) -> nv, LinkedHashMap::new));
 	}
 	
 	public void setDatesAndTimes(boolean allDay, String timezone, DateTime startDate, DateTime endDate) {

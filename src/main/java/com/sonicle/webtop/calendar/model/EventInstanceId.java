@@ -33,7 +33,7 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.sonicle.commons.LangUtils;
-import com.sonicle.commons.time.DateTimeUtils;
+import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.commons.web.json.CId;
 import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +69,7 @@ public class EventInstanceId extends CId {
 		if (hasNoInstance()) {
 			return null;
 		} else {
-			return DateTimeUtils.parseDateTime(DateTimeUtils.createFormatter("yyyyMMdd", targetTimezone), getInstance()).toLocalDate();
+			return JodaTimeUtils.parseDateTime(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), getInstance()).toLocalDate();
 		}
 	}
 
@@ -86,7 +86,7 @@ public class EventInstanceId extends CId {
 	}
 	
 	public static EventInstanceId build(final String eventId, final DateTime instance, final DateTimeZone targetTimezone) {
-		return build(eventId, DateTimeUtils.print(DateTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
+		return build(eventId, JodaTimeUtils.print(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
 	}
 	
 	public static EventInstanceId buildMaster(final String eventId) {

@@ -37,6 +37,8 @@ import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttachment;
 import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
 import com.sonicle.webtop.calendar.model.EventAttendee;
+import com.sonicle.webtop.core.app.ical4j.XCustomFieldValue;
+import com.sonicle.webtop.core.app.ical4j.XTag;
 import com.sonicle.webtop.core.model.CustomFieldValue;
 import com.sonicle.webtop.core.sdk.WTException;
 import com.sonicle.webtop.core.util.ICal4jUtils;
@@ -255,7 +257,7 @@ public class ICalendarOutput {
 			}
 		}
 		
-		// ATTACHMENTS
+		// Attachments
 		if (event.hasAttachments()) {
 			for(EventAttachment att: event.getAttachmentsOrEmpty()) {
 				if (att instanceof EventAttachmentWithBytes) {
@@ -270,30 +272,10 @@ public class ICalendarOutput {
 			}
 		}
 		
-		// EXTENDED PROPERTIES
-		for(XProperty xp: toXProperties(event)) {
+		// Extended Properties
+		for (XProperty xp: toXProperties(event)) {
 			ve.getProperties().add(xp);
-		}
-		
-		// CUSTOM FIELDS AS EXTENDED PROPERTIES
-		Map<String, CustomFieldValue> cv = event.getCustomValues();
-		if (cv!=null) {
-			for (Entry<String, CustomFieldValue> e: cv.entrySet()) {
-				CustomFieldValue cfv = e.getValue();
-				String uid = e.getKey();
-				DateFormat df = new SimpleDateFormat("yyyyMMdd");
-				Boolean bv = cfv.getBooleanValue();
-				DateTime dv = cfv.getDateValue();
-				Double nv = cfv.getNumberValue();
-				String sv = cfv.getStringValue();
-				String tv = cfv.getTextValue();
-				if (bv!=null) ve.getProperties().add(toCustomFieldProperty(uid, "boolean", ""+bv));
-				if (dv!=null) ve.getProperties().add(toCustomFieldProperty(uid, "date", df.format(dv.toDate())));
-				if (nv!=null) ve.getProperties().add(toCustomFieldProperty(uid, "number", ""+nv));
-				if (!StringUtils.isEmpty(sv)) ve.getProperties().add(toCustomFieldProperty(uid, "string", ""+sv));
-				if (!StringUtils.isEmpty(tv)) ve.getProperties().add(toCustomFieldProperty(uid, "text", ""+tv));
-			}
-		}		
+		}	
 		
 		return ve;
 	}
@@ -405,33 +387,41 @@ public class ICalendarOutput {
 		}
 	}
 	
-	public ParameterList toCustomFieldParameterList(String uid, String type) {
-		try {
-			ParameterFactoryImpl pfi = ParameterFactoryImpl.getInstance();
-			ParameterList pl = new ParameterList();
-			pl.add(pfi.createParameter("UID",uid));
-			pl.add(pfi.createParameter("TYPE",type));
-			return pl;
-		} catch(URISyntaxException exc) {
-			return null;
-		}
-	}
-	
-	public XProperty toCustomFieldProperty(String uid, String type, String value) {
-		return new XProperty("X-WT-CUSTOMFIELDVALUE", toCustomFieldParameterList(uid, type), value);
-	}
-	
-	public List<XProperty> toXProperties(Event e) {
+	public List<XProperty> toXProperties(Event e) throws WTException {
 		List<XProperty> props = new ArrayList<>();
 		
-		for(String tag: e.getTagsOrEmpty()) {
+		// Tags
+		for (String tag: e.getTagsOrEmpty()) {
 			String tagName = null;
-			if (tagNamesByIdMap!=null) tagName = tagNamesByIdMap.get(tag);
-			if (tagName==null) tagName=tag;
-			ParameterList pl = new ParameterList();
-			pl.add(new XParameter("UID", tag));
-			props.add(new XProperty("X-WT-TAG", pl, tagName));
+			if (tagNamesByIdMap != null) tagName = tagNamesByIdMap.get(tag);
+			if (tagName == null) tagName = tag;
+			try {
+				props.add(XTag.toProperty(tag, tagName));
+			} catch (URISyntaxException ex) {
+				throw new WTException(ex, "Unable to add custom-field value");
+			}
 		}
+		
+		// Custom fields
+		Map<String, CustomFieldValue> customValues = e.getCustomValues();
+		if (customValues != null) {
+			for (Entry<String, CustomFieldValue> entry : customValues.entrySet()) {
+				CustomFieldValue cfv = entry.getValue();
+				String uid = entry.getKey();
+				
+				try {
+					if (cfv.getStringValue() != null) props.add(XCustomFieldValue.toProperty(uid, cfv.getStringValue(), false));
+					if (cfv.getNumberValue()!= null) props.add(XCustomFieldValue.toProperty(uid, cfv.getNumberValue()));
+					if (cfv.getBooleanValue()!= null) props.add(XCustomFieldValue.toProperty(uid, cfv.getBooleanValue()));
+					if (cfv.getDateValue()!= null) props.add(XCustomFieldValue.toProperty(uid, cfv.getDateValue()));
+					if (cfv.getTextValue()!= null) props.add(XCustomFieldValue.toProperty(uid, cfv.getTextValue(), true));
+					
+				} catch (URISyntaxException ex) {
+					throw new WTException(ex, "Unable to add custom-field value");
+				}
+			}
+		}	
+		
 		return props;
 	}
 
