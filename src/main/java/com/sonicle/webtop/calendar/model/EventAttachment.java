@@ -32,6 +32,8 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
@@ -100,9 +102,6 @@ public class EventAttachment {
 	public int hashCode() {
 		return new HashCodeBuilder()
 			.append(getAttachmentId())
-			.append(getFilename())
-			.append(getSize())
-			.append(getMediaType())
 			.toHashCode();
 	}
 	
@@ -114,5 +113,14 @@ public class EventAttachment {
 		return new EqualsBuilder()
 			.append(getAttachmentId(), otherObject.getAttachmentId())
 			.isEquals();
+	}
+	
+	public static List<EventAttachment> asListToClone(List<EventAttachment> attachmentsToClone) {
+		if (attachmentsToClone == null || attachmentsToClone.isEmpty()) return attachmentsToClone;
+		ArrayList<EventAttachment> items = new ArrayList<>(attachmentsToClone.size());
+		for (EventAttachment attachment : attachmentsToClone) {
+			items.add(new EventAttachmentWithClone(attachment));
+		}
+		return items;
 	}
 }
