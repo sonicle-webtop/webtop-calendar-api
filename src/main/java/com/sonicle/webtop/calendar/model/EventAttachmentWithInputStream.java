@@ -32,21 +32,35 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  * @author malbinola
  */
-public class EventAttachmentWithClone extends EventAttachment {
-	protected String attachmentIdToClone;
+public class EventAttachmentWithInputStream extends EventAttachmentWithInput {
+	private final InputStream stream;
 	
-	public EventAttachmentWithClone(EventAttachment attachmentToClone) {
-		this.setFilename(attachmentToClone.getFilename());
-		this.setSize(attachmentToClone.getSize());
-		this.setMediaType(attachmentToClone.getMediaType());
-		this.attachmentIdToClone = attachmentToClone.getAttachmentId();
+	public EventAttachmentWithInputStream(File file) throws FileNotFoundException {
+		this(new FileInputStream(file));
 	}
 	
-	public String getAttachmentIdToClone() {
-		return attachmentIdToClone;
+	public EventAttachmentWithInputStream(InputStream stream, String mediaType, String filename, long size) {
+		this.stream = stream;
+		this.setMediaType(StringUtils.defaultIfBlank(mediaType, "application/octet-stream"));
+		this.setFilename(filename);
+		this.setSize(size);
+	}
+	
+	public EventAttachmentWithInputStream(InputStream stream) {
+		this.stream = stream;
+	}
+	
+	public InputStream getStream() {
+		return stream;
 	}
 }

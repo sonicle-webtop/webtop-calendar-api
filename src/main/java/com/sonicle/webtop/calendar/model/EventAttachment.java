@@ -115,11 +115,11 @@ public class EventAttachment {
 			.isEquals();
 	}
 	
-	public static List<EventAttachment> asListToClone(List<EventAttachment> attachmentsToClone) {
+	public static List<EventAttachment> asListOfEventAttachmentsWithInputRef(List<EventAttachment> attachmentsToClone) {
 		if (attachmentsToClone == null || attachmentsToClone.isEmpty()) return attachmentsToClone;
 		ArrayList<EventAttachment> items = new ArrayList<>(attachmentsToClone.size());
 		for (EventAttachment attachment : attachmentsToClone) {
-			items.add(new EventAttachmentWithClone(attachment));
+			items.add(new EventAttachmentWithInputRef(attachment));
 		}
 		return items;
 	}
