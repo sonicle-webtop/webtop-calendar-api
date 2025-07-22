@@ -33,8 +33,10 @@
 package com.sonicle.webtop.calendar.io;
 
 import com.sonicle.webtop.calendar.model.Event;
+import java.util.regex.Pattern;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Status;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.LocalDate;
 
 /**
@@ -42,6 +44,7 @@ import org.joda.time.LocalDate;
  * @author malbinola
  */
 public class EventInput {
+	private static final Pattern PATTERN_LINE_DTSTAMP = Pattern.compile("\nDTSTAMP:.*(\r)?\n");
 	public final Event event;
 	public final String exRefersToPublicUid;
 	public final LocalDate addsExOnMaster;
@@ -57,5 +60,11 @@ public class EventInput {
 	public boolean isSourceEventCancelled() {
 		if (sourceEvent == null) return false;
 		return Status.VEVENT_CANCELLED.equals(sourceEvent.getProperty(Status.STATUS));
+	}
+	
+	public String computeDataHash() {
+		if (sourceEvent == null) return null;
+		final String s = PATTERN_LINE_DTSTAMP.matcher(sourceEvent.toString()).replaceFirst("\n");
+		return DigestUtils.md5Hex(s);
 	}
 }
