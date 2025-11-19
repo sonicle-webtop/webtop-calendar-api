@@ -255,7 +255,7 @@ public class Event extends BaseEvent {
 		setStatMasterDataId(null);
 		setCausalId(null);
 		setReminder(null);
-		//getAttendees().clear();
+		getAttendees().clear();
 		getAttachments().clear();
 		super.censorize();
 	}

@@ -248,6 +248,7 @@ public class BaseEvent {
 		this.location = null;
 		this.description = null;
 		this.reminder = null;
+		this.organizer = null;
 		this.censorized = true;
 	}
 	
