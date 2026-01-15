@@ -136,6 +136,7 @@ public interface ICalendarManager {
 	public Map<String, CustomFieldValue> getEventCustomValues(String eventId) throws WTException;
 	public Event addEvent(Event event) throws WTException;
 	public Event addEvent(Event event, boolean notifyAttendees) throws WTException;
+	public Event addEvent(final Event event, final BitFlags<EventAddOption> options) throws WTException;
 	public Event handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar ical, final Integer calendarId, final BitFlags<HandleICalInviationOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
 	public String getEventInstanceKey(String eventId) throws WTException;
 	public EventInstance getEventInstance(String eventKey) throws WTException;
@@ -157,6 +158,35 @@ public interface ICalendarManager {
 		private EventGetOption(int mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
+	}
+	
+	public static enum EventAddOption implements BitFlagsEnum<EventAddOption> {
+		NOTIFY_INDIVIDUAL_ATTENDEE(1<<1), NOTIFY_RESOURCE_ATTENDEE(1<<2);
+		
+		private int mask = 0;
+		private EventAddOption(int mask) { this.mask = mask; }
+		@Override
+		public long mask() { return this.mask; }
+		
+		public static BitFlags<EventAddOption> withAllAttendeesNotifications() {
+			return BitFlags.with(EventAddOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventAddOption.NOTIFY_RESOURCE_ATTENDEE);
+			//return enableAttendeesNotifications(BitFlags.noneOf(EventAddOption.class));
+		}
+		
+		public static BitFlags<EventAddOption> enableAttendeesNotifications(BitFlags<EventAddOption> opts) {
+			opts.set(EventAddOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventAddOption.NOTIFY_RESOURCE_ATTENDEE);
+			return opts;
+		}
+		
+		public static BitFlags<EventAddOption> withNOAttendeesNotifications() {
+			return BitFlags.noneOf(EventAddOption.class);
+			//return disableAttendeesNotifications(BitFlags.noneOf(EventAddOption.class));
+		}
+		
+		public static BitFlags<EventAddOption> disableAttendeesNotifications(BitFlags<EventAddOption> opts) {
+			opts.unset(EventAddOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventAddOption.NOTIFY_RESOURCE_ATTENDEE);
+			return opts;
+		}
 	}
 	
 	public static enum EventUpdateOption implements BitFlagsEnum<EventUpdateOption> {
