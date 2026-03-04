@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar;
 
+import com.sonicle.commons.time.DateTimeWindow;
 import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.webtop.calendar.model.BaseEvent;
 import java.util.HashSet;
@@ -39,8 +40,9 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
+import org.joda.time.IllegalInstantException;
 import org.joda.time.LocalDate;
-import org.joda.time.Minutes;
+import org.joda.time.LocalDateTime;
 import org.jooq.tools.StringUtils;
 
 /**
@@ -53,8 +55,40 @@ public class CalendarUtils {
 		return StringUtils.isBlank(timezoneId) ? null : DateTimeZone.forID(timezoneId);
 	}
 	
-	public static int calculateLengthInMinutes(DateTime from, DateTime to) {
-		return Minutes.minutesBetween(from, to).getMinutes();
+	public static DateTimeWindow computeStartEndForEventInstance(final LocalDate instanceDate, final LocalDateTime mockEventStart, final LocalDateTime mockEventEnd, final DateTimeZone mockEventTimezone) {
+		final int spanDays = JodaTimeUtils.daysBetween(mockEventStart, mockEventEnd, true);
+		
+		DateTime start = null;
+		DateTime end = null;
+		
+		try {
+			start = JodaTimeUtils.toDateTime(instanceDate, mockEventStart.toLocalTime(), mockEventTimezone, false);
+			end = JodaTimeUtils.toDateTime(instanceDate.plusDays(spanDays), mockEventEnd.toLocalTime(), mockEventTimezone, false);
+			
+		} catch (IllegalInstantException ex) {
+			if (start != null) { // end falls in the gap:
+				if (spanDays == 0) { // ...move both forward if spanDays = 0: use new end as start and tweak end accordingly
+					final DateTime pushedEnd = JodaTimeUtils.toDateTime(instanceDate.plusDays(spanDays), mockEventEnd.toLocalTime(), mockEventTimezone, true);
+					start = JodaTimeUtils.toDateTime(instanceDate, pushedEnd.toLocalTime(), mockEventTimezone, false);
+					final int spanMins = JodaTimeUtils.minutesBetween(mockEventStart.toLocalTime(), mockEventEnd.toLocalTime(), true);
+					end = JodaTimeUtils.toDateTime(instanceDate, start.toLocalTime().plusMinutes(spanMins), mockEventTimezone, false);
+					
+				} else { // ...move end forward
+					end = JodaTimeUtils.toDateTime(instanceDate.plusDays(spanDays), mockEventEnd.toLocalTime(), mockEventTimezone, true);
+				}
+				
+			} else { // start falls in the gap: move start forward
+				start = JodaTimeUtils.toDateTime(instanceDate, mockEventStart.toLocalTime(), mockEventTimezone, true);
+				if (spanDays == 0) { // ...move forward also end if spanDays = 0
+					final int spanMins = JodaTimeUtils.minutesBetween(mockEventStart.toLocalTime(), mockEventEnd.toLocalTime(), true);
+					end = JodaTimeUtils.toDateTime(instanceDate, start.toLocalTime().plusMinutes(spanMins), mockEventTimezone, false);
+				} else {
+					end = JodaTimeUtils.toDateTime(instanceDate.plusDays(spanDays), mockEventEnd.toLocalTime(), mockEventTimezone, false);
+				}
+			}
+		}
+		
+		return DateTimeWindow.builder().withStart(start).withEnd(end).build();
 	}
 	
 	/**
