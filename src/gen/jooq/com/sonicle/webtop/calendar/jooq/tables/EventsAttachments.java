@@ -29,7 +29,7 @@ public class EventsAttachments extends org.jooq.impl.TableImpl<com.sonicle.webto
     /**
      * The column <code>calendar.events_attachments.event_attachment_id</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttachmentsRecord, java.lang.String> EVENT_ATTACHMENT_ID = createField(org.jooq.impl.DSL.name("event_attachment_id"), org.jooq.impl.SQLDataType.VARCHAR(36).nullable(false), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttachmentsRecord, java.lang.String> EVENT_ATTACHMENT_ID = createField(org.jooq.impl.DSL.name("event_attachment_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>calendar.events_attachments.event_id</code>.

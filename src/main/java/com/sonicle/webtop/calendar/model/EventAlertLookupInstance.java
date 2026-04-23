@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,33 +28,38 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2022 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
-
-import com.sonicle.commons.time.DateTimeRange2;
-import com.sonicle.commons.time.InstantRange;
-import net.sf.qualitycheck.Check;
-import org.joda.time.DateTime;
 
 /**
  *
  * @author malbinola
  */
-public class ComparableEventBounds extends DateTimeRange2 implements Comparable {
-	protected final EventInstanceId id;
-
-	public ComparableEventBounds(DateTime start, DateTime end, EventInstanceId id) {
-		super(Check.notNull(start, "start"), Check.notNull(end, "end"));
+public class EventAlertLookupInstance extends EventAlertLookup {
+	protected EventInstanceId id;
+	protected String originalEventId;
+	
+	public EventAlertLookupInstance() {}
+	
+	public EventAlertLookupInstance(EventInstanceId id, String originalEventId) {
 		this.id = id;
+		this.originalEventId = originalEventId;
 	}
-
+	
 	public EventInstanceId getId() {
 		return id;
 	}
 
-	@Override
-	public int compareTo(Object o) {
-		return getStart().compareTo(((DateTimeRange2)o).getStart());
+	public void setId(EventInstanceId id) {
+		this.id = id;
+	}
+	
+	public String getOriginalEventId() {
+		return originalEventId;
+	}
+
+	public void setOriginalEventId(String originalEventId) {
+		this.originalEventId = originalEventId;
 	}
 }

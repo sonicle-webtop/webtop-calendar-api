@@ -17,23 +17,21 @@ public class Calendars implements java.io.Serializable {
     private java.lang.String       domainId;
     private java.lang.String       userId;
     private java.lang.Boolean      builtIn;
+    private org.joda.time.DateTime revisionTimestamp;
+    private org.joda.time.DateTime creationTimestamp;
     private java.lang.String       provider;
     private java.lang.String       name;
     private java.lang.String       description;
     private java.lang.String       color;
     private java.lang.String       sync;
-    private java.lang.Boolean      isDefault;
-    private java.lang.Boolean      isPrivate;
-    private java.lang.Boolean      busy;
-    private java.lang.Integer      reminder;
-    private java.lang.Boolean      invitation;
+    private java.lang.String       defVisibility;
+    private java.lang.String       defTransparency;
+    private java.lang.Integer      defReminder;
     private java.lang.Boolean      notifyOnExtUpdate;
     private java.lang.String       parameters;
     private java.lang.Short        remoteSyncFrequency;
     private org.joda.time.DateTime remoteSyncTimestamp;
     private java.lang.String       remoteSyncTag;
-    private org.joda.time.DateTime revisionTimestamp;
-    private org.joda.time.DateTime creationTimestamp;
 
     public Calendars() {}
 
@@ -42,23 +40,21 @@ public class Calendars implements java.io.Serializable {
         this.domainId = value.domainId;
         this.userId = value.userId;
         this.builtIn = value.builtIn;
+        this.revisionTimestamp = value.revisionTimestamp;
+        this.creationTimestamp = value.creationTimestamp;
         this.provider = value.provider;
         this.name = value.name;
         this.description = value.description;
         this.color = value.color;
         this.sync = value.sync;
-        this.isDefault = value.isDefault;
-        this.isPrivate = value.isPrivate;
-        this.busy = value.busy;
-        this.reminder = value.reminder;
-        this.invitation = value.invitation;
+        this.defVisibility = value.defVisibility;
+        this.defTransparency = value.defTransparency;
+        this.defReminder = value.defReminder;
         this.notifyOnExtUpdate = value.notifyOnExtUpdate;
         this.parameters = value.parameters;
         this.remoteSyncFrequency = value.remoteSyncFrequency;
         this.remoteSyncTimestamp = value.remoteSyncTimestamp;
         this.remoteSyncTag = value.remoteSyncTag;
-        this.revisionTimestamp = value.revisionTimestamp;
-        this.creationTimestamp = value.creationTimestamp;
     }
 
     public Calendars(
@@ -66,45 +62,41 @@ public class Calendars implements java.io.Serializable {
         java.lang.String       domainId,
         java.lang.String       userId,
         java.lang.Boolean      builtIn,
+        org.joda.time.DateTime revisionTimestamp,
+        org.joda.time.DateTime creationTimestamp,
         java.lang.String       provider,
         java.lang.String       name,
         java.lang.String       description,
         java.lang.String       color,
         java.lang.String       sync,
-        java.lang.Boolean      isDefault,
-        java.lang.Boolean      isPrivate,
-        java.lang.Boolean      busy,
-        java.lang.Integer      reminder,
-        java.lang.Boolean      invitation,
+        java.lang.String       defVisibility,
+        java.lang.String       defTransparency,
+        java.lang.Integer      defReminder,
         java.lang.Boolean      notifyOnExtUpdate,
         java.lang.String       parameters,
         java.lang.Short        remoteSyncFrequency,
         org.joda.time.DateTime remoteSyncTimestamp,
-        java.lang.String       remoteSyncTag,
-        org.joda.time.DateTime revisionTimestamp,
-        org.joda.time.DateTime creationTimestamp
+        java.lang.String       remoteSyncTag
     ) {
         this.calendarId = calendarId;
         this.domainId = domainId;
         this.userId = userId;
         this.builtIn = builtIn;
+        this.revisionTimestamp = revisionTimestamp;
+        this.creationTimestamp = creationTimestamp;
         this.provider = provider;
         this.name = name;
         this.description = description;
         this.color = color;
         this.sync = sync;
-        this.isDefault = isDefault;
-        this.isPrivate = isPrivate;
-        this.busy = busy;
-        this.reminder = reminder;
-        this.invitation = invitation;
+        this.defVisibility = defVisibility;
+        this.defTransparency = defTransparency;
+        this.defReminder = defReminder;
         this.notifyOnExtUpdate = notifyOnExtUpdate;
         this.parameters = parameters;
         this.remoteSyncFrequency = remoteSyncFrequency;
         this.remoteSyncTimestamp = remoteSyncTimestamp;
         this.remoteSyncTag = remoteSyncTag;
-        this.revisionTimestamp = revisionTimestamp;
-        this.creationTimestamp = creationTimestamp;
     }
 
     /**
@@ -161,6 +153,34 @@ public class Calendars implements java.io.Serializable {
      */
     public void setBuiltIn(java.lang.Boolean builtIn) {
         this.builtIn = builtIn;
+    }
+
+    /**
+     * Getter for <code>calendar.calendars.revision_timestamp</code>.
+     */
+    public org.joda.time.DateTime getRevisionTimestamp() {
+        return this.revisionTimestamp;
+    }
+
+    /**
+     * Setter for <code>calendar.calendars.revision_timestamp</code>.
+     */
+    public void setRevisionTimestamp(org.joda.time.DateTime revisionTimestamp) {
+        this.revisionTimestamp = revisionTimestamp;
+    }
+
+    /**
+     * Getter for <code>calendar.calendars.creation_timestamp</code>.
+     */
+    public org.joda.time.DateTime getCreationTimestamp() {
+        return this.creationTimestamp;
+    }
+
+    /**
+     * Setter for <code>calendar.calendars.creation_timestamp</code>.
+     */
+    public void setCreationTimestamp(org.joda.time.DateTime creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
     }
 
     /**
@@ -234,73 +254,45 @@ public class Calendars implements java.io.Serializable {
     }
 
     /**
-     * Getter for <code>calendar.calendars.is_default</code>.
+     * Getter for <code>calendar.calendars.def_visibility</code>.
      */
-    public java.lang.Boolean getIsDefault() {
-        return this.isDefault;
+    public java.lang.String getDefVisibility() {
+        return this.defVisibility;
     }
 
     /**
-     * Setter for <code>calendar.calendars.is_default</code>.
+     * Setter for <code>calendar.calendars.def_visibility</code>.
      */
-    public void setIsDefault(java.lang.Boolean isDefault) {
-        this.isDefault = isDefault;
+    public void setDefVisibility(java.lang.String defVisibility) {
+        this.defVisibility = defVisibility;
     }
 
     /**
-     * Getter for <code>calendar.calendars.is_private</code>.
+     * Getter for <code>calendar.calendars.def_transparency</code>.
      */
-    public java.lang.Boolean getIsPrivate() {
-        return this.isPrivate;
+    public java.lang.String getDefTransparency() {
+        return this.defTransparency;
     }
 
     /**
-     * Setter for <code>calendar.calendars.is_private</code>.
+     * Setter for <code>calendar.calendars.def_transparency</code>.
      */
-    public void setIsPrivate(java.lang.Boolean isPrivate) {
-        this.isPrivate = isPrivate;
+    public void setDefTransparency(java.lang.String defTransparency) {
+        this.defTransparency = defTransparency;
     }
 
     /**
-     * Getter for <code>calendar.calendars.busy</code>.
+     * Getter for <code>calendar.calendars.def_reminder</code>.
      */
-    public java.lang.Boolean getBusy() {
-        return this.busy;
+    public java.lang.Integer getDefReminder() {
+        return this.defReminder;
     }
 
     /**
-     * Setter for <code>calendar.calendars.busy</code>.
+     * Setter for <code>calendar.calendars.def_reminder</code>.
      */
-    public void setBusy(java.lang.Boolean busy) {
-        this.busy = busy;
-    }
-
-    /**
-     * Getter for <code>calendar.calendars.reminder</code>.
-     */
-    public java.lang.Integer getReminder() {
-        return this.reminder;
-    }
-
-    /**
-     * Setter for <code>calendar.calendars.reminder</code>.
-     */
-    public void setReminder(java.lang.Integer reminder) {
-        this.reminder = reminder;
-    }
-
-    /**
-     * Getter for <code>calendar.calendars.invitation</code>.
-     */
-    public java.lang.Boolean getInvitation() {
-        return this.invitation;
-    }
-
-    /**
-     * Setter for <code>calendar.calendars.invitation</code>.
-     */
-    public void setInvitation(java.lang.Boolean invitation) {
-        this.invitation = invitation;
+    public void setDefReminder(java.lang.Integer defReminder) {
+        this.defReminder = defReminder;
     }
 
     /**
@@ -373,34 +365,6 @@ public class Calendars implements java.io.Serializable {
         this.remoteSyncTag = remoteSyncTag;
     }
 
-    /**
-     * Getter for <code>calendar.calendars.revision_timestamp</code>.
-     */
-    public org.joda.time.DateTime getRevisionTimestamp() {
-        return this.revisionTimestamp;
-    }
-
-    /**
-     * Setter for <code>calendar.calendars.revision_timestamp</code>.
-     */
-    public void setRevisionTimestamp(org.joda.time.DateTime revisionTimestamp) {
-        this.revisionTimestamp = revisionTimestamp;
-    }
-
-    /**
-     * Getter for <code>calendar.calendars.creation_timestamp</code>.
-     */
-    public org.joda.time.DateTime getCreationTimestamp() {
-        return this.creationTimestamp;
-    }
-
-    /**
-     * Setter for <code>calendar.calendars.creation_timestamp</code>.
-     */
-    public void setCreationTimestamp(org.joda.time.DateTime creationTimestamp) {
-        this.creationTimestamp = creationTimestamp;
-    }
-
     @Override
     public String toString() {
         java.lang.StringBuilder sb = new java.lang.StringBuilder("Calendars (");
@@ -409,23 +373,21 @@ public class Calendars implements java.io.Serializable {
         sb.append(", ").append(domainId);
         sb.append(", ").append(userId);
         sb.append(", ").append(builtIn);
+        sb.append(", ").append(revisionTimestamp);
+        sb.append(", ").append(creationTimestamp);
         sb.append(", ").append(provider);
         sb.append(", ").append(name);
         sb.append(", ").append(description);
         sb.append(", ").append(color);
         sb.append(", ").append(sync);
-        sb.append(", ").append(isDefault);
-        sb.append(", ").append(isPrivate);
-        sb.append(", ").append(busy);
-        sb.append(", ").append(reminder);
-        sb.append(", ").append(invitation);
+        sb.append(", ").append(defVisibility);
+        sb.append(", ").append(defTransparency);
+        sb.append(", ").append(defReminder);
         sb.append(", ").append(notifyOnExtUpdate);
         sb.append(", ").append(parameters);
         sb.append(", ").append(remoteSyncFrequency);
         sb.append(", ").append(remoteSyncTimestamp);
         sb.append(", ").append(remoteSyncTag);
-        sb.append(", ").append(revisionTimestamp);
-        sb.append(", ").append(creationTimestamp);
 
         sb.append(")");
         return sb.toString();

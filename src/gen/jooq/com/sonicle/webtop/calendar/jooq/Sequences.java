@@ -17,16 +17,6 @@ public class Sequences {
     public static final org.jooq.Sequence<java.lang.Long> SEQ_CALENDARS = org.jooq.impl.Internal.createSequence("seq_calendars", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>calendar.seq_calendars_changes</code>
-     */
-    public static final org.jooq.Sequence<java.lang.Long> SEQ_CALENDARS_CHANGES = org.jooq.impl.Internal.createSequence("seq_calendars_changes", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>calendar.seq_events</code>
-     */
-    public static final org.jooq.Sequence<java.lang.Long> SEQ_EVENTS = org.jooq.impl.Internal.createSequence("seq_events", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>calendar.seq_history_calendars</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_HISTORY_CALENDARS = org.jooq.impl.Internal.createSequence("seq_history_calendars", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -35,9 +25,4 @@ public class Sequences {
      * The sequence <code>calendar.seq_history_events</code>
      */
     public static final org.jooq.Sequence<java.lang.Long> SEQ_HISTORY_EVENTS = org.jooq.impl.Internal.createSequence("seq_history_events", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>calendar.seq_recurrences</code>
-     */
-    public static final org.jooq.Sequence<java.lang.Long> SEQ_RECURRENCES = org.jooq.impl.Internal.createSequence("seq_recurrences", com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 }

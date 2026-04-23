@@ -45,6 +45,7 @@ import org.joda.time.format.DateTimeFormatter;
  *
  * @author malbinola
  */
+@Deprecated
 public class EventKey {
 	private static final Pattern PATTERN_GENID = Pattern.compile("^([a-z0-9]+)_([a-z0-9]+)$");
 	private static final Pattern PATTERN_GENID_RECURRING = Pattern.compile("^([a-z0-9]+)_([a-z0-9]+)_([0-9]+)$");
@@ -79,12 +80,14 @@ public class EventKey {
 		}
 	}
 	
+	@Deprecated
 	public static String buildKey(String eventId, String originalEventId) {
 		String origId = (originalEventId == null) ? eventId : originalEventId;
 		String str = origId + "_" + eventId;
 		return Hex.encodeHexString(str.getBytes());
 	}
 	
+	@Deprecated
 	public static String buildKey(String eventId, String originalEventId, LocalDate date) {
 		String origId = (originalEventId == null) ? eventId : originalEventId;
 		String str = origId + "_" + eventId + "_" + date.toString("yyyyMMdd");

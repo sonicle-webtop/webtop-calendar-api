@@ -35,13 +35,13 @@ package com.sonicle.webtop.calendar.model;
 import com.google.gson.annotations.SerializedName;
 import com.sonicle.commons.InternetAddressUtils;
 import java.util.ArrayList;
-import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.joda.time.DateTime;
 
 /**
- *
+ * 
  * @author malbinola
  */
 public class EventAttendee {
@@ -50,6 +50,7 @@ public class EventAttendee {
 	protected RecipientType recipientType;
 	protected RecipientRole recipientRole;
 	protected ResponseStatus responseStatus;
+	protected DateTime responseTimestamp;
 	protected Boolean notify;
 	
 	public EventAttendee() {}
@@ -94,6 +95,14 @@ public class EventAttendee {
 		this.responseStatus = (responseStatus == null) ? ResponseStatus.NEEDS_ACTION : responseStatus;
 	}
 
+	public DateTime getResponseTimestamp() {
+		return responseTimestamp;
+	}
+
+	public void setResponseTimestamp(DateTime responseTimestamp) {
+		this.responseTimestamp = responseTimestamp;
+	}
+
 	public Boolean getNotify() {
 		return notify;
 	}
@@ -118,16 +127,6 @@ public class EventAttendee {
 	public String getRecipientCN() {
 		InternetAddress ia = getRecipientInternetAddress();
 		return (ia != null) ? ia.getPersonal() : null;
-	}
-	
-	@Deprecated
-	public String getAddress() throws AddressException {
-		return new InternetAddress(recipient).getAddress();
-	}
-	
-	@Deprecated
-	public String getCN() throws AddressException {
-		return new InternetAddress(recipient).getPersonal();
 	}
 	
 	@Override

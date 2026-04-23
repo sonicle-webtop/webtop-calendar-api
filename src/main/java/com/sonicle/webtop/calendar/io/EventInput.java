@@ -32,12 +32,14 @@
  */
 package com.sonicle.webtop.calendar.io;
 
-import com.sonicle.webtop.calendar.model.Event;
+import com.sonicle.webtop.calendar.model.EventEx;
+import com.sonicle.webtop.calendar.model.EventInstance;
+import com.sonicle.webtop.core.util.ICalendarUtils;
 import java.util.regex.Pattern;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Status;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.joda.time.LocalDate;
 
 /**
  *
@@ -45,26 +47,37 @@ import org.joda.time.LocalDate;
  */
 public class EventInput {
 	private static final Pattern PATTERN_LINE_DTSTAMP = Pattern.compile("\nDTSTAMP:.*(\r)?\n");
-	public final Event event;
-	public final String exRefersToPublicUid;
-	public final LocalDate addsExOnMaster;
-	public final VEvent sourceEvent;
+	public final EventEx event;
+	public final ICalendarUtils.RecurringRefs recurringRefs;
+	public final PropertyList extraProps;
+	public final VEvent sourceObject;
 	
-	public EventInput(Event event, String exRefersToPublicUid, LocalDate addsExceptionOnMaster, VEvent sourceEvent) {
+	public EventInput(EventEx event, ICalendarUtils.RecurringRefs recurringRefs, PropertyList extraProps, VEvent sourceObject) {
 		this.event = event;
-		this.exRefersToPublicUid = exRefersToPublicUid;
-		this.addsExOnMaster = addsExceptionOnMaster;
-		this.sourceEvent = sourceEvent;
+		this.recurringRefs = recurringRefs;
+		this.extraProps = extraProps;
+		this.sourceObject = sourceObject;
 	}
 	
 	public boolean isSourceEventCancelled() {
-		if (sourceEvent == null) return false;
-		return Status.VEVENT_CANCELLED.equals(sourceEvent.getProperty(Status.STATUS));
+		if (sourceObject == null) return false;
+		return Status.VEVENT_CANCELLED.equals(sourceObject.getProperty(Status.STATUS));
 	}
 	
 	public String computeDataHash() {
-		if (sourceEvent == null) return null;
-		final String s = PATTERN_LINE_DTSTAMP.matcher(sourceEvent.toString()).replaceFirst("\n");
+		if (sourceObject == null) return null;
+		final String s = PATTERN_LINE_DTSTAMP.matcher(sourceObject.toString()).replaceFirst("\n");
 		return DigestUtils.md5Hex(s);
+	}
+	
+	public void mergeFieldsForInvitation(EventInstance target) {
+		target.setRevisionSequence(event.getRevisionSequence());
+		target.setAllDay(event.getAllDay());
+		target.setStart(event.getStart());
+		target.setEnd(event.getEnd());
+		target.setTimezone(event.getTitle());
+		target.setTitle(event.getTitle());
+		target.setLocation(event.getLocation());
+		target.setDescription(event.getDescription());
 	}
 }

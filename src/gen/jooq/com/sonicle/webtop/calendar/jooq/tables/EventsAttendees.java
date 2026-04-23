@@ -29,7 +29,7 @@ public class EventsAttendees extends org.jooq.impl.TableImpl<com.sonicle.webtop.
     /**
      * The column <code>calendar.events_attendees.attendee_id</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttendeesRecord, java.lang.String> ATTENDEE_ID = createField(org.jooq.impl.DSL.name("attendee_id"), org.jooq.impl.SQLDataType.VARCHAR(36).nullable(false), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttendeesRecord, java.lang.String> ATTENDEE_ID = createField(org.jooq.impl.DSL.name("attendee_id"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>calendar.events_attendees.event_id</code>.
@@ -39,7 +39,12 @@ public class EventsAttendees extends org.jooq.impl.TableImpl<com.sonicle.webtop.
     /**
      * The column <code>calendar.events_attendees.recipient</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttendeesRecord, java.lang.String> RECIPIENT = createField(org.jooq.impl.DSL.name("recipient"), org.jooq.impl.SQLDataType.VARCHAR(320).nullable(false), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttendeesRecord, java.lang.String> RECIPIENT = createField(org.jooq.impl.DSL.name("recipient"), org.jooq.impl.SQLDataType.VARCHAR(650).nullable(false), this, "");
+
+    /**
+     * The column <code>calendar.events_attendees.recipient_user_id</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttendeesRecord, java.lang.String> RECIPIENT_USER_ID = createField(org.jooq.impl.DSL.name("recipient_user_id"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>calendar.events_attendees.recipient_type</code>.
@@ -55,6 +60,11 @@ public class EventsAttendees extends org.jooq.impl.TableImpl<com.sonicle.webtop.
      * The column <code>calendar.events_attendees.response_status</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttendeesRecord, java.lang.String> RESPONSE_STATUS = createField(org.jooq.impl.DSL.name("response_status"), org.jooq.impl.SQLDataType.VARCHAR(2).nullable(false), this, "");
+
+    /**
+     * The column <code>calendar.events_attendees.response_timestamp</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsAttendeesRecord, org.joda.time.DateTime> RESPONSE_TIMESTAMP = createField(org.jooq.impl.DSL.name("response_timestamp"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
 
     /**
      * The column <code>calendar.events_attendees.notify</code>.
@@ -97,11 +107,6 @@ public class EventsAttendees extends org.jooq.impl.TableImpl<com.sonicle.webtop.
     @java.lang.Override
     public org.jooq.Schema getSchema() {
         return com.sonicle.webtop.calendar.jooq.Calendar.CALENDAR;
-    }
-
-    @java.lang.Override
-    public java.util.List<org.jooq.Index> getIndexes() {
-        return java.util.Arrays.<org.jooq.Index>asList(com.sonicle.webtop.calendar.jooq.Indexes.EVENTS_ATTENDEE_AK1);
     }
 
     @java.lang.Override
@@ -155,11 +160,11 @@ public class EventsAttendees extends org.jooq.impl.TableImpl<com.sonicle.webtop.
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row7<java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean> fieldsRow() {
-        return (org.jooq.Row7) super.fieldsRow();
+    public org.jooq.Row9<java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, java.lang.Boolean> fieldsRow() {
+        return (org.jooq.Row9) super.fieldsRow();
     }
 }

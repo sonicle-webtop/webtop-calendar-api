@@ -32,184 +32,74 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.webtop.core.util.ICal4jUtils;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import net.fortuna.ical4j.model.Recur;
+import net.sf.qualitycheck.Check;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 /**
  *
  * @author malbinola
  */
 public class EventRecurrence {
-	public static final String TYPE_DAILY = "D";
-	public static final String TYPE_DAILY_FERIALI = "F";
-	public static final String TYPE_WEEKLY = "W";
-	public static final String TYPE_MONTHLY = "M";
-	public static final String TYPE_YEARLY = "Y";
-	public static final String ENDS_MODE_NEVER = "never";
-	public static final String ENDS_MODE_REPEAT = "repeat";
-	public static final String ENDS_MODE_UNTIL = "until";
+	protected String rule;
+	protected DateTime start;
+	protected Set<LocalDate> excludedDates;
 	
-	protected String endsMode;
-	protected Integer repeatTimes;
-	protected DateTime untilDate;
-	protected String type;
-	protected Integer dailyFreq;
-	protected Integer weeklyFreq;
-	protected Boolean weeklyDay1;
-	protected Boolean weeklyDay2;
-	protected Boolean weeklyDay3;
-	protected Boolean weeklyDay4;
-	protected Boolean weeklyDay5;
-	protected Boolean weeklyDay6;
-	protected Boolean weeklyDay7;
-	protected Integer monthlyFreq;
-	protected Integer monthlyDay;
-	protected Integer yearlyFreq;
-	protected Integer yearlyDay;
-	protected String rrule;
-	
-	public EventRecurrence() {}
-
-	public String getEndsMode() {
-		return endsMode;
-	}
-
-	public void setEndsMode(String value) {
-		endsMode = value;
-	}
-
-	public Integer getRepeatTimes() {
-		return repeatTimes;
-	}
-
-	public void setRepeatTimes(Integer value) {
-		repeatTimes = value;
-	}
-
-	public DateTime getUntilDate() {
-		return untilDate;
-	}
-
-	public void setUntilDate(DateTime value) {
-		untilDate = value;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String value) {
-		type = value;
-	}
-
-	public Integer getDailyFreq() {
-		return dailyFreq;
-	}
-
-	public void setDailyFreq(Integer value) {
-		dailyFreq = value;
-	}
-
-	public Integer getWeeklyFreq() {
-		return weeklyFreq;
-	}
-
-	public void setWeeklyFreq(Integer value) {
-		weeklyFreq = value;
-	}
-
-	public Boolean getWeeklyDay1() {
-		return weeklyDay1;
-	}
-
-	public void setWeeklyDay1(Boolean value) {
-		weeklyDay1 = value;
-	}
-
-	public Boolean getWeeklyDay2() {
-		return weeklyDay2;
-	}
-
-	public void setWeeklyDay2(Boolean value) {
-		weeklyDay2 = value;
-	}
-
-	public Boolean getWeeklyDay3() {
-		return weeklyDay3;
-	}
-
-	public void setWeeklyDay3(Boolean value) {
-		weeklyDay3 = value;
-	}
-
-	public Boolean getWeeklyDay4() {
-		return weeklyDay4;
-	}
-
-	public void setWeeklyDay4(Boolean value) {
-		weeklyDay4 = value;
-	}
-
-	public Boolean getWeeklyDay5() {
-		return weeklyDay5;
-	}
-
-	public void setWeeklyDay5(Boolean value) {
-		weeklyDay5 = value;
-	}
-
-	public Boolean getWeeklyDay6() {
-		return weeklyDay6;
-	}
-
-	public void setWeeklyDay6(Boolean value) {
-		weeklyDay6 = value;
-	}
-
-	public Boolean getWeeklyDay7() {
-		return weeklyDay7;
-	}
-
-	public void setWeeklyDay7(Boolean value) {
-		weeklyDay7 = value;
-	}
-
-	public Integer getMonthlyFreq() {
-		return monthlyFreq;
-	}
-
-	public void setMonthlyFreq(Integer value) {
-		monthlyFreq = value;
-	}
-
-	public Integer getMonthlyDay() {
-		return monthlyDay;
-	}
-
-	public void setMonthlyDay(Integer value) {
-		monthlyDay = value;
-	}
-
-	public Integer getYearlyFreq() {
-		return yearlyFreq;
-	}
-
-	public void setYearlyFreq(Integer value) {
-		yearlyFreq = value;
-	}
-
-	public Integer getYearlyDay() {
-		return yearlyDay;
-	}
-
-	public void setYearlyDay(Integer value) {
-		yearlyDay = value;
+	public EventRecurrence(String rule, DateTime start, Set<LocalDate> excludedDates) {
+		this(rule, start);
+		this.excludedDates = excludedDates;
 	}
 	
-	public String getRRule() {
-		return rrule;
+	public EventRecurrence(String rule, DateTime start) {
+		this.rule = Check.notNull(rule, "rule");
+		this.start = Check.notNull(start, "start");
+	}
+
+	public String getRule() {
+		return rule;
+	}
+
+	public void setRule(String rule) {
+		this.rule = Check.notNull(rule, "rule");
+	}
+
+	public DateTime getStart() {
+		return start;
+	}
+
+	public void setStart(DateTime start) {
+		this.start = Check.notNull(start, "start");
+	}
+
+	public Set<LocalDate> getExcludedDates() {
+		return excludedDates;
+	}
+
+	public void setExcludedDates(Set<LocalDate> excludedDates) {
+		this.excludedDates = excludedDates;
 	}
 	
-	public void setRRule(String value) {
-		rrule = value;
+	public boolean hasExcludedDates() {
+		return (this.excludedDates != null) && (!this.excludedDates.isEmpty());
+	}
+	
+	public Set<LocalDate> getExcludedDatesOrEmpty() {
+		return this.excludedDates != null ? excludedDates : new LinkedHashSet<>(0);
+	}
+	
+	public void addExcludedDates(Set<LocalDate> excludedDates) {
+		if (this.excludedDates == null) {
+			this.excludedDates = new LinkedHashSet<>(excludedDates);
+		} else {
+			this.excludedDates.addAll(excludedDates);
+		}
+	}
+	
+	public Recur getRecurRule() {
+		return ICal4jUtils.parseRRule(getRule());
 	}
 }

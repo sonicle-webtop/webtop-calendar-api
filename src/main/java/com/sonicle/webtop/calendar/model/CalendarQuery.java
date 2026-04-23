@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,68 +28,68 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2018 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
-import org.joda.time.DateTime;
+import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
+import com.sonicle.webtop.core.app.sdk.QueryBuilder;
 
 /**
  *
  * @author malbinola
  */
-public class EventFootprint extends EventFootprintBase {
-	protected final String publicUid;
-	protected final Integer calendarId;
-	protected final DateTime revisionTimestamp;
-	protected final DateTime creationTimestamp;
-	protected final String title;
-	protected final String location;
+public class CalendarQuery extends QueryBuilder<CalendarQuery> {
+	public static final String ID = "id";
+	public static final String CREATED_AT = "createdAt";
+	public static final String UPDATED_AT = "updatedAt";
+	public static final String USER_ID = "userId";
+	public static final String BUILT_IN = "builtIn";
+	public static final String PROVIDER = "provider";
+	public static final String NAME = "name";
+	public static final String DESCRIPTION = "description";
+	public static final String COLOR = "color";
+	public static final String EAS_SYNC = "easSync";
 	
-	public EventFootprint(String eventId, String publicUid, Integer calendarId, 
-			DateTime revisionTimestamp, DateTime creationTimestamp, DateTime startDate, 
-			DateTime endDate, String timezone, Boolean allDay, String rrule, String title, String location) {
-		
-		super(eventId, startDate, endDate, timezone, allDay, rrule);
-		this.publicUid = publicUid;
-		this.calendarId = calendarId;
-		this.revisionTimestamp = revisionTimestamp;
-		this.creationTimestamp = creationTimestamp;
-		this.title = title;
-		this.location = location;
+	public StringProperty<CalendarQuery> id() {
+		return string(ID);
 	}
 	
-	public EventFootprint(Event event) {
-		super(event);
-		this.publicUid = event.getPublicUid();
-		this.calendarId = event.getCalendarId();
-		this.revisionTimestamp = event.getRevisionTimestamp();
-		this.creationTimestamp = event.getCreationTimestamp();
-		this.title = event.getTitle();
-		this.location = event.getLocation();
-	}
-
-	public String getPublicUid() {
-		return publicUid;
-	}
-
-	public Integer getCalendarId() {
-		return calendarId;
-	}
-
-	public DateTime getRevisionTimestamp() {
-		return revisionTimestamp;
+	public InstantProperty<CalendarQuery> createdAt() {
+		return instant(CREATED_AT);
 	}
 	
-	public DateTime getCreationTimestamp() {
-		return creationTimestamp;
+	public InstantProperty<CalendarQuery> updatedAt() {
+		return instant(UPDATED_AT);
+	}
+	
+	public StringProperty<CalendarQuery> userId() {
+		return string(USER_ID);
+	}
+	
+	public BooleanProperty<CalendarQuery> builtIn() {
+		return bool(BUILT_IN);
+	}
+	
+	public StringProperty<CalendarQuery> provider() {
+		return string(PROVIDER);
 	}
 
-	public String getTitle() {
-		return title;
+	public StringProperty<CalendarQuery> name() {
+		return string(NAME);
+	}
+	
+	public StringProperty<CalendarQuery> description() {
+		return string(DESCRIPTION);
 	}
 
-	public String getLocation() {
-		return location;
+	public StringProperty<CalendarQuery> color() {
+		return string(COLOR);
+	}
+
+	public StringProperty<CalendarQuery> easSync() {
+		return string(EAS_SYNC);
 	}
 }

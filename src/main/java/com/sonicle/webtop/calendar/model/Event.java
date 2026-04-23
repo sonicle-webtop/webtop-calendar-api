@@ -32,240 +32,46 @@
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.webtop.core.model.CustomFieldValue;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import net.sf.qualitycheck.Check;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 /**
  *
  * @author malbinola
  */
-public class Event extends BaseEvent {
-	protected String href;
-	protected String etag;
-	protected Set<String> tags;
-	protected Integer activityId;
-	protected String masterDataId;
-	protected String statMasterDataId;
-	protected Integer causalId;
-	protected String recurrenceRule;
-	protected LocalDate recurrenceStartDate;
-	protected Set<LocalDate> excludedDates;
-	protected List<EventAttendee> attendees = new ArrayList<>();
-	protected List<EventAttachment> attachments = new ArrayList<>();
-	protected Map<String, CustomFieldValue> customValues = new LinkedHashMap<>();
-	
-	public String getHref() {
-		return href;
+public class Event extends EventEx {
+	protected String eventId;
+	protected String seriesEventId;
+	protected String seriesInstanceId;
+		
+	public String getEventId() {
+		return eventId;
 	}
 
-	public void setHref(String href) {
-		this.href = href;
+	public void setEventId(String eventId) {
+		this.eventId = eventId;
 	}
 
-	public String getEtag() {
-		return etag;
+	public String getSeriesEventId() {
+		return seriesEventId;
 	}
 
-	public void setEtag(String etag) {
-		this.etag = etag;
+	public void setSeriesEventId(String seriesEventId) {
+		this.seriesEventId = seriesEventId;
 	}
 	
-	public Set<String> getTags() {
-		return tags;
+	public String getSeriesInstanceId() {
+		return seriesInstanceId;
 	}
 
-	public void setTags(Set<String> tags) {
-		this.tags = tags;
-	}
-	
-	public Set<String> getTagsOrEmpty() {
-		return this.tags != null ? tags : new LinkedHashSet<>(0);
-	}
-	
-	public Event addTag(String tagId) {
-		if (tags == null) tags = new LinkedHashSet<String>();
-		tags.add(Check.notNull(tagId, "tagId"));
-		return this;
-	}
-	
-	public Event removeTag(String tagId) {
-		if (tags != null) {
-			tags.remove(Check.notNull(tagId, "tagId"));
-		}
-		return this;
-	}
-
-	public Integer getActivityId() {
-		return activityId;
-	}
-
-	public void setActivityId(Integer activityId) {
-		this.activityId = activityId;
-	}
-
-	public String getMasterDataId() {
-		return masterDataId;
-	}
-
-	public void setMasterDataId(String masterDataId) {
-		this.masterDataId = masterDataId;
-	}
-
-	public String getStatMasterDataId() {
-		return statMasterDataId;
-	}
-
-	public void setStatMasterDataId(String statMasterDataId) {
-		this.statMasterDataId = statMasterDataId;
-	}
-
-	public Integer getCausalId() {
-		return causalId;
-	}
-
-	public void setCausalId(Integer causalId) {
-		this.causalId = causalId;
-	}
-
-	public String getRecurrenceRule() {
-		return recurrenceRule;
-	}
-	
-	public LocalDate getRecurrenceStartDate() {
-		return recurrenceStartDate;
-	}
-	
-	public void setRecurrenceStartDate(LocalDate recurrenceStartDate) {
-		this.recurrenceStartDate = recurrenceStartDate;
-	}
-	
-	public Set<LocalDate> getExcludedDates() {
-		return excludedDates;
-	}
-	
-	public void setExcludedDates(Set<LocalDate> excludedDates) {
-		this.excludedDates = excludedDates;
-	}
-
-	public List<EventAttendee> getAttendees() {
-		return attendees;
-	}
-
-	public void setAttendees(List<EventAttendee> attendees) {
-		this.attendees = attendees;
-	}
-	
-	public List<EventAttachment> getAttachments() {
-		return attachments;
-	}
-	
-	public List<EventAttachment> getAttachmentsOrEmpty() {
-		return this.attachments != null ? attachments : new ArrayList<>(0);
-	}
-
-	public void setAttachments(List<EventAttachment> attachments) {
-		this.attachments = attachments;
-	}
-	
-	public Map<String, CustomFieldValue> getCustomValues() {
-		return customValues;
-	}
-	
-	public void setCustomValues(Map<String, CustomFieldValue> customValues) {
-		this.customValues = customValues;
-	}
-	
-	public void setCustomValues(Collection<CustomFieldValue> customValues) {
-		this.customValues = customValues.stream()
-			.filter(item -> item.getFieldId() != null)
-			.collect(Collectors.toMap(item -> item.getFieldId(), item -> item, (ov, nv) -> nv, LinkedHashMap::new));
-	}
-	
-	public void setDatesAndTimes(boolean allDay, String timezone, DateTime startDate, DateTime endDate) {
-		this.allDay = allDay;
-		this.timezone = timezone;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		ensureCoherence();
-	}
-	
-	public void setRecurrence(String rule, LocalDate startDate, Set<LocalDate> excludedDates) {
-		this.recurrenceRule = rule;
-		this.recurrenceStartDate = startDate;
-		this.excludedDates = excludedDates;
-	}
-	
-	public boolean hasTags() {
-		return tags != null;
-	}
-	
-	public boolean hasRecurrence() {
-		return !StringUtils.isEmpty(recurrenceRule);
-	}
-	
-	public boolean hasExcludedDates() {
-		return (excludedDates != null) && !excludedDates.isEmpty();
-	}
-	
-	public boolean hasAttachments() {
-		return attachments != null;
-	}
-	
-	public boolean hasCustomValues() {
-		return customValues != null;
-	}
-	
-	public boolean trimFieldLengths() {
-		MutableBoolean trimmed = new MutableBoolean(false);
-		setTitle(trimStringLength(getTitle(), 255, trimmed));
-		setLocation(trimStringLength(getLocation(), 255, trimmed));
-		setOrganizer(trimStringLength(getOrganizer(), 650, trimmed));
-		return trimmed.booleanValue();
+	public void setSeriesInstanceId(String seriesInstanceId) {
+		this.seriesInstanceId = seriesInstanceId;
 	}
 	
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-				.append(getEventId())
-				.append(getTitle())
-				.toString();
-	}
-	
-	public EventFootprint getFootprint() {
-		return new EventFootprint(this);
-	}
-	
-	@Override
-	public void censorize() {
-		setActivityId(null);
-		setMasterDataId(null);
-		setStatMasterDataId(null);
-		setCausalId(null);
-		setReminder(null);
-		getAttendees().clear();
-		getAttachments().clear();
-		super.censorize();
-	}
-	
-	private static String trimStringLength(String value, int maxLength, MutableBoolean trimmed) {
-		if (StringUtils.length(value) > maxLength) {
-			trimmed.setTrue();
-			return StringUtils.left(value, maxLength);
-		} else {
-			return value;
-		}
+			.append(getEventId())
+			.append(getTitle())
+			.toString();
 	}
 }

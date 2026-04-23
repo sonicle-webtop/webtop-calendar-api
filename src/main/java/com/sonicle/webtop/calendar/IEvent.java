@@ -40,6 +40,6 @@ import org.joda.time.DateTime;
  */
 public interface IEvent {
 	
-	public DateTime getStartDate();
-	public DateTime getEndDate();
+	public DateTime getStart();
+	public DateTime getEnd();
 }

@@ -33,7 +33,6 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.rits.cloning.Cloner;
 import com.sonicle.commons.EnumUtils;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.webtop.core.sdk.UserProfileId;
@@ -47,14 +46,16 @@ import org.joda.time.DateTime;
 public class CalendarBase {
 	protected String domainId;
 	protected String userId;
+	protected DateTime revisionTimestamp;
+	protected DateTime creationTimestamp;
 	protected Boolean builtIn;
 	protected Provider provider;
 	protected String name;
 	protected String description;
 	protected String color;
 	protected Sync sync;
-	protected Boolean isPrivate;
-	protected Boolean defaultBusy;
+	protected EventBase.Visibility defaultVisibility;
+	protected EventBase.Transparency defaultTransparency;
 	protected Integer defaultReminder;
 	protected Boolean notifyOnExtUpdate;
 	protected String parameters;
@@ -80,6 +81,22 @@ public class CalendarBase {
 
 	public Boolean getBuiltIn() {
 		return builtIn;
+	}
+	
+	public DateTime getRevisionTimestamp() {
+		return revisionTimestamp;
+	}
+
+	public void setRevisionTimestamp(DateTime revisionTimestamp) {
+		this.revisionTimestamp = revisionTimestamp;
+	}
+	
+	public DateTime getCreationTimestamp() {
+		return creationTimestamp;
+	}
+
+	public void setCreationTimestamp(DateTime creationTimestamp) {
+		this.creationTimestamp = creationTimestamp;
 	}
 
 	public void setBuiltIn(Boolean builtIn) {
@@ -126,20 +143,20 @@ public class CalendarBase {
 		this.sync = sync;
 	}
 
-	public Boolean getIsPrivate() {
-		return isPrivate;
+	public EventBase.Visibility getDefaultVisibility() {
+		return defaultVisibility;
 	}
 
-	public void setIsPrivate(Boolean isPrivate) {
-		this.isPrivate = isPrivate;
+	public void setDefaultVisibility(EventBase.Visibility defaultVisibility) {
+		this.defaultVisibility = defaultVisibility;
 	}
 
-	public Boolean getDefaultBusy() {
-		return defaultBusy;
+	public EventBase.Transparency getDefaultTransparency() {
+		return defaultTransparency;
 	}
 
-	public void setDefaultBusy(Boolean defaultBusy) {
-		this.defaultBusy = defaultBusy;
+	public void setDefaultTransparency(EventBase.Transparency defaultTransparency) {
+		this.defaultTransparency = defaultTransparency;
 	}
 
 	public Integer getDefaultReminder() {

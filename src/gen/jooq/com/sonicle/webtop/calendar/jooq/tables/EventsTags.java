@@ -90,20 +90,6 @@ public class EventsTags extends org.jooq.impl.TableImpl<com.sonicle.webtop.calen
     }
 
     @java.lang.Override
-    public java.util.List<org.jooq.ForeignKey<com.sonicle.webtop.calendar.jooq.tables.records.EventsTagsRecord, ?>> getReferences() {
-        return java.util.Arrays.<org.jooq.ForeignKey<com.sonicle.webtop.calendar.jooq.tables.records.EventsTagsRecord, ?>>asList(com.sonicle.webtop.calendar.jooq.Keys.EVENTS_TAGS__EVENTS_TAGS_EVENT_ID_FKEY);
-    }
-
-    private transient com.sonicle.webtop.calendar.jooq.tables.Events _events;
-
-    public com.sonicle.webtop.calendar.jooq.tables.Events events() {
-        if (_events == null)
-            _events = new com.sonicle.webtop.calendar.jooq.tables.Events(this, com.sonicle.webtop.calendar.jooq.Keys.EVENTS_TAGS__EVENTS_TAGS_EVENT_ID_FKEY);
-
-        return _events;
-    }
-
-    @java.lang.Override
     public EventsTags as(java.lang.String alias) {
         return new EventsTags(org.jooq.impl.DSL.name(alias), this);
     }

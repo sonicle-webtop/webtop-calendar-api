@@ -47,6 +47,16 @@ public class Calendars extends org.jooq.impl.TableImpl<com.sonicle.webtop.calend
     public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.Boolean> BUILT_IN = createField(org.jooq.impl.DSL.name("built_in"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
+     * The column <code>calendar.calendars.revision_timestamp</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, org.joda.time.DateTime> REVISION_TIMESTAMP = createField(org.jooq.impl.DSL.name("revision_timestamp"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
+
+    /**
+     * The column <code>calendar.calendars.creation_timestamp</code>.
+     */
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, org.joda.time.DateTime> CREATION_TIMESTAMP = createField(org.jooq.impl.DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
+
+    /**
      * The column <code>calendar.calendars.provider</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.String> PROVIDER = createField(org.jooq.impl.DSL.name("provider"), org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.field("'local'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
@@ -72,29 +82,19 @@ public class Calendars extends org.jooq.impl.TableImpl<com.sonicle.webtop.calend
     public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.String> SYNC = createField(org.jooq.impl.DSL.name("sync"), org.jooq.impl.SQLDataType.VARCHAR(1).nullable(false), this, "");
 
     /**
-     * The column <code>calendar.calendars.is_default</code>.
+     * The column <code>calendar.calendars.def_visibility</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.Boolean> IS_DEFAULT = createField(org.jooq.impl.DSL.name("is_default"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.String> DEF_VISIBILITY = createField(org.jooq.impl.DSL.name("def_visibility"), org.jooq.impl.SQLDataType.VARCHAR(2).nullable(false).defaultValue(org.jooq.impl.DSL.field("'PU'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>calendar.calendars.is_private</code>.
+     * The column <code>calendar.calendars.def_transparency</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.Boolean> IS_PRIVATE = createField(org.jooq.impl.DSL.name("is_private"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.String> DEF_TRANSPARENCY = createField(org.jooq.impl.DSL.name("def_transparency"), org.jooq.impl.SQLDataType.VARCHAR(2).nullable(false).defaultValue(org.jooq.impl.DSL.field("'TP'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>calendar.calendars.busy</code>.
+     * The column <code>calendar.calendars.def_reminder</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.Boolean> BUSY = createField(org.jooq.impl.DSL.name("busy"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
-
-    /**
-     * The column <code>calendar.calendars.reminder</code>.
-     */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.Integer> REMINDER = createField(org.jooq.impl.DSL.name("reminder"), org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>calendar.calendars.invitation</code>.
-     */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.Boolean> INVITATION = createField(org.jooq.impl.DSL.name("invitation"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.Integer> DEF_REMINDER = createField(org.jooq.impl.DSL.name("def_reminder"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>calendar.calendars.notify_on_ext_update</code>.
@@ -120,16 +120,6 @@ public class Calendars extends org.jooq.impl.TableImpl<com.sonicle.webtop.calend
      * The column <code>calendar.calendars.remote_sync_tag</code>.
      */
     public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, java.lang.String> REMOTE_SYNC_TAG = createField(org.jooq.impl.DSL.name("remote_sync_tag"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>calendar.calendars.revision_timestamp</code>.
-     */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, org.joda.time.DateTime> REVISION_TIMESTAMP = createField(org.jooq.impl.DSL.name("revision_timestamp"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
-
-    /**
-     * The column <code>calendar.calendars.creation_timestamp</code>.
-     */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord, org.joda.time.DateTime> CREATION_TIMESTAMP = createField(org.jooq.impl.DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
 
     private Calendars(org.jooq.Name alias, org.jooq.Table<com.sonicle.webtop.calendar.jooq.tables.records.CalendarsRecord> aliased) {
         this(alias, aliased, null);
@@ -211,11 +201,11 @@ public class Calendars extends org.jooq.impl.TableImpl<com.sonicle.webtop.calend
     }
 
     // -------------------------------------------------------------------------
-    // Row21 type methods
+    // Row19 type methods
     // -------------------------------------------------------------------------
 
     @java.lang.Override
-    public org.jooq.Row21<java.lang.Integer, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.Integer, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Short, org.joda.time.DateTime, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime> fieldsRow() {
-        return (org.jooq.Row21) super.fieldsRow();
+    public org.jooq.Row19<java.lang.Integer, java.lang.String, java.lang.String, java.lang.Boolean, org.joda.time.DateTime, org.joda.time.DateTime, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer, java.lang.Boolean, java.lang.String, java.lang.Short, org.joda.time.DateTime, java.lang.String> fieldsRow() {
+        return (org.jooq.Row19) super.fieldsRow();
     }
 }

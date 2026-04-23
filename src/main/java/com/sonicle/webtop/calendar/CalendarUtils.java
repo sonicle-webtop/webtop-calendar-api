@@ -34,16 +34,19 @@ package com.sonicle.webtop.calendar;
 
 import com.sonicle.commons.time.DateTimeWindow;
 import com.sonicle.commons.time.JodaTimeUtils;
-import com.sonicle.webtop.calendar.model.BaseEvent;
+import com.sonicle.webtop.calendar.model.EventBase;
+import com.sonicle.webtop.calendar.model.EventBoundsImpl;
+import com.sonicle.webtop.calendar.model.EventInstanceId;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.IllegalInstantException;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.jooq.tools.StringUtils;
+import com.sonicle.webtop.calendar.model.EventBounds;
 
 /**
  *
@@ -91,34 +94,23 @@ public class CalendarUtils {
 		return DateTimeWindow.builder().withStart(start).withEnd(end).build();
 	}
 	
-	/**
-	 * Computes calendar days lenght between two dates.
-	 * For events that starts and ends in same date, returned lenght will be 0.
-	 * @param from The start DateTime.
-	 * @param to The end DateTime.
-	 * @return The length in days
-	 */
-	public static int calculateLengthInDays(DateTime from, DateTime to) {
-		return Days.daysBetween(from.toLocalDate(), to.toLocalDate()).getDays();
-	}
-	
-	public static int calculateDaysSpan(DateTime start, DateTime end, DateTimeZone timezone) {
+	public static int calculateDaysSpanForDisplay(DateTime start, DateTime end, DateTimeZone timezone) {
 		int daysSpan;
 		if (JodaTimeUtils.isMidnight(start) && JodaTimeUtils.isMidnight(end)) {
 			// world convention: 00:00:00 -> 00:00:00+1
-			daysSpan = calculateLengthInDays(start, end) -1;
+			daysSpan = JodaTimeUtils.calendarDaysBetween(start, end) -1;
 		} else {
 			// Here we have both 2 situations caused by old implementations:
 			//  - 00:00:00 -> 23:59:59
 			//  - 09:00:00 -> 18:00:00 (zpush backend impl. hard-coded default)
-			daysSpan = calculateLengthInDays(start, end);
+			daysSpan = JodaTimeUtils.calendarDaysBetween(start, end);
 		}
 		return Math.max(0, daysSpan);
 	}
 	
-	public static Set<LocalDate> getDatesSpan(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+	public static Set<LocalDate> getDisplayDatesSpan(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
 		HashSet<LocalDate> dates = new HashSet<>();
-		int daySpan = calculateDaysSpan(start, end, timezone) +1;
+		int daySpan = calculateDaysSpanForDisplay(start, end, timezone) +1;
 		LocalDate date = start.withZone(timezone).toLocalDate();
 		for (int count = 1; count <= daySpan; count++) {
 			dates.add(date);
@@ -127,117 +119,103 @@ public class CalendarUtils {
 		return dates;
 	}
 	
-	public static EventBoundary getEventBoundary(BaseEvent event) {
-		return getEventBoundary(event.getAllDay(), event.getStartDate(), event.getEndDate(), event.getDateTimeZone());
+	public static EventBounds toEventBounds(EventBase event) {
+		return toEventBounds(event.getAllDay(), event.getStart(), event.getEnd(), event.getTimezoneObject());
 	}
 	
-	public static EventBoundary getEventBoundary(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+	public static EventBounds toEventBounds(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
 		if (allDay) {
-			int daySpan = calculateDaysSpan(start, end, timezone);
+			int daySpan = calculateDaysSpanForDisplay(start, end, timezone);
 			LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
-			return new EventBoundary(
+			return new EventBoundsImpl(
+				allDay,
+				startLocalDate.toDateTimeAtStartOfDay(timezone),
+				startLocalDate.plusDays(daySpan+1).toDateTimeAtStartOfDay(timezone),
+				timezone
+			);
+		} else {
+			return new EventBoundsImpl(
+				allDay,
+				start.withZone(timezone),
+				end.withZone(timezone),
+				timezone
+			);
+		}
+	}
+	
+	public static EventBounds toEventBoundsForRead(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+		if (allDay) {
+			if (JodaTimeUtils.isMidnight(start) && JodaTimeUtils.isMidnight(end)) {
+				int daySpan = calculateDaysSpanForDisplay(start, end, timezone);
+				LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
+				return new EventBoundsImpl(
 					allDay,
 					startLocalDate.toDateTimeAtStartOfDay(timezone),
-					startLocalDate.plusDays(daySpan+1).toDateTimeAtStartOfDay(timezone),
+					startLocalDate.plusDays(daySpan).toDateTimeAtStartOfDay(timezone),
 					timezone
-			);
-		} else {
-			return new EventBoundary(
-					allDay,
-					start.withZone(timezone),
-					end.withZone(timezone),
-					timezone
-			);
-		}
-	}
-	
-	public static EventBoundary toEventBoundaryForRead(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
-		if (allDay) {
-			if (JodaTimeUtils.isMidnight(start) && JodaTimeUtils.isMidnight(end)) {
-				int daySpan = calculateDaysSpan(start, end, timezone);
-				LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
-				return new EventBoundary(
-						allDay,
-						startLocalDate.toDateTimeAtStartOfDay(timezone),
-						startLocalDate.plusDays(daySpan).toDateTimeAtStartOfDay(timezone),
-						timezone
 				);
 			} else {
-				return new EventBoundary(
-						allDay,
-						start.withZone(timezone).withTimeAtStartOfDay(),
-						end.withZone(timezone).withTimeAtStartOfDay(),
-						timezone
+				return new EventBoundsImpl(
+					allDay,
+					start.withZone(timezone).withTimeAtStartOfDay(),
+					end.withZone(timezone).withTimeAtStartOfDay(),
+					timezone
 				);
 			}
 		} else {
-			return new EventBoundary(
-					allDay,
-					start.withZone(timezone),
-					end.withZone(timezone),
-					timezone
+			return new EventBoundsImpl(
+				allDay,
+				start.withZone(timezone),
+				end.withZone(timezone),
+				timezone
 			);
 		}
 	}
 	
-	public static EventBoundary toEventBoundaryForWrite(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+	public static EventBounds toEventBoundsForWrite(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
 		if (allDay) {
-			return new EventBoundary(
-					allDay,
-					start.toLocalDate().toDateTimeAtStartOfDay(timezone),
-					end.toLocalDate().plusDays(1).toDateTimeAtStartOfDay(timezone),
-					timezone
+			return new EventBoundsImpl(
+				allDay,
+				start.toLocalDate().toDateTimeAtStartOfDay(timezone),
+				end.toLocalDate().plusDays(1).toDateTimeAtStartOfDay(timezone),
+				timezone
 			);
 		} else {
-			return new EventBoundary(
-					allDay,
-					start.withZone(timezone),
-					end.withZone(timezone),
-					timezone
+			return new EventBoundsImpl(
+				allDay,
+				start.withZone(timezone),
+				end.withZone(timezone),
+				timezone
 			);
 		}
 	}
 	
-	public static EventBoundary toEventBoundaryForPreview(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+	public static EventBounds toEventBoundsForPreview(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
 		if (allDay) {
 			if (JodaTimeUtils.isMidnight(start) && JodaTimeUtils.isMidnight(end)) {
-				int daySpan = calculateDaysSpan(start, end, timezone);
+				int daySpan = calculateDaysSpanForDisplay(start, end, timezone);
 				LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
-				return new EventBoundary(
-						allDay,
-						startLocalDate.toDateTimeAtStartOfDay(timezone),
-						JodaTimeUtils.withTimeAtEndOfDay(startLocalDate.plusDays(daySpan).toDateTimeAtStartOfDay(timezone)),
-						timezone
+				return new EventBoundsImpl(
+					allDay,
+					startLocalDate.toDateTimeAtStartOfDay(timezone),
+					JodaTimeUtils.withTimeAtEndOfDay(startLocalDate.plusDays(daySpan).toDateTimeAtStartOfDay(timezone)),
+					timezone
 				);
 			} else {
-				return new EventBoundary(
-						allDay,
-						start.withZone(timezone),
-						end.withZone(timezone),
-						timezone
+				return new EventBoundsImpl(
+					allDay,
+					start.withZone(timezone),
+					end.withZone(timezone),
+					timezone
 				);
 			}
 		} else {
-			return new EventBoundary(
-					allDay,
-					start.withZone(timezone),
-					end.withZone(timezone),
-					timezone
+			return new EventBoundsImpl(
+				allDay,
+				start.withZone(timezone),
+				end.withZone(timezone),
+				timezone
 			);
-		}
-	}
-	
-	public static class EventBoundary {
-		public final boolean allDay;
-		public final DateTime start;
-		public final DateTime end;
-		public final DateTimeZone timezone;
-		
-		public EventBoundary(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
-			this.allDay = allDay;
-			this.start = start;
-			this.end = end;
-			this.timezone = timezone;
 		}
 	}
 }

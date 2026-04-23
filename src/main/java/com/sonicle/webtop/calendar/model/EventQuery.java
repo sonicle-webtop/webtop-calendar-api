@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,168 +28,131 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2019 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
-import com.sonicle.commons.qbuilders.conditions.Condition;
 import com.sonicle.commons.qbuilders.properties.concrete.BooleanProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.InstantProperty;
+import com.sonicle.commons.qbuilders.properties.concrete.IntegerProperty;
 import com.sonicle.commons.qbuilders.properties.concrete.StringProperty;
-import com.sonicle.commons.time.JavaTimeUtils;
-import com.sonicle.commons.web.json.CId;
-import com.sonicle.commons.web.json.bean.QueryObj;
-import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCValues;
-import com.sonicle.webtop.core.app.sdk.WTUnsupportedOperationException;
-import com.sonicle.webtop.core.model.CustomField;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTimeZone;
+import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCFields;
 
 /**
  *
  * @author malbinola
  */
-public class EventQuery extends QueryBuilderWithCValues<EventQuery> {
+public class EventQuery extends QueryBuilderWithCFields<EventQuery> {
+	public static final String ID = "id";
+	public static final String CREATED_AT = "createdAt";
+	public static final String UPDATED_AT = "updatedAt";
+	public static final String ROW_STATUS = "rowStatus";
+	public static final String STATUS = "status";
+	public static final String ORGANIZER = "organizer";
+	public static final String ORGANIZER_ID = "organizerId";
+	public static final String TITLE = "title";
+	public static final String LOCATION = "location";
+	public static final String DESCRIPTION = "description";
+	public static final String TIMEZONE = "timezone";
+	public static final String ALL_DAY = "allDay";
+	public static final String START = "start";
+	public static final String END = "end";
+	public static final String VISIBILITY = "visibility";
+	public static final String TRANSPARENCY = "transparency";
+	public static final String REMINDER = "reminder";
+	//public static final String CONTACT = "contact";
+	//public static final String CONTACT_ID = "contactId";
+	//public static final String COMPANY = "company";
+	//public static final String COMPANY_ID = "companyId";
+	public static final String TAG_ID = "tagId";
+	
+	public StringProperty<EventQuery> id() {
+		return string(ID);
+	}
+	
+	public InstantProperty<EventQuery> createdAt() {
+		return instant(CREATED_AT);
+	}
+	
+	public InstantProperty<EventQuery> updatedAt() {
+		return instant(UPDATED_AT);
+	}
+	
+	public StringProperty<EventQuery> rowStatus() {
+		return string(ROW_STATUS);
+	}
+	
+	public StringProperty<EventQuery> status() {
+		return string(STATUS);
+	}
+	
+	public StringProperty<EventQuery> organizer() {
+		return string(ORGANIZER);
+	}
+	
+	public StringProperty<EventQuery> organizerId() {
+		return string(ORGANIZER_ID);
+	}
 	
 	public StringProperty<EventQuery> title() {
-		return string("title");
+		return string(TITLE);
 	}
-
+	
 	public StringProperty<EventQuery> location() {
-		return string("location");
+		return string(LOCATION);
 	}
-
+	
 	public StringProperty<EventQuery> description() {
-		return string("description");
+		return string(DESCRIPTION);
 	}
 	
-	public InstantProperty<EventQuery> after() {
-		return instant("after");
+	public StringProperty<EventQuery> timezone() {
+		return string(TIMEZONE);
 	}
 	
-	public InstantProperty<EventQuery> before() {
-		return instant("before");
-	}
-
-	public BooleanProperty<EventQuery> isBusy() {
-		return bool("busy");
+	public BooleanProperty<EventQuery> allDay() {
+		return bool(ALL_DAY);
 	}
 	
-	public BooleanProperty<EventQuery> isPrivate() {
-		return bool("private");
+	public InstantProperty<EventQuery> start() {
+		return instant(START);
 	}
 	
-	public StringProperty<EventQuery> masterDataId() {
-		return string("masterDataId");
+	public InstantProperty<EventQuery> end() {
+		return instant(END);
 	}
 	
-	public StringProperty<EventQuery> statMasterDataId() {
-		return string("statMasterDataId");
+	public StringProperty<EventQuery> visibility() {
+		return string(VISIBILITY);
 	}
 	
-	public StringProperty<EventQuery> activityId() {
-		return string("activityId");
+	public StringProperty<EventQuery> transparency() {
+		return string(TRANSPARENCY);
 	}
 	
-	public StringProperty<EventQuery> causalId() {
-		return string("causalId");
+	public IntegerProperty<EventQuery> reminder() {
+		return intNum(REMINDER);
 	}
 	
-	public StringProperty<EventQuery> tag() {
-		return string("tag");
-	}
-
-	public StringProperty<EventQuery> any() {
-		return string("any");
+	/*
+	public StringProperty<EventQueryNew> contact() {
+		return string(CONTACT);
 	}
 	
-	public static Condition<EventQuery> createCondition(String pattern) {
-		if (!StringUtils.isBlank(pattern)) {
-			return new EventQuery().any().eq(StringUtils.replace(pattern, "%", "*"));
-		} else {
-			return null;
-		}
+	public StringProperty<EventQueryNew> contactId() {
+		return string(CONTACT_ID);
 	}
 	
-	public static Condition<EventQuery> createCondition(QueryObj query, Map<String, CustomField.Type> customFieldTypeMapping, DateTimeZone timezone) {
-		boolean smartStringComparison = true;
-		
-		Condition<EventQuery> last = new EventQuery().trueCondition();
-		for (Map.Entry<QueryObj.Condition, List<String>> entry : query.groupConditions(Arrays.asList("is")).entrySet()) {
-			final QueryObj.Condition key = entry.getKey();
-			final List<String> values = entry.getValue();
-			
-			if (values.isEmpty() || values.size() == 1) {
-				last = new EventQuery().and(last, createCondition(key, values.isEmpty() ? null : values.get(0), customFieldTypeMapping, timezone, smartStringComparison));
-			} else {
-				List<Condition<EventQuery>> conds = new ArrayList<>();
-				for (String value : entry.getValue()) {
-					conds.add(createCondition(key, value, customFieldTypeMapping, timezone, smartStringComparison));
-				}
-				last = new EventQuery().and(last, new EventQuery().or(conds));
-			}
-		}
-		
-		if (!StringUtils.isBlank(query.getAllText())) {
-			return new EventQuery().and(last, new EventQuery().any().eq(asStringValue(query.getAllText(), smartStringComparison)));
-		} else {
-			return last;
-		}
+	public StringProperty<EventQueryNew> company() {
+		return string(COMPANY);
 	}
 	
-	private static Condition<EventQuery> createCondition(QueryObj.Condition condition, String value, Map<String, CustomField.Type> customFieldTypeMapping, DateTimeZone timezone, boolean smartStringComparison) {
-		if ("title".equals(condition.keyword)) {
-			return new EventQuery().title().eq(asStringValue(value, smartStringComparison));
-
-		} else if ("location".equals(condition.keyword)) {
-			return new EventQuery().location().eq(asStringValue(value, smartStringComparison));
-
-		} else if ("description".equals(condition.keyword)) {
-			return new EventQuery().description().eq(value);
-
-		} else if ("after".equals(condition.keyword)) {
-			String after = StringUtils.replace(value, "/", "-");
-			return new EventQuery().after().eq(JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalDateYMD(after), JavaTimeUtils.toZoneId(timezone)));
-
-		} else if ("before".equals(condition.keyword)) {
-			String before = StringUtils.replace(value, "/", "-");
-			return new EventQuery().before().eq(JavaTimeUtils.toInstant(JavaTimeUtils.parseLocalDateYMD(before), JavaTimeUtils.toZoneId(timezone)));
-
-		} else if ("masterDataId".equals(condition.keyword)) {
-			return new EventQuery().masterDataId().eq(asStringValue(value, smartStringComparison));
-
-		} else if ("statMasterDataId".equals(condition.keyword)) {
-			return new EventQuery().masterDataId().eq(asStringValue(value, smartStringComparison));
-
-		} else if ("activityId".equals(condition.keyword)) {
-			return new EventQuery().activityId().eq(asStringValue(value, smartStringComparison));
-
-		} else if ("causalId".equals(condition.keyword)) {
-			return new EventQuery().causalId().eq(asStringValue(value, smartStringComparison));
-
-		} else if ("busy".equals(condition.keyword)) {
-			return condition.negated ? new EventQuery().isBusy().isFalse() : new EventQuery().isBusy().isTrue();
-
-		} else if ("private".equals(condition.keyword)) {
-			return condition.negated ? new EventQuery().isPrivate().isFalse() : new EventQuery().isPrivate().isTrue();
-
-		} else if ("tag".equals(condition.keyword)) {
-			return new EventQuery().tag().eq(value);
-
-		} else if (StringUtils.startsWith(condition.keyword, "cfield")) {
-			CId cf = new CId(condition.keyword, 2);
-			if (!cf.isTokenEmpty(1)) {
-				String cfId = cf.getToken(1);
-				if (customFieldTypeMapping.containsKey(cfId)) {
-					return new EventQuery().customValueCondition(cfId, customFieldTypeMapping.get(cfId), value, condition.negated, smartStringComparison, timezone);
-				}
-			}
-		}
-		
-		throw new WTUnsupportedOperationException("Unsupported keyword '{}'", condition.keyword);
+	public StringProperty<EventQueryNew> companyId() {
+		return string(COMPANY_ID);
+	}
+	*/
+	
+	public StringProperty<EventQuery> tagId() {
+		return string(TAG_ID);
 	}
 }

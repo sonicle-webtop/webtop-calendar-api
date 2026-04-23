@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,7 +28,7 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2018 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
@@ -38,15 +38,15 @@ import com.sonicle.webtop.core.sdk.UserProfileId;
  *
  * @author malbinola
  */
-public class SchedEvent extends BaseEvent {
+public class EventLookup extends EventBase {
 	protected String tags;
-	protected String calendarDomainId;
-	protected String calendarUserId;
-	protected String seriesEventId;
+	protected Boolean hasRecurrence;
 	protected Integer attendeesCount;
 	protected Integer notifyableAttendeesCount;
-	protected RecurInfo recurInfo;
-	
+	protected String calendarName;
+	protected String calendarDomainId;
+	protected String calendarUserId;
+
 	public String getTags() {
 		return tags;
 	}
@@ -55,30 +55,14 @@ public class SchedEvent extends BaseEvent {
 		this.tags = tags;
 	}
 
-	public String getCalendarUserId() {
-		return calendarUserId;
+	public Boolean getHasRecurrence() {
+		return hasRecurrence;
 	}
 
-	public void setCalendarUserId(String calendarUserId) {
-		this.calendarUserId = calendarUserId;
+	public void setHasRecurrence(Boolean hasRecurrence) {
+		this.hasRecurrence = hasRecurrence;
 	}
 
-	public String getCalendarDomainId() {
-		return calendarDomainId;
-	}
-	
-	public void setCalendarDomainId(String calendarDomainId) {
-		this.calendarDomainId = calendarDomainId;
-	}
-	
-	public String getSeriesEventId() {
-		return seriesEventId;
-	}
-
-	public void setSeriesEventId(String seriesEventId) {
-		this.seriesEventId = seriesEventId;
-	}
-	
 	public Integer getAttendeesCount() {
 		return attendeesCount;
 	}
@@ -94,23 +78,29 @@ public class SchedEvent extends BaseEvent {
 	public void setNotifyableAttendeesCount(Integer notifyableAttendeesCount) {
 		this.notifyableAttendeesCount = notifyableAttendeesCount;
 	}
-	
-	public RecurInfo getRecurInfo() {
-		return recurInfo;
+
+	public String getCalendarName() {
+		return calendarName;
 	}
 
-	public void setRecurInfo(RecurInfo recurInfo) {
-		this.recurInfo = recurInfo;
+	public void setCalendarName(String calendarName) {
+		this.calendarName = calendarName;
 	}
-	
-	public void setRecurInfo(boolean isRecurring, boolean isBroken) {
-		if (isRecurring) {
-			setRecurInfo(RecurInfo.RECURRING);
-		} else if (isBroken) {
-			setRecurInfo(RecurInfo.BROKEN);
-		} else {
-			setRecurInfo(RecurInfo.NONE);
-		}
+
+	public String getCalendarDomainId() {
+		return calendarDomainId;
+	}
+
+	public void setCalendarDomainId(String calendarDomainId) {
+		this.calendarDomainId = calendarDomainId;
+	}
+
+	public String getCalendarUserId() {
+		return calendarUserId;
+	}
+
+	public void setCalendarUserId(String calendarUserId) {
+		this.calendarUserId = calendarUserId;
 	}
 	
 	public boolean hasAttendees() {
@@ -119,14 +109,6 @@ public class SchedEvent extends BaseEvent {
 	
 	public boolean hasNotifyableAttendees() {
 		return (notifyableAttendeesCount != null) && (notifyableAttendeesCount > 0);
-	}
-	
-	public boolean isEventRecurring() {
-		return RecurInfo.RECURRING.equals(recurInfo);
-	}
-	
-	public Boolean isEventBroken() {
-		return RecurInfo.BROKEN.equals(recurInfo);
 	}
 	
 	public UserProfileId getCalendarProfileId() {

@@ -42,353 +42,353 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
     }
 
     /**
-     * Setter for <code>calendar.events.revision_status</code>.
+     * Setter for <code>calendar.events.series_event_id</code>.
      */
-    public void setRevisionStatus(java.lang.String value) {
+    public void setSeriesEventId(java.lang.String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>calendar.events.revision_status</code>.
+     * Getter for <code>calendar.events.series_event_id</code>.
      */
-    public java.lang.String getRevisionStatus() {
+    public java.lang.String getSeriesEventId() {
         return (java.lang.String) get(2);
     }
 
     /**
-     * Setter for <code>calendar.events.revision_timestamp</code>.
+     * Setter for <code>calendar.events.series_instance_id</code>.
      */
-    public void setRevisionTimestamp(org.joda.time.DateTime value) {
+    public void setSeriesInstanceId(java.lang.String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>calendar.events.revision_timestamp</code>.
+     * Getter for <code>calendar.events.series_instance_id</code>.
      */
-    public org.joda.time.DateTime getRevisionTimestamp() {
-        return (org.joda.time.DateTime) get(3);
-    }
-
-    /**
-     * Setter for <code>calendar.events.revision_sequence</code>.
-     */
-    public void setRevisionSequence(java.lang.Integer value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.revision_sequence</code>.
-     */
-    public java.lang.Integer getRevisionSequence() {
-        return (java.lang.Integer) get(4);
-    }
-
-    /**
-     * Setter for <code>calendar.events.creation_timestamp</code>.
-     */
-    public void setCreationTimestamp(org.joda.time.DateTime value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.creation_timestamp</code>.
-     */
-    public org.joda.time.DateTime getCreationTimestamp() {
-        return (org.joda.time.DateTime) get(5);
+    public java.lang.String getSeriesInstanceId() {
+        return (java.lang.String) get(3);
     }
 
     /**
      * Setter for <code>calendar.events.public_uid</code>.
      */
     public void setPublicUid(java.lang.String value) {
-        set(6, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>calendar.events.public_uid</code>.
      */
     public java.lang.String getPublicUid() {
-        return (java.lang.String) get(6);
+        return (java.lang.String) get(4);
     }
 
     /**
-     * Setter for <code>calendar.events.recurrence_id</code>.
+     * Setter for <code>calendar.events.revision_status</code>.
      */
-    public void setRecurrenceId(java.lang.Integer value) {
+    public void setRevisionStatus(java.lang.String value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.revision_status</code>.
+     */
+    public java.lang.String getRevisionStatus() {
+        return (java.lang.String) get(5);
+    }
+
+    /**
+     * Setter for <code>calendar.events.revision_timestamp</code>.
+     */
+    public void setRevisionTimestamp(org.joda.time.DateTime value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.revision_timestamp</code>.
+     */
+    public org.joda.time.DateTime getRevisionTimestamp() {
+        return (org.joda.time.DateTime) get(6);
+    }
+
+    /**
+     * Setter for <code>calendar.events.revision_sequence</code>.
+     */
+    public void setRevisionSequence(java.lang.Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>calendar.events.recurrence_id</code>.
+     * Getter for <code>calendar.events.revision_sequence</code>.
      */
-    public java.lang.Integer getRecurrenceId() {
+    public java.lang.Integer getRevisionSequence() {
         return (java.lang.Integer) get(7);
     }
 
     /**
-     * Setter for <code>calendar.events.read_only</code>.
+     * Setter for <code>calendar.events.creation_timestamp</code>.
      */
-    public void setReadOnly(java.lang.Boolean value) {
+    public void setCreationTimestamp(org.joda.time.DateTime value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>calendar.events.read_only</code>.
+     * Getter for <code>calendar.events.creation_timestamp</code>.
      */
-    public java.lang.Boolean getReadOnly() {
-        return (java.lang.Boolean) get(8);
+    public org.joda.time.DateTime getCreationTimestamp() {
+        return (org.joda.time.DateTime) get(8);
     }
 
     /**
-     * Setter for <code>calendar.events.start_date</code>.
+     * Setter for <code>calendar.events.row_status</code>.
      */
-    public void setStartDate(org.joda.time.DateTime value) {
+    public void setRowStatus(java.lang.String value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>calendar.events.start_date</code>.
+     * Getter for <code>calendar.events.row_status</code>.
      */
-    public org.joda.time.DateTime getStartDate() {
-        return (org.joda.time.DateTime) get(9);
+    public java.lang.String getRowStatus() {
+        return (java.lang.String) get(9);
     }
 
     /**
-     * Setter for <code>calendar.events.end_date</code>.
+     * Setter for <code>calendar.events.status</code>.
      */
-    public void setEndDate(org.joda.time.DateTime value) {
+    public void setStatus(java.lang.String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>calendar.events.end_date</code>.
+     * Getter for <code>calendar.events.status</code>.
      */
-    public org.joda.time.DateTime getEndDate() {
-        return (org.joda.time.DateTime) get(10);
-    }
-
-    /**
-     * Setter for <code>calendar.events.timezone</code>.
-     */
-    public void setTimezone(java.lang.String value) {
-        set(11, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.timezone</code>.
-     */
-    public java.lang.String getTimezone() {
-        return (java.lang.String) get(11);
-    }
-
-    /**
-     * Setter for <code>calendar.events.all_day</code>.
-     */
-    public void setAllDay(java.lang.Boolean value) {
-        set(12, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.all_day</code>.
-     */
-    public java.lang.Boolean getAllDay() {
-        return (java.lang.Boolean) get(12);
+    public java.lang.String getStatus() {
+        return (java.lang.String) get(10);
     }
 
     /**
      * Setter for <code>calendar.events.organizer</code>.
      */
     public void setOrganizer(java.lang.String value) {
-        set(13, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>calendar.events.organizer</code>.
      */
     public java.lang.String getOrganizer() {
-        return (java.lang.String) get(13);
+        return (java.lang.String) get(11);
+    }
+
+    /**
+     * Setter for <code>calendar.events.organizer_id</code>.
+     */
+    public void setOrganizerId(java.lang.String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.organizer_id</code>.
+     */
+    public java.lang.String getOrganizerId() {
+        return (java.lang.String) get(12);
+    }
+
+    /**
+     * Setter for <code>calendar.events.start</code>.
+     */
+    public void setStart(org.joda.time.DateTime value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.start</code>.
+     */
+    public org.joda.time.DateTime getStart() {
+        return (org.joda.time.DateTime) get(13);
+    }
+
+    /**
+     * Setter for <code>calendar.events.end</code>.
+     */
+    public void setEnd(org.joda.time.DateTime value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.end</code>.
+     */
+    public org.joda.time.DateTime getEnd() {
+        return (org.joda.time.DateTime) get(14);
+    }
+
+    /**
+     * Setter for <code>calendar.events.timezone</code>.
+     */
+    public void setTimezone(java.lang.String value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.timezone</code>.
+     */
+    public java.lang.String getTimezone() {
+        return (java.lang.String) get(15);
+    }
+
+    /**
+     * Setter for <code>calendar.events.all_day</code>.
+     */
+    public void setAllDay(java.lang.Boolean value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.all_day</code>.
+     */
+    public java.lang.Boolean getAllDay() {
+        return (java.lang.Boolean) get(16);
     }
 
     /**
      * Setter for <code>calendar.events.title</code>.
      */
     public void setTitle(java.lang.String value) {
-        set(14, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>calendar.events.title</code>.
      */
     public java.lang.String getTitle() {
-        return (java.lang.String) get(14);
-    }
-
-    /**
-     * Setter for <code>calendar.events.description</code>.
-     */
-    public void setDescription(java.lang.String value) {
-        set(15, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.description</code>.
-     */
-    public java.lang.String getDescription() {
-        return (java.lang.String) get(15);
+        return (java.lang.String) get(17);
     }
 
     /**
      * Setter for <code>calendar.events.location</code>.
      */
     public void setLocation(java.lang.String value) {
-        set(16, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>calendar.events.location</code>.
      */
     public java.lang.String getLocation() {
-        return (java.lang.String) get(16);
+        return (java.lang.String) get(18);
     }
 
     /**
-     * Setter for <code>calendar.events.is_private</code>.
+     * Setter for <code>calendar.events.description_type</code>.
      */
-    public void setIsPrivate(java.lang.Boolean value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.is_private</code>.
-     */
-    public java.lang.Boolean getIsPrivate() {
-        return (java.lang.Boolean) get(17);
-    }
-
-    /**
-     * Setter for <code>calendar.events.busy</code>.
-     */
-    public void setBusy(java.lang.Boolean value) {
-        set(18, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.busy</code>.
-     */
-    public java.lang.Boolean getBusy() {
-        return (java.lang.Boolean) get(18);
-    }
-
-    /**
-     * Setter for <code>calendar.events.reminder</code>.
-     */
-    public void setReminder(java.lang.Integer value) {
+    public void setDescriptionType(java.lang.String value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>calendar.events.reminder</code>.
+     * Getter for <code>calendar.events.description_type</code>.
      */
-    public java.lang.Integer getReminder() {
-        return (java.lang.Integer) get(19);
+    public java.lang.String getDescriptionType() {
+        return (java.lang.String) get(19);
     }
 
     /**
-     * Setter for <code>calendar.events.reminded_on</code>.
+     * Setter for <code>calendar.events.description</code>.
      */
-    public void setRemindedOn(org.joda.time.DateTime value) {
+    public void setDescription(java.lang.String value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>calendar.events.reminded_on</code>.
+     * Getter for <code>calendar.events.description</code>.
      */
-    public org.joda.time.DateTime getRemindedOn() {
-        return (org.joda.time.DateTime) get(20);
+    public java.lang.String getDescription() {
+        return (java.lang.String) get(20);
+    }
+
+    /**
+     * Setter for <code>calendar.events.visibility</code>.
+     */
+    public void setVisibility(java.lang.String value) {
+        set(21, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.visibility</code>.
+     */
+    public java.lang.String getVisibility() {
+        return (java.lang.String) get(21);
+    }
+
+    /**
+     * Setter for <code>calendar.events.transparency</code>.
+     */
+    public void setTransparency(java.lang.String value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>calendar.events.transparency</code>.
+     */
+    public java.lang.String getTransparency() {
+        return (java.lang.String) get(22);
     }
 
     /**
      * Setter for <code>calendar.events.href</code>.
      */
     public void setHref(java.lang.String value) {
-        set(21, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>calendar.events.href</code>.
      */
     public java.lang.String getHref() {
-        return (java.lang.String) get(21);
+        return (java.lang.String) get(23);
     }
 
     /**
      * Setter for <code>calendar.events.etag</code>.
      */
     public void setEtag(java.lang.String value) {
-        set(22, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>calendar.events.etag</code>.
      */
     public java.lang.String getEtag() {
-        return (java.lang.String) get(22);
-    }
-
-    /**
-     * Setter for <code>calendar.events.activity_id</code>.
-     */
-    public void setActivityId(java.lang.Integer value) {
-        set(23, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.activity_id</code>.
-     */
-    public java.lang.Integer getActivityId() {
-        return (java.lang.Integer) get(23);
-    }
-
-    /**
-     * Setter for <code>calendar.events.master_data_id</code>.
-     */
-    public void setMasterDataId(java.lang.String value) {
-        set(24, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.master_data_id</code>.
-     */
-    public java.lang.String getMasterDataId() {
         return (java.lang.String) get(24);
     }
 
     /**
-     * Setter for <code>calendar.events.stat_master_data_id</code>.
+     * Setter for <code>calendar.events.reminder</code>.
      */
-    public void setStatMasterDataId(java.lang.String value) {
+    public void setReminder(java.lang.Integer value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>calendar.events.stat_master_data_id</code>.
+     * Getter for <code>calendar.events.reminder</code>.
      */
-    public java.lang.String getStatMasterDataId() {
-        return (java.lang.String) get(25);
+    public java.lang.Integer getReminder() {
+        return (java.lang.Integer) get(25);
     }
 
     /**
-     * Setter for <code>calendar.events.causal_id</code>.
+     * Setter for <code>calendar.events.reminded_on</code>.
      */
-    public void setCausalId(java.lang.Integer value) {
+    public void setRemindedOn(org.joda.time.DateTime value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>calendar.events.causal_id</code>.
+     * Getter for <code>calendar.events.reminded_on</code>.
      */
-    public java.lang.Integer getCausalId() {
-        return (java.lang.Integer) get(26);
+    public org.joda.time.DateTime getRemindedOn() {
+        return (org.joda.time.DateTime) get(26);
     }
 
     /**
@@ -403,20 +403,6 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
      */
     public java.lang.Boolean getHandleInvitation() {
         return (java.lang.Boolean) get(27);
-    }
-
-    /**
-     * Setter for <code>calendar.events.description_type</code>.
-     */
-    public void setDescriptionType(java.lang.String value) {
-        set(28, value);
-    }
-
-    /**
-     * Getter for <code>calendar.events.description_type</code>.
-     */
-    public java.lang.String getDescriptionType() {
-        return (java.lang.String) get(28);
     }
 
     // -------------------------------------------------------------------------
@@ -442,37 +428,36 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
     /**
      * Create a detached, initialised EventsRecord
      */
-    public EventsRecord(java.lang.String eventId, java.lang.Integer calendarId, java.lang.String revisionStatus, org.joda.time.DateTime revisionTimestamp, java.lang.Integer revisionSequence, org.joda.time.DateTime creationTimestamp, java.lang.String publicUid, java.lang.Integer recurrenceId, java.lang.Boolean readOnly, org.joda.time.DateTime startDate, org.joda.time.DateTime endDate, java.lang.String timezone, java.lang.Boolean allDay, java.lang.String organizer, java.lang.String title, java.lang.String description, java.lang.String location, java.lang.Boolean isPrivate, java.lang.Boolean busy, java.lang.Integer reminder, org.joda.time.DateTime remindedOn, java.lang.String href, java.lang.String etag, java.lang.Integer activityId, java.lang.String masterDataId, java.lang.String statMasterDataId, java.lang.Integer causalId, java.lang.Boolean handleInvitation, java.lang.String descriptionType) {
+    public EventsRecord(java.lang.String eventId, java.lang.Integer calendarId, java.lang.String seriesEventId, java.lang.String seriesInstanceId, java.lang.String publicUid, java.lang.String revisionStatus, org.joda.time.DateTime revisionTimestamp, java.lang.Integer revisionSequence, org.joda.time.DateTime creationTimestamp, java.lang.String rowStatus, java.lang.String status, java.lang.String organizer, java.lang.String organizerId, org.joda.time.DateTime start, org.joda.time.DateTime end, java.lang.String timezone, java.lang.Boolean allDay, java.lang.String title, java.lang.String location, java.lang.String descriptionType, java.lang.String description, java.lang.String visibility, java.lang.String transparency, java.lang.String href, java.lang.String etag, java.lang.Integer reminder, org.joda.time.DateTime remindedOn, java.lang.Boolean handleInvitation) {
         super(com.sonicle.webtop.calendar.jooq.tables.Events.EVENTS);
 
         setEventId(eventId);
         setCalendarId(calendarId);
+        setSeriesEventId(seriesEventId);
+        setSeriesInstanceId(seriesInstanceId);
+        setPublicUid(publicUid);
         setRevisionStatus(revisionStatus);
         setRevisionTimestamp(revisionTimestamp);
         setRevisionSequence(revisionSequence);
         setCreationTimestamp(creationTimestamp);
-        setPublicUid(publicUid);
-        setRecurrenceId(recurrenceId);
-        setReadOnly(readOnly);
-        setStartDate(startDate);
-        setEndDate(endDate);
+        setRowStatus(rowStatus);
+        setStatus(status);
+        setOrganizer(organizer);
+        setOrganizerId(organizerId);
+        setStart(start);
+        setEnd(end);
         setTimezone(timezone);
         setAllDay(allDay);
-        setOrganizer(organizer);
         setTitle(title);
-        setDescription(description);
         setLocation(location);
-        setIsPrivate(isPrivate);
-        setBusy(busy);
-        setReminder(reminder);
-        setRemindedOn(remindedOn);
+        setDescriptionType(descriptionType);
+        setDescription(description);
+        setVisibility(visibility);
+        setTransparency(transparency);
         setHref(href);
         setEtag(etag);
-        setActivityId(activityId);
-        setMasterDataId(masterDataId);
-        setStatMasterDataId(statMasterDataId);
-        setCausalId(causalId);
+        setReminder(reminder);
+        setRemindedOn(remindedOn);
         setHandleInvitation(handleInvitation);
-        setDescriptionType(descriptionType);
     }
 }

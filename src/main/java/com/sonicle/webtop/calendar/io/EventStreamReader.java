@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,22 +28,20 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2019 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar.model;
+package com.sonicle.webtop.calendar.io;
+
+import com.sonicle.webtop.core.sdk.WTException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  *
  * @author malbinola
  */
-public class EventObjectWithBean extends EventObject {
-	protected EventEx event;
+public interface EventStreamReader {
 	
-	public EventEx getEvent() {
-		return event;
-	}
-
-	public void setEvent(EventEx event) {
-		this.event = event;
-	}
+	public List<EventInput> read(InputStream is) throws IOException, WTException;
 }

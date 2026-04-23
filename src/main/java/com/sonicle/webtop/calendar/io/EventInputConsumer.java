@@ -32,8 +32,6 @@
  */
 package com.sonicle.webtop.calendar.io;
 
-import com.sonicle.webtop.calendar.io.EventInput;
-
 /**
  *
  * @author gabriele.bulfon

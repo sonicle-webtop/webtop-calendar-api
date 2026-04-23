@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,75 +28,47 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2018 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import com.sonicle.webtop.calendar.IEventInstanceStatable;
+import static com.sonicle.webtop.calendar.model.EventInstance.computeType;
 
 /**
  *
  * @author malbinola
  */
-public class EventFootprintBase implements EventPeriodFootprint {
-	protected final String eventId;
-	protected final DateTime startDate;
-	protected final DateTime endDate;
-	protected final String timezone;
-	protected final Boolean allDay;
-	protected final String recurrenceRule;
+public class EventLookupInstance extends EventLookup implements IEventInstanceStatable {
+	protected EventInstanceId id;
+	protected String originalEventId;
 	
-	public EventFootprintBase(String eventId, DateTime startDate, DateTime endDate, String timezone, Boolean allDay, String recurrenceRule) {
-		this.eventId = eventId;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.timezone = timezone;
-		this.allDay = allDay;
-		this.recurrenceRule = recurrenceRule;
-	}
+	public EventLookupInstance() {}
 	
-	public EventFootprintBase(Event event) {
-		this.eventId = event.getEventId();
-		this.startDate = event.getStartDate();
-		this.endDate = event.getEndDate();
-		this.timezone = event.getTimezone();
-		this.allDay = event.getAllDay();
-		this.recurrenceRule = event.getRecurrenceRule();
+	public EventLookupInstance(EventInstanceId id, String originalEventId) {
+		this.id = id;
+		this.originalEventId = originalEventId;
 	}
 	
 	@Override
-	public String getEventId() {
-		return eventId;
+	public EventInstanceId getId() {
+		return id;
 	}
-	
-	@Override
-	public DateTime getStartDate() {
-		return startDate;
+
+	public void setId(EventInstanceId id) {
+		this.id = id;
 	}
 
 	@Override
-	public DateTime getEndDate() {
-		return endDate;
+	public String getOriginalEventId() {
+		return originalEventId;
 	}
 
-	@Override
-	public String getTimezone() {
-		return timezone;
-	}
-
-	@Override
-	public Boolean getAllDay() {
-		return allDay;
+	public void setOriginalEventId(String originalEventId) {
+		this.originalEventId = originalEventId;
 	}
 	
-	@Override
-	public String getRecurrenceRule() {
-		return recurrenceRule;
-	}
-	
-	@Override
-	public DateTimeZone getDateTimeZone() {
-		return DateTimeZone.forID(getTimezone());
+	public EventInstance.Type getType() {
+		return computeType(id, originalEventId, getHasRecurrence());
 	}
 }

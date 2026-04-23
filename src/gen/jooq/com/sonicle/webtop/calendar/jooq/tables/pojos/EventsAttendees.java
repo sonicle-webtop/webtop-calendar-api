@@ -13,13 +13,15 @@ public class EventsAttendees implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private java.lang.String  attendeeId;
-    private java.lang.String  eventId;
-    private java.lang.String  recipient;
-    private java.lang.String  recipientType;
-    private java.lang.String  recipientRole;
-    private java.lang.String  responseStatus;
-    private java.lang.Boolean notify;
+    private java.lang.String       attendeeId;
+    private java.lang.String       eventId;
+    private java.lang.String       recipient;
+    private java.lang.String       recipientUserId;
+    private java.lang.String       recipientType;
+    private java.lang.String       recipientRole;
+    private java.lang.String       responseStatus;
+    private org.joda.time.DateTime responseTimestamp;
+    private java.lang.Boolean      notify;
 
     public EventsAttendees() {}
 
@@ -27,27 +29,33 @@ public class EventsAttendees implements java.io.Serializable {
         this.attendeeId = value.attendeeId;
         this.eventId = value.eventId;
         this.recipient = value.recipient;
+        this.recipientUserId = value.recipientUserId;
         this.recipientType = value.recipientType;
         this.recipientRole = value.recipientRole;
         this.responseStatus = value.responseStatus;
+        this.responseTimestamp = value.responseTimestamp;
         this.notify = value.notify;
     }
 
     public EventsAttendees(
-        java.lang.String  attendeeId,
-        java.lang.String  eventId,
-        java.lang.String  recipient,
-        java.lang.String  recipientType,
-        java.lang.String  recipientRole,
-        java.lang.String  responseStatus,
-        java.lang.Boolean notify
+        java.lang.String       attendeeId,
+        java.lang.String       eventId,
+        java.lang.String       recipient,
+        java.lang.String       recipientUserId,
+        java.lang.String       recipientType,
+        java.lang.String       recipientRole,
+        java.lang.String       responseStatus,
+        org.joda.time.DateTime responseTimestamp,
+        java.lang.Boolean      notify
     ) {
         this.attendeeId = attendeeId;
         this.eventId = eventId;
         this.recipient = recipient;
+        this.recipientUserId = recipientUserId;
         this.recipientType = recipientType;
         this.recipientRole = recipientRole;
         this.responseStatus = responseStatus;
+        this.responseTimestamp = responseTimestamp;
         this.notify = notify;
     }
 
@@ -94,6 +102,20 @@ public class EventsAttendees implements java.io.Serializable {
     }
 
     /**
+     * Getter for <code>calendar.events_attendees.recipient_user_id</code>.
+     */
+    public java.lang.String getRecipientUserId() {
+        return this.recipientUserId;
+    }
+
+    /**
+     * Setter for <code>calendar.events_attendees.recipient_user_id</code>.
+     */
+    public void setRecipientUserId(java.lang.String recipientUserId) {
+        this.recipientUserId = recipientUserId;
+    }
+
+    /**
      * Getter for <code>calendar.events_attendees.recipient_type</code>.
      */
     public java.lang.String getRecipientType() {
@@ -136,6 +158,20 @@ public class EventsAttendees implements java.io.Serializable {
     }
 
     /**
+     * Getter for <code>calendar.events_attendees.response_timestamp</code>.
+     */
+    public org.joda.time.DateTime getResponseTimestamp() {
+        return this.responseTimestamp;
+    }
+
+    /**
+     * Setter for <code>calendar.events_attendees.response_timestamp</code>.
+     */
+    public void setResponseTimestamp(org.joda.time.DateTime responseTimestamp) {
+        this.responseTimestamp = responseTimestamp;
+    }
+
+    /**
      * Getter for <code>calendar.events_attendees.notify</code>.
      */
     public java.lang.Boolean getNotify() {
@@ -156,9 +192,11 @@ public class EventsAttendees implements java.io.Serializable {
         sb.append(attendeeId);
         sb.append(", ").append(eventId);
         sb.append(", ").append(recipient);
+        sb.append(", ").append(recipientUserId);
         sb.append(", ").append(recipientType);
         sb.append(", ").append(recipientRole);
         sb.append(", ").append(responseStatus);
+        sb.append(", ").append(responseTimestamp);
         sb.append(", ").append(notify);
 
         sb.append(")");

@@ -32,37 +32,76 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.rits.cloning.Cloner;
+import com.sonicle.webtop.calendar.IEventInstanceStatable;
+import net.sf.qualitycheck.Check;
 
 /**
  *
  * @author malbinola
  */
-public class EventInstance extends Event {
-	protected String key;
-	protected RecurInfo recurInfo;
+public class EventInstance extends EventEx implements IEventInstanceStatable {
+	protected EventInstanceId id;
+	protected String originalEventId;
 	
 	public EventInstance() {}
 	
-	public EventInstance(String key, Event event) {
+	public EventInstance(EventInstanceId id, Event event) {
+		this(id, Check.notNull(event, "event").getEventId(), event);
+	}
+	
+	public EventInstance(EventInstanceId id, String originalEventId, EventEx event) {
 		super();
-		this.key = key;
 		Cloner.standard().copyPropertiesOfInheritedClass(event, this);
+		// Keep here otherwise data will be overridden by the above!
+		this.id = Check.notNull(id, "id");
+		this.originalEventId = Check.notEmpty(originalEventId, "originalEventId");
+	}
+	
+	@Override
+	public EventInstanceId getId() {
+		return id;
 	}
 
-	public String getKey() {
-		return key;
+	public void setId(EventInstanceId id) {
+		this.id = id;
 	}
-
-	public void setKey(String key) {
-		this.key = key;
+	
+	@Override
+	public String getOriginalEventId() {
+		return originalEventId;
 	}
-
-	public RecurInfo getRecurInfo() {
-		return recurInfo;
+	
+	@Override
+	public Boolean getHasRecurrence() {
+		return getRecurrence() != null;
 	}
-
-	public void setRecurInfo(RecurInfo recurInfo) {
-		this.recurInfo = recurInfo;
+	
+	public Type getType() {
+		return computeType(id, originalEventId, getHasRecurrence());
+	}
+	
+	public static Type computeType(final EventInstanceId instanceId, final String originalEventId, final boolean hasRecurrence) {
+		// NB: in order to return consistent results, recurrence MUST be read 
+		// and set into instance object; otherwise there is no guarantee to 
+		// identify type precisely!
+		
+		if (hasRecurrence && EventInstanceId.isSeriesMaster(instanceId, originalEventId)) {
+			return Type.MASTER;
+		} else if (hasRecurrence && EventInstanceId.isSeriesItem(instanceId, originalEventId)) {
+			return Type.OCCURRENCE;
+		} else if (EventInstanceId.isSeriesException(instanceId, originalEventId)) {
+			return Type.EXCEPTION;
+		} else {
+			return Type.SINGLE;
+		}
+	}
+	
+	public static enum Type {
+		@SerializedName("SI") SINGLE,
+		@SerializedName("MA") MASTER,
+		@SerializedName("OC") OCCURRENCE,
+		@SerializedName("EX") EXCEPTION;
 	}
 }

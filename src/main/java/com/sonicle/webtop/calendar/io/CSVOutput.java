@@ -32,7 +32,7 @@
  */
 package com.sonicle.webtop.calendar.io;
 
-import com.sonicle.webtop.calendar.model.Event;
+import com.sonicle.webtop.calendar.model.EventEx;
 import jakarta.mail.internet.InternetAddress;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -71,14 +71,14 @@ public class CSVOutput {
 		wr.write(headers);
 	}
 	
-	public void writeContact(Event e, String categoryName, CsvListWriter wr) throws IOException {
+	public void writeContact(EventEx e, String categoryName, CsvListWriter wr) throws IOException {
 		wr.write(
 			new String[] {
 				n2b(e.getCalendarId()),
 				n2b(e.getTitle()),
 				n2b(e.getDescription()),
-				d2s(e.getStartDate()),
-				d2s(e.getEndDate()),
+				d2s(e.getStart()),
+				d2s(e.getEnd()),
 				n2b(e.getTimezone()),
 				n2b(e.getLocation()),
 				n2b(e.getOrganizer()),
@@ -86,8 +86,8 @@ public class CSVOutput {
 				n2b(e.getOrganizerCN()),
 				n2b(e.getOrganizerInternetAddress()),
 				e.getAllDay()?"Y":"N",
-				n2b(e.getRecurrenceRule()),
-				d2s(e.getRecurrenceStartDate())
+				n2b(e.hasRecurrence() ? e.getRecurrence().getRule() : null),
+				d2s(e.hasRecurrence() ? e.getRecurrence().getStart() : null)
 			}
 		);
 	}

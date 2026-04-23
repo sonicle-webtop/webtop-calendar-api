@@ -32,29 +32,33 @@
  */
 package com.sonicle.webtop.calendar;
 
+import com.google.gson.annotations.SerializedName;
+import com.sonicle.commons.beans.ItemsListResult;
+import com.sonicle.commons.beans.SortInfo;
 import com.sonicle.commons.qbuilders.conditions.Condition;
-import com.sonicle.commons.LangUtils;
 import com.sonicle.commons.flags.BitFlags;
 import com.sonicle.commons.flags.BitFlagsEnum;
-import com.sonicle.commons.time.DateRange;
-import com.sonicle.commons.time.DateTimeRange;
 import com.sonicle.commons.time.DateTimeRange2;
 import com.sonicle.commons.time.DateTimeWindow;
 import com.sonicle.commons.time.DateWindow;
+import com.sonicle.commons.time.TimeRange;
 import com.sonicle.webtop.calendar.model.GetEventScope;
 import com.sonicle.webtop.calendar.model.Calendar;
 import com.sonicle.webtop.calendar.model.CalendarBase;
 import com.sonicle.webtop.calendar.model.CalendarFSFolder;
 import com.sonicle.webtop.calendar.model.CalendarFSOrigin;
 import com.sonicle.webtop.calendar.model.CalendarPropSet;
-import com.sonicle.webtop.calendar.model.ComparableEventBounds;
+import com.sonicle.webtop.calendar.model.CalendarQuery;
+import com.sonicle.webtop.calendar.model.ComparableEventRange;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
+import com.sonicle.webtop.calendar.model.EventBase;
+import com.sonicle.webtop.calendar.model.EventEx;
 import com.sonicle.webtop.calendar.model.EventInstance;
-import com.sonicle.webtop.calendar.model.EventKey;
+import com.sonicle.webtop.calendar.model.EventInstanceId;
+import com.sonicle.webtop.calendar.model.EventLookupInstance;
 import com.sonicle.webtop.calendar.model.EventObject;
 import com.sonicle.webtop.calendar.model.EventQuery;
-import com.sonicle.webtop.calendar.model.SchedEventInstance;
 import com.sonicle.webtop.calendar.model.UpdateEventTarget;
 import com.sonicle.webtop.calendar.model.UpdateTagsOperation;
 import com.sonicle.webtop.core.app.sdk.WTConstraintException;
@@ -62,6 +66,7 @@ import com.sonicle.webtop.core.app.sdk.WTNotFoundException;
 import com.sonicle.webtop.core.app.sdk.WTParseException;
 import com.sonicle.webtop.core.model.CustomFieldValue;
 import com.sonicle.webtop.core.app.model.FolderSharing;
+import com.sonicle.webtop.core.model.Delta;
 import com.sonicle.webtop.core.sdk.UserProfileId;
 import com.sonicle.webtop.core.sdk.WTException;
 import java.util.Collection;
@@ -70,6 +75,7 @@ import java.util.Map;
 import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -79,9 +85,6 @@ public interface ICalendarManager {
 	
 	@Deprecated public Set<Integer> listCalendarIds() throws WTException;
 	@Deprecated public Map<Integer, Calendar> listCalendars() throws WTException;
-	@Deprecated public Event addEventFromICal(int calendarId, net.fortuna.ical4j.model.Calendar ical) throws WTException;
-	@Deprecated public void updateEventFromICal(net.fortuna.ical4j.model.Calendar ical) throws WTException;
-	@Deprecated public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean notifyAttendees) throws WTException;
 	public Set<FolderSharing.SubjectConfiguration> getFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope) throws WTException;
 	public void updateFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope, final Set<FolderSharing.SubjectConfiguration> configurations) throws WTException;
 	public Map<UserProfileId, CalendarFSOrigin> listIncomingCalendarOrigins() throws WTException;
@@ -90,13 +93,16 @@ public interface ICalendarManager {
 	public Map<Integer, CalendarFSFolder> listIncomingCalendarFolders(final UserProfileId originProfileId) throws WTException;
 	public Set<Integer> listMyCalendarIds() throws WTException;
 	public Set<Integer> listIncomingCalendarIds() throws WTException;
+	public Set<Integer> listIncomingCalendarIds(final UserProfileId originProfile) throws WTException;
 	public Set<Integer> listAllCalendarIds() throws WTException;
+	public Integer getDefaultCalendarId() throws WTException;
+	public Integer getBuiltInCalendarId() throws WTException;
+	public ItemsListResult<Calendar> listCalendars(final Condition<CalendarQuery> filterQuery, final Set<SortInfo> sortInfo, final Integer page, final Integer limit, final boolean returnFullCount) throws WTException;
+	public ItemsListResult<Calendar> listCalendars(final String filterQuery, final Set<SortInfo> sortInfo, final Integer page, final Integer limit, final boolean returnFullCount) throws WTException;
 	public Map<Integer, Calendar> listMyCalendars() throws WTException;
 	public Map<Integer, Calendar> listMyCalendars(final Collection<Integer> calendarIds) throws WTException;
 	public Map<Integer, DateTime> getCalendarsItemsLastRevision(Collection<Integer> calendarIds) throws WTException;
 	public UserProfileId getCalendarOwner(int calendarId) throws WTException;
-	public Integer getDefaultCalendarId() throws WTException;
-	public Integer getBuiltInCalendarId() throws WTException;
 	public boolean existCalendar(int calendarId) throws WTException;
 	public Calendar getCalendar(int calendarId) throws WTException;
 	public Calendar getBuiltInCalendar() throws WTException;
@@ -108,92 +114,115 @@ public interface ICalendarManager {
 	public CalendarPropSet getCalendarCustomProps(int calendarId) throws WTException;
 	public Map<Integer, CalendarPropSet> getCalendarCustomProps(Collection<Integer> calendarIds) throws WTException;
 	public CalendarPropSet updateCalendarCustomProps(int calendarId, CalendarPropSet propertySet) throws WTException;
-	public List<ComparableEventBounds> listEventsBounds(final Collection<Integer> calendarIds, final DateTimeRange2 viewRange, final DateTimeZone targetTimezone) throws WTException;
-	public List<EventObject> listEventObjects(int calendarId, EventObjectOutputType outputType) throws WTException;
-	public List<EventObject> listEventObjects(int calendarId, DateTime since, EventObjectOutputType outputType) throws WTException;
+	public List<ComparableEventRange> listEventsBounds(final Collection<Integer> calendarIds, final DateTimeRange2 viewRange, final DateTimeZone targetTimezone) throws WTException;
+	public List<EventObject> listEventObjects(final int calendarId, final EventObjectOutputType outputType) throws WTException;
+	public List<EventObject> listEventObjects(final int calendarId, final DateTime since, final EventObjectOutputType outputType) throws WTException;
+	public Delta<EventObject> listEventObjectsDelta(final int calendarId, final String syncToken, final EventObjectOutputType outputType) throws WTException;
+	public Delta<EventObject> listEventObjectsDelta(final int calendarId, final DateTime since, final EventObjectOutputType outputType) throws WTException;
 	public List<EventObject> getEventObjects(final int calendarId, final Collection<String> hrefs, final EventObjectOutputType outputType) throws WTException;
-	public EventObject getEventObject(int calendarId, String eventId, EventObjectOutputType outputType) throws WTException;
-	public void addEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
-	public void updateEventObject(int calendarId, String href, net.fortuna.ical4j.model.Calendar iCalendar) throws WTNotFoundException, WTException;
-	public void deleteEventObject(int calendarId, String href) throws WTNotFoundException, WTException;
-	public boolean existEventInstance(Collection<Integer> calendarIds, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
-	public List<SchedEventInstance> listUpcomingEventInstances(Collection<Integer> calendarIds, DateTime now, DateTimeZone targetTimezone) throws WTException;
-	public List<SchedEventInstance> listUpcomingEventInstances(Collection<Integer> calendarIds, DateTime now, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
-	public List<SchedEventInstance> listUpcomingEventInstances(Collection<Integer> calendarIds, DateTime now, int days, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateRange range, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateRange range, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeRange range, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeRange range, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateWindow timeWindow, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateWindow timeWindow, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeWindow timeWindow, DateTimeZone targetTimezone, boolean sort) throws WTException;
-	public List<SchedEventInstance> listEventInstances(Collection<Integer> calendarIds, DateTimeWindow timeWindow, Condition<EventQuery> conditionPredicate, DateTimeZone targetTimezone, boolean sort) throws WTException;
+	public EventObject getEventObject(final int calendarId, String eventId, final EventObjectOutputType outputType) throws WTException;
+	public void addEventObject(final int calendarId, final String href, final net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
+	public void updateEventObject(final int calendarId, final String href, final net.fortuna.ical4j.model.Calendar iCalendar) throws WTNotFoundException, WTException;
+	public void deleteEventObject(final int calendarId, final String href) throws WTNotFoundException, WTException;
+	public void deleteEventObject(final int calendarId, final String href, final BitFlags<EventNotifyOption> notifyOptions) throws WTNotFoundException, WTException;
+	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final DateWindow timeWindow, final boolean sort, final DateTimeZone targetTimezone) throws WTException;
+	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final DateWindow timeWindow, final Condition<EventQuery> conditionPredicate, final boolean sort, final DateTimeZone targetTimezone) throws WTException;
+	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final DateTimeZone targetTimezone) throws  WTException;
+	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final Condition<EventQuery> filterQuery, final boolean sort, final DateTimeZone targetTimezone) throws  WTException;
+	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final Condition<EventQuery> filterQuery, final boolean sort, final DateTimeZone targetTimezone) throws  WTException;
+	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final String filterQuery, final boolean sort, final DateTimeZone targetTimezone) throws WTException;
+	public Set<LocalDate> listEventInstancesDates(final Collection<Integer> calendarIds, final DateTimeZone targetTimezone) throws WTException;
+	public Set<LocalDate> listEventInstancesDates(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final String filterQuery, final DateTimeZone targetTimezone) throws WTException;
+	public Set<LocalDate> listEventDates(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final DateTimeZone targetTimezone) throws WTException;
+	public Map<String, DateTime> computeTransparencyTimeSpans(final UserProfileId targetProfileId, final EventBase.Transparency transparency, final DateWindow dateWindow, final TimeRange timeRange, final int minuteResolution, final DateTimeZone targetTimezone) throws WTException;
 	
-	public Event getEvent(String eventId) throws WTException;
-	public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
-	public EventAttachmentWithBytes getEventAttachment(String eventId, String attachmentId) throws WTNotFoundException, WTException;
-	public Map<String, CustomFieldValue> getEventCustomValues(String eventId) throws WTException;
-	public Event addEvent(Event event) throws WTException;
-	public Event addEvent(Event event, boolean notifyAttendees) throws WTException;
-	public Event addEvent(final Event event, final BitFlags<EventAddOption> options) throws WTException;
-	public Event handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar ical, final Integer calendarId, final BitFlags<HandleICalInviationOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
-	public String getEventInstanceKey(String eventId) throws WTException;
-	public EventInstance getEventInstance(String eventKey) throws WTException;
-	public void updateEventInstance(UpdateEventTarget target, EventInstance event, boolean processAttachments, boolean processTags, boolean processCustomValues, boolean notifyAttendees) throws WTException;
-	public void updateEventInstance(UpdateEventTarget target, EventKey key, DateTime newStart, DateTime newEnd, String newTitle, boolean notifyAttendees) throws WTException;
-	public void deleteEventInstance(UpdateEventTarget target, String eventKey, boolean notifyAttendees) throws WTException;
-	public void deleteEventInstance(UpdateEventTarget target, EventKey key, boolean notifyAttendees) throws WTException;
-	public void restoreEventInstance(EventKey key) throws WTException;
-	public void moveEventInstance(EventKey key, int targetCalendarId) throws WTNotFoundException, WTException;
-	public Event cloneEventInstance(EventKey key, Integer newCalendarId, DateTime newStart, DateTime newEnd, boolean notifyAttendees) throws WTException;
-	public void updateEventCalendarTags(UpdateTagsOperation operation, int calendarId, Set<String> tagIds) throws WTException;
-	public void updateEventTags(UpdateTagsOperation operation, Collection<String> eventIds, Set<String> tagIds) throws WTException;
-	public void deleteEvent(String publicUid, Integer calendarId, boolean notifyAttendees) throws WTException;
+	@Deprecated public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
+	public Event addEvent(final EventEx event) throws WTException;
+	public Event addEvent(final EventEx event, final boolean notifyAttendees) throws WTException;
+	public Event addEvent(final EventEx event, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public Event addEvent(final EventEx event, final String rawICalendar, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public Event addEvent(final int calendarId, final net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
+	public Event handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar iCalendar, final Integer calendarId, final BitFlags<HandleICalInviationOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	public EventInstance getEventInstance(final EventInstanceId instanceId) throws WTException;
+	public EventInstance getEventInstance(final EventInstanceId instanceId, final BitFlags<EventGetOption> options) throws WTException;
+	public EventAttachmentWithBytes getEventInstanceAttachment(final EventInstanceId instanceId, final String attachmentId) throws WTException;
+	public Map<String, CustomFieldValue> getEventInstanceCustomValues(final EventInstanceId instanceId) throws WTException;
+	public Event cloneEventInstance(final EventInstanceId sourceInstanceId, final Integer newCalendarId, final DateTime newStart, final DateTime newEnd, final String newTitle, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void updateEventInstance(final UpdateEventTarget target, final EventInstanceId instanceId, final EventEx event) throws WTException;
+	public void updateEventInstance(final UpdateEventTarget target, final EventInstanceId instanceId, final EventEx event, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void updateEventInstance(final UpdateEventTarget target, final EventInstanceId instanceId, final EventEx event, final BitFlags<EventUpdateOption> options, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void updateEventInstanceQuick(final UpdateEventTarget target, final EventInstanceId instanceId, final DateTime newStart, final DateTime newEnd, final String newTitle) throws WTException;
+	public void updateEventInstanceQuick(final UpdateEventTarget target, final EventInstanceId instanceId, final DateTime newStart, final DateTime newEnd, final String newTitle, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void updateEventInstanceTags(final UpdateTagsOperation operation, final Collection<EventInstanceId> instanceIds, final Set<String> tagIds) throws WTException;
+	public void deleteEvent(final int calendarId, final String publicUid, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void deleteEventInstance(final UpdateEventTarget target, final EventInstanceId instanceId, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void deleteEventInstance(final UpdateEventTarget target, final Collection<EventInstanceId> instanceIds, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void restoreEventInstance(final EventInstanceId instanceId, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void moveEventInstance(final boolean copy, final Collection<EventInstanceId> instanceIds, final int targetCalendarId, final BitFlags<EventGetOption> copyOptions, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
+	public void updateEventCalendarTags(final UpdateTagsOperation operation, final int calendarId, final Set<String> tagIds) throws WTException;
+	public Map<String, DateTime> generateTimeSpans(final LocalDate fromDate, final LocalDate toDate, final TimeRange timeRange, final boolean applyTimeRangeForEachDay, final int minuteResolution, final DateTimeZone targetTimezone);
 	
-	public static enum EventGetOption implements BitFlagsEnum<EventGetOption> {
-		ATTACHMENTS(1<<0), TAGS(1<<1), CUSTOM_VALUES(1<<2);
-		
-		private int mask = 0;
-		private EventGetOption(int mask) { this.mask = mask; }
-		@Override
-		public long mask() { return this.mask; }
+	public static enum ImportMode {
+		@SerializedName("copy") COPY,
+		@SerializedName("append") APPEND
 	}
 	
-	public static enum EventAddOption implements BitFlagsEnum<EventAddOption> {
+	public static enum EventNotifyOption implements BitFlagsEnum<EventNotifyOption> {
 		NOTIFY_INDIVIDUAL_ATTENDEE(1<<1), NOTIFY_RESOURCE_ATTENDEE(1<<2);
 		
-		private int mask = 0;
-		private EventAddOption(int mask) { this.mask = mask; }
+		private long mask = 0;
+		private EventNotifyOption(long mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
 		
-		public static BitFlags<EventAddOption> withAllAttendeesNotifications() {
-			return BitFlags.with(EventAddOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventAddOption.NOTIFY_RESOURCE_ATTENDEE);
+		public static BitFlags<EventNotifyOption> withDefaults() {
+			return BitFlags.with(EventNotifyOption.NOTIFY_RESOURCE_ATTENDEE);
+		}
+		
+		public static BitFlags<EventNotifyOption> withAllAttendeesNotifications() {
+			return BitFlags.with(EventNotifyOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventNotifyOption.NOTIFY_RESOURCE_ATTENDEE);
 			//return enableAttendeesNotifications(BitFlags.noneOf(EventAddOption.class));
 		}
 		
-		public static BitFlags<EventAddOption> enableAttendeesNotifications(BitFlags<EventAddOption> opts) {
-			opts.set(EventAddOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventAddOption.NOTIFY_RESOURCE_ATTENDEE);
+		public static BitFlags<EventNotifyOption> enableAllAttendeesNotifications(BitFlags<EventNotifyOption> opts) {
+			opts.set(EventNotifyOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventNotifyOption.NOTIFY_RESOURCE_ATTENDEE);
 			return opts;
 		}
 		
-		public static BitFlags<EventAddOption> withNOAttendeesNotifications() {
-			return BitFlags.noneOf(EventAddOption.class);
+		public static BitFlags<EventNotifyOption> withoutAnyAttendeesNotifications() {
+			return BitFlags.noneOf(EventNotifyOption.class);
 			//return disableAttendeesNotifications(BitFlags.noneOf(EventAddOption.class));
 		}
 		
-		public static BitFlags<EventAddOption> disableAttendeesNotifications(BitFlags<EventAddOption> opts) {
-			opts.unset(EventAddOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventAddOption.NOTIFY_RESOURCE_ATTENDEE);
+		public static BitFlags<EventNotifyOption> disableAllAttendeesNotifications(BitFlags<EventNotifyOption> opts) {
+			opts.unset(EventNotifyOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventNotifyOption.NOTIFY_RESOURCE_ATTENDEE);
 			return opts;
 		}
 	}
 	
-	public static enum EventUpdateOption implements BitFlagsEnum<EventUpdateOption> {
-		ATTACHMENTS(1<<0), TAGS(1<<1), CUSTOM_VALUES(1<<2);
+	public static enum EventReminderOption implements BitFlagsEnum<EventReminderOption> {
+		IGNORE(1<<0), DISARM_PAST(1<<1);
 		
-		private int mask = 0;
-		private EventUpdateOption(int mask) { this.mask = mask; }
+		private long mask = 0;
+		private EventReminderOption(long mask) { this.mask = mask; }
+		@Override
+		public long mask() { return this.mask; }
+	}
+	
+	public static enum EventGetOption implements BitFlagsEnum<EventGetOption> {
+		ATTENDEES(1<<0), ATTACHMENTS(1<<1), TAGS(1<<2), CUSTOM_VALUES(1<<3);
+		
+		private long mask = 0;
+		private EventGetOption(long mask) { this.mask = mask; }
+		@Override
+		public long mask() { return this.mask; }
+	}
+	
+	public static enum EventUpdateOption implements BitFlagsEnum<EventUpdateOption> {
+		ATTENDEES(1<<0), ATTACHMENTS(1<<1), TAGS(1<<2), CUSTOM_VALUES(1<<3);
+		
+		private long mask = 0;
+		private EventUpdateOption(long mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
 	}
@@ -201,8 +230,8 @@ public interface ICalendarManager {
 	public static enum HandleICalInviationOption implements BitFlagsEnum<HandleICalInviationOption> {
 		CONSTRAIN_AVAILABILITY(1<<1), EVENT_LOOKUP_SCOPE_STRICT(1<<2), IGNORE_ICAL_CLASSIFICATION(1<<3), IGNORE_ICAL_TRASPARENCY(1<<3), IGNORE_ICAL_ALARMS(1<<4);
 		
-		private int mask = 0;
-		private HandleICalInviationOption(int mask) { this.mask = mask; }
+		private long mask = 0;
+		private HandleICalInviationOption(long mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,24 +28,23 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2022 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
-package com.sonicle.webtop.calendar.model;
+package com.sonicle.webtop.calendar.io;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import com.sonicle.webtop.calendar.model.EventEx;
+import net.fortuna.ical4j.model.PropertyList;
 
 /**
  *
  * @author malbinola
  */
-public interface EventPeriodFootprint {
-	
-	public String getEventId();
-	public DateTime getStartDate();
-	public DateTime getEndDate();
-	public String getTimezone();
-	public Boolean getAllDay();
-	public String getRecurrenceRule();
-	public DateTimeZone getDateTimeZone();
+public class EventOutput {
+	public final EventEx event;
+	public final PropertyList extraProps;
+
+	public EventOutput(EventEx event, PropertyList extraProps) {
+		this.event = event;
+		this.extraProps = extraProps;
+	}
 }

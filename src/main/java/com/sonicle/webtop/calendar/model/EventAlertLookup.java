@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,22 +28,65 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2019 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
+
+import com.sonicle.webtop.core.sdk.UserProfileId;
+import org.joda.time.DateTime;
 
 /**
  *
  * @author malbinola
  */
-public class EventObjectWithBean extends EventObject {
-	protected EventEx event;
-	
-	public EventEx getEvent() {
-		return event;
+public class EventAlertLookup extends EventBase {
+	protected DateTime remindedOn;
+	protected Boolean hasRecurrence;
+	protected String calendarName;
+	protected String calendarDomainId;
+	protected String calendarUserId;
+
+	public DateTime getRemindedOn() {
+		return remindedOn;
 	}
 
-	public void setEvent(EventEx event) {
-		this.event = event;
+	public void setRemindedOn(DateTime remindedOn) {
+		this.remindedOn = remindedOn;
+	}
+
+	public Boolean getHasRecurrence() {
+		return hasRecurrence;
+	}
+
+	public void setHasRecurrence(Boolean hasRecurrence) {
+		this.hasRecurrence = hasRecurrence;
+	}
+
+	public String getCalendarName() {
+		return calendarName;
+	}
+
+	public void setCalendarName(String calendarName) {
+		this.calendarName = calendarName;
+	}
+
+	public String getCalendarDomainId() {
+		return calendarDomainId;
+	}
+
+	public void setCalendarDomainId(String calendarDomainId) {
+		this.calendarDomainId = calendarDomainId;
+	}
+
+	public String getCalendarUserId() {
+		return calendarUserId;
+	}
+
+	public void setCalendarUserId(String calendarUserId) {
+		this.calendarUserId = calendarUserId;
+	}
+	
+	public UserProfileId getCalendarProfileId() {
+		return new UserProfileId(getCalendarDomainId(), getCalendarUserId());
 	}
 }

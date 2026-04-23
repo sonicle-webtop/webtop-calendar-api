@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Sonicle S.r.l.
+ * Copyright (C) 2026 Sonicle S.r.l.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -28,7 +28,7 @@
  * version 3, these Appropriate Legal Notices must retain the display of the
  * Sonicle logo and Sonicle copyright notice. If the display of the logo is not
  * reasonably feasible for technical reasons, the Appropriate Legal Notices must
- * display the words "Copyright (C) 2022 Sonicle S.r.l.".
+ * display the words "Copyright (C) 2026 Sonicle S.r.l.".
  */
 package com.sonicle.webtop.calendar.model;
 
@@ -42,11 +42,11 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 /**
- * This class prepare the update of instances identification logic
  * @author malbinola
  */
 public class EventInstanceId extends CId {
-	public static final String MASTER_INSTANCE_ID = "00000000";
+	public static final String DUMMY_EVENT_ID = "00000000000000000000000000000000";
+	public static final String NO_INSTANCE_DATE = "00000000";
 	
 	public EventInstanceId(String id) {
 		super(".", id, 2);
@@ -57,7 +57,7 @@ public class EventInstanceId extends CId {
 		super(builder);
 	}
 	
-	public String getTaskId() {
+	public String getEventId() {
 		return getToken(0);
 	}
 	
@@ -65,16 +65,16 @@ public class EventInstanceId extends CId {
 		return getToken(1);
 	}
 
-	public LocalDate getInstanceAsDate(final DateTimeZone targetTimezone) {
+	public LocalDate getInstanceAsDate() {
 		if (hasNoInstance()) {
 			return null;
 		} else {
-			return JodaTimeUtils.parseDateTime(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), getInstance()).toLocalDate();
+			return JodaTimeUtils.parseDateTime(JodaTimeUtils.createFormatter("yyyyMMdd", DateTimeZone.UTC), getInstance()).toLocalDate();
 		}
 	}
 
 	public boolean hasNoInstance() {
-		return MASTER_INSTANCE_ID.equals(getInstance());
+		return NO_INSTANCE_DATE.equals(getInstance());
 	}
 
 	public static EventInstanceId parse(final String s) {
@@ -85,18 +85,42 @@ public class EventInstanceId extends CId {
 		}
 	}
 	
-	public static EventInstanceId build(final String eventId, final DateTime instance, final DateTimeZone targetTimezone) {
-		return build(eventId, JodaTimeUtils.print(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
+	public static EventInstanceId asMasterInstanceId(EventInstanceId iid) {
+		Check.notNull(iid, "iid");
+		return buildMaster(iid.getEventId());
 	}
 	
-	public static EventInstanceId buildMaster(final String eventId) {
-		return build(eventId, MASTER_INSTANCE_ID);
+	public static boolean isSeriesMaster(EventInstanceId iid, String underlyingEventId) {
+		Check.notNull(iid, "iid");
+		return iid.getEventId().equals(underlyingEventId) && NO_INSTANCE_DATE.equals(iid.getInstance());
+	}
+	
+	public static boolean isSeriesException(EventInstanceId iid, String underlyingEventId) {
+		Check.notNull(iid, "iid");
+		return !StringUtils.isBlank(underlyingEventId) && !iid.getEventId().equals(underlyingEventId) && !NO_INSTANCE_DATE.equals(iid.getInstance());
+	}
+	
+	public static boolean isSeriesItem(EventInstanceId iid, String underlyingEventId) {
+		Check.notNull(iid, "iid");
+		return !isSeriesMaster(iid, underlyingEventId) && !isSeriesException(iid, underlyingEventId) && iid.getEventId().equals(underlyingEventId);
+	}
+	
+	public static EventInstanceId buildDummy() {
+		return build(DUMMY_EVENT_ID, null);
+	}
+	
+	public static EventInstanceId buildMaster(final String masteSeriesEventId) {
+		return build(masteSeriesEventId, NO_INSTANCE_DATE);
+	}
+	
+	public static EventInstanceId build(final String eventId, final DateTime instance, final DateTimeZone targetTimezone) {
+		return build(eventId, JodaTimeUtils.print(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
 	}
 	
 	public static EventInstanceId build(final String eventId, final String instance) {
 		return new Builder()
 			.withSeparator(".")
-			.withTokens(Check.notNull(eventId, "eventId"), StringUtils.defaultIfBlank(instance, MASTER_INSTANCE_ID))
+			.withTokens(Check.notNull(eventId, "eventId"), StringUtils.defaultIfBlank(instance, NO_INSTANCE_DATE))
 			.build();
 	}
 
