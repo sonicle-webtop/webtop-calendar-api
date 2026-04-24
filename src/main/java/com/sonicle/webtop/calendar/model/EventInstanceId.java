@@ -109,8 +109,12 @@ public class EventInstanceId extends CId {
 		return build(DUMMY_EVENT_ID, null);
 	}
 	
-	public static EventInstanceId buildMaster(final String masteSeriesEventId) {
-		return build(masteSeriesEventId, NO_INSTANCE_DATE);
+	public static EventInstanceId buildSingleInstance(final String eventId) {
+		return build(eventId, NO_INSTANCE_DATE);
+	}
+	
+	public static EventInstanceId buildMaster(final String masterSeriesEventId) {
+		return build(masterSeriesEventId, NO_INSTANCE_DATE);
 	}
 	
 	public static EventInstanceId build(final String eventId, final DateTime instance, final DateTimeZone targetTimezone) {

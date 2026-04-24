@@ -41,5 +41,5 @@ import com.google.gson.annotations.SerializedName;
 public enum UpdateEventTarget {
 	@SerializedName("this") THIS_INSTANCE,
 	@SerializedName("since") SINCE_INSTANCE,
-	@SerializedName("all") ALL_SERIES
+	@SerializedName("all") WHOLE_SERIES // Means also SINGLE
 }

@@ -331,7 +331,7 @@ public class EventBase {
 		}
 	}
 	
-	public EventBounds toEventBoundary() {
+	public EventBounds getEventBounds() {
 		return new EventBoundsImpl(this.allDay, this.start, this.end, getTimezoneObject());
 	}
 	
