@@ -378,16 +378,16 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
     }
 
     /**
-     * Setter for <code>calendar.events.reminded_on</code>.
+     * Setter for <code>calendar.events.reminded_at</code>.
      */
-    public void setRemindedOn(org.joda.time.DateTime value) {
+    public void setRemindedAt(org.joda.time.DateTime value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>calendar.events.reminded_on</code>.
+     * Getter for <code>calendar.events.reminded_at</code>.
      */
-    public org.joda.time.DateTime getRemindedOn() {
+    public org.joda.time.DateTime getRemindedAt() {
         return (org.joda.time.DateTime) get(26);
     }
 
@@ -428,7 +428,7 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
     /**
      * Create a detached, initialised EventsRecord
      */
-    public EventsRecord(java.lang.String eventId, java.lang.Integer calendarId, java.lang.String seriesEventId, java.lang.String seriesInstanceId, java.lang.String publicUid, java.lang.String revisionStatus, org.joda.time.DateTime revisionTimestamp, java.lang.Integer revisionSequence, org.joda.time.DateTime creationTimestamp, java.lang.String rowStatus, java.lang.String status, java.lang.String organizer, java.lang.String organizerId, org.joda.time.DateTime start, org.joda.time.DateTime end, java.lang.String timezone, java.lang.Boolean allDay, java.lang.String title, java.lang.String location, java.lang.String descriptionType, java.lang.String description, java.lang.String visibility, java.lang.String transparency, java.lang.String href, java.lang.String etag, java.lang.Integer reminder, org.joda.time.DateTime remindedOn, java.lang.Boolean handleInvitation) {
+    public EventsRecord(java.lang.String eventId, java.lang.Integer calendarId, java.lang.String seriesEventId, java.lang.String seriesInstanceId, java.lang.String publicUid, java.lang.String revisionStatus, org.joda.time.DateTime revisionTimestamp, java.lang.Integer revisionSequence, org.joda.time.DateTime creationTimestamp, java.lang.String rowStatus, java.lang.String status, java.lang.String organizer, java.lang.String organizerId, org.joda.time.DateTime start, org.joda.time.DateTime end, java.lang.String timezone, java.lang.Boolean allDay, java.lang.String title, java.lang.String location, java.lang.String descriptionType, java.lang.String description, java.lang.String visibility, java.lang.String transparency, java.lang.String href, java.lang.String etag, java.lang.Integer reminder, org.joda.time.DateTime remindedAt, java.lang.Boolean handleInvitation) {
         super(com.sonicle.webtop.calendar.jooq.tables.Events.EVENTS);
 
         setEventId(eventId);
@@ -457,7 +457,7 @@ public class EventsRecord extends org.jooq.impl.UpdatableRecordImpl<EventsRecord
         setHref(href);
         setEtag(etag);
         setReminder(reminder);
-        setRemindedOn(remindedOn);
+        setRemindedAt(remindedAt);
         setHandleInvitation(handleInvitation);
     }
 }

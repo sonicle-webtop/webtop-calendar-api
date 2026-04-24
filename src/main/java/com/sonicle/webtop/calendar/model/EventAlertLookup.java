@@ -40,18 +40,18 @@ import org.joda.time.DateTime;
  * @author malbinola
  */
 public class EventAlertLookup extends EventBase {
-	protected DateTime remindedOn;
+	protected DateTime remindedAt;
 	protected Boolean hasRecurrence;
 	protected String calendarName;
 	protected String calendarDomainId;
 	protected String calendarUserId;
 
-	public DateTime getRemindedOn() {
-		return remindedOn;
+	public DateTime getRemindedAt() {
+		return remindedAt;
 	}
 
-	public void setRemindedOn(DateTime remindedOn) {
-		this.remindedOn = remindedOn;
+	public void setRemindedAt(DateTime remindedAt) {
+		this.remindedAt = remindedAt;
 	}
 
 	public Boolean getHasRecurrence() {

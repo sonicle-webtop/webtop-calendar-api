@@ -39,7 +39,7 @@ public class Events implements java.io.Serializable {
     private java.lang.String       href;
     private java.lang.String       etag;
     private java.lang.Integer      reminder;
-    private org.joda.time.DateTime remindedOn;
+    private org.joda.time.DateTime remindedAt;
     private java.lang.Boolean      handleInvitation;
 
     public Events() {}
@@ -71,7 +71,7 @@ public class Events implements java.io.Serializable {
         this.href = value.href;
         this.etag = value.etag;
         this.reminder = value.reminder;
-        this.remindedOn = value.remindedOn;
+        this.remindedAt = value.remindedAt;
         this.handleInvitation = value.handleInvitation;
     }
 
@@ -102,7 +102,7 @@ public class Events implements java.io.Serializable {
         java.lang.String       href,
         java.lang.String       etag,
         java.lang.Integer      reminder,
-        org.joda.time.DateTime remindedOn,
+        org.joda.time.DateTime remindedAt,
         java.lang.Boolean      handleInvitation
     ) {
         this.eventId = eventId;
@@ -131,7 +131,7 @@ public class Events implements java.io.Serializable {
         this.href = href;
         this.etag = etag;
         this.reminder = reminder;
-        this.remindedOn = remindedOn;
+        this.remindedAt = remindedAt;
         this.handleInvitation = handleInvitation;
     }
 
@@ -500,17 +500,17 @@ public class Events implements java.io.Serializable {
     }
 
     /**
-     * Getter for <code>calendar.events.reminded_on</code>.
+     * Getter for <code>calendar.events.reminded_at</code>.
      */
-    public org.joda.time.DateTime getRemindedOn() {
-        return this.remindedOn;
+    public org.joda.time.DateTime getRemindedAt() {
+        return this.remindedAt;
     }
 
     /**
-     * Setter for <code>calendar.events.reminded_on</code>.
+     * Setter for <code>calendar.events.reminded_at</code>.
      */
-    public void setRemindedOn(org.joda.time.DateTime remindedOn) {
-        this.remindedOn = remindedOn;
+    public void setRemindedAt(org.joda.time.DateTime remindedAt) {
+        this.remindedAt = remindedAt;
     }
 
     /**
@@ -557,7 +557,7 @@ public class Events implements java.io.Serializable {
         sb.append(", ").append(href);
         sb.append(", ").append(etag);
         sb.append(", ").append(reminder);
-        sb.append(", ").append(remindedOn);
+        sb.append(", ").append(remindedAt);
         sb.append(", ").append(handleInvitation);
 
         sb.append(")");

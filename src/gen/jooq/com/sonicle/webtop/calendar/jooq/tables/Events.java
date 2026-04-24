@@ -157,9 +157,9 @@ public class Events extends org.jooq.impl.TableImpl<com.sonicle.webtop.calendar.
     public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord, java.lang.Integer> REMINDER = createField(org.jooq.impl.DSL.name("reminder"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>calendar.events.reminded_on</code>.
+     * The column <code>calendar.events.reminded_at</code>.
      */
-    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord, org.joda.time.DateTime> REMINDED_ON = createField(org.jooq.impl.DSL.name("reminded_on"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
+    public final org.jooq.TableField<com.sonicle.webtop.calendar.jooq.tables.records.EventsRecord, org.joda.time.DateTime> REMINDED_AT = createField(org.jooq.impl.DSL.name("reminded_at"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "", new com.sonicle.jooq.jsr310.OffsetDateTimeJodaConverter());
 
     /**
      * The column <code>calendar.events.handle_invitation</code>.
