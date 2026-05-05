@@ -336,14 +336,6 @@ public class EventBase {
 	}
 	
 	public void recalculateStartEndForInstance(LocalDate instanceDate) {
-		/*
-		DateTimeZone curTimezone = getTimezoneObject();
-		DateTime curStart = getStart();
-		DateTime curEnd = getEnd();
-		int days = JodaTimeUtils.calendarDaysBetween(curStart, curEnd);
-		setStart(instanceDate.toDateTime(curStart.withZone(curTimezone).toLocalTime(), curTimezone));
-		setEnd(instanceDate.plusDays(days).toDateTime(curEnd.withZone(curTimezone).toLocalTime(), curTimezone));
-		*/
 		DateTimeZone thisTimezone = getTimezoneObject();
 		DateTimeWindow window = CalendarUtils.computeStartEndForEventInstance(
 			instanceDate,

@@ -35,6 +35,7 @@ package com.sonicle.webtop.calendar.model;
 import com.sonicle.webtop.core.util.ICal4jUtils;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import net.fortuna.ical4j.model.Recur;
 import net.sf.qualitycheck.Check;
 import org.joda.time.DateTime;
@@ -101,5 +102,13 @@ public class EventRecurrence {
 	
 	public Recur getRecurRule() {
 		return ICal4jUtils.parseRRule(getRule());
+	}
+	
+	public static Set<LocalDate> filterExDates(Set<LocalDate> exDates, LocalDate inclusiveFrom) {
+		if (exDates == null) return null;
+		return exDates.stream()
+			.filter((date) -> (date.equals(inclusiveFrom) || date.isAfter(inclusiveFrom))
+			)
+			.collect(Collectors.toSet());
 	}
 }
