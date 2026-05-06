@@ -32,8 +32,8 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.time.DateTimeRange2;
-import net.sf.qualitycheck.Check;
 import org.joda.time.DateTime;
 
 /**

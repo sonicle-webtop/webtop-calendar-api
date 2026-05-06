@@ -34,8 +34,8 @@ package com.sonicle.webtop.calendar.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.rits.cloning.Cloner;
+import com.sonicle.commons.Check;
 import com.sonicle.webtop.calendar.IEventInstanceStatable;
-import net.sf.qualitycheck.Check;
 
 /**
  *

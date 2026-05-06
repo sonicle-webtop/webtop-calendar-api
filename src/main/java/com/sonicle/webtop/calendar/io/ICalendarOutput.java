@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar.io;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.ClassUtils;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.webtop.calendar.CalendarUtils;
@@ -101,7 +102,6 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.XProperty;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;

@@ -32,10 +32,10 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.commons.Check;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.commons.web.json.CId;
-import net.sf.qualitycheck.Check;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
