@@ -42,12 +42,14 @@ import static com.sonicle.webtop.calendar.model.EventInstance.computeType;
 public class EventLookupInstance extends EventLookup implements IEventInstanceStatable {
 	protected EventInstanceId id;
 	protected String originalEventId;
+	protected boolean isFirstInstance;
 	
 	public EventLookupInstance() {}
 	
-	public EventLookupInstance(EventInstanceId id, String originalEventId) {
+	public EventLookupInstance(EventInstanceId id, String originalEventId, boolean isFirstInstance) {
 		this.id = id;
 		this.originalEventId = originalEventId;
+		this.isFirstInstance = isFirstInstance;
 	}
 	
 	@Override
@@ -66,6 +68,10 @@ public class EventLookupInstance extends EventLookup implements IEventInstanceSt
 
 	public void setOriginalEventId(String originalEventId) {
 		this.originalEventId = originalEventId;
+	}
+
+	public boolean isFirstInstance() {
+		return isFirstInstance;
 	}
 	
 	public EventInstance.Type getType() {

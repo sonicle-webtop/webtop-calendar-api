@@ -33,13 +33,16 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.sonicle.commons.Check;
+import com.sonicle.commons.time.JodaTimeUtils;
 import com.sonicle.webtop.core.util.ICal4jUtils;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.fortuna.ical4j.model.Recur;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  *
@@ -104,11 +107,37 @@ public class EventRecurrence {
 		return ICal4jUtils.parseRRule(getRule());
 	}
 	
-	public static Set<LocalDate> filterExDates(Set<LocalDate> exDates, LocalDate inclusiveFrom) {
+	public static DateTime toRecurUntilDate(final LocalDate instancesUntilDate, final LocalTime startTime, final DateTimeZone timezone) {
+		if (instancesUntilDate == null || startTime == null || timezone == null) return null;
+		return instancesUntilDate.toDateTime(startTime, timezone);
+	}
+	
+	public static LocalTime getRecurUntilTime(final EventBounds bounds) {
+		Check.notNull(bounds, "bounds");
+		return bounds.isAllDay() ? JodaTimeUtils.TIME_AT_STARTOFDAY : bounds.getStart().withZone(bounds.getTimezoneObject()).toLocalTime();
+	}
+	
+	public static LocalDate getRecurUntilDate(final Recur recur, final DateTimeZone timezone) {
+		Check.notNull(recur, "recur");
+		Check.notNull(timezone, "timezone");
+		DateTime until = ICal4jUtils.getRecurUntilDate(recur);
+		return (until != null) ? until.withZone(timezone).toLocalDate() : null;
+	}
+	
+	public static Set<LocalDate> filterExDates(final Set<LocalDate> exDates, final LocalDate inclusiveFrom) {
 		if (exDates == null) return null;
 		return exDates.stream()
 			.filter((date) -> (date.equals(inclusiveFrom) || date.isAfter(inclusiveFrom))
 			)
 			.collect(Collectors.toSet());
+	}
+	
+	public static Set<LocalDate> traslateExDates(final Set<LocalDate> exDates, final int days) {
+		if (exDates == null) return null;
+		Set<LocalDate> set = new LinkedHashSet(exDates.size());
+		for (LocalDate ld : exDates) {
+			set.add(ld.plusDays(days));
+		}
+		return set;
 	}
 }
