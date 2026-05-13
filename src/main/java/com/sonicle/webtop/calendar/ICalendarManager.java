@@ -83,8 +83,6 @@ import org.joda.time.LocalDate;
  */
 public interface ICalendarManager {
 	
-	@Deprecated public Set<Integer> listCalendarIds() throws WTException;
-	@Deprecated public Map<Integer, Calendar> listCalendars() throws WTException;
 	public Set<FolderSharing.SubjectConfiguration> getFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope) throws WTException;
 	public void updateFolderShareConfigurations(final UserProfileId originProfileId, final FolderSharing.Scope scope, final Set<FolderSharing.SubjectConfiguration> configurations) throws WTException;
 	public Map<UserProfileId, CalendarFSOrigin> listIncomingCalendarOrigins() throws WTException;
