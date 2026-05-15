@@ -214,6 +214,15 @@ public interface ICalendarManager {
 		private EventGetOption(long mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
+		
+		public static BitFlags<EventGetOption> parseEventUpdateOptions(BitFlags<EventUpdateOption> flags) {
+			BitFlags<EventGetOption> ret = new BitFlags<>(EventGetOption.class);
+			if (flags.has(EventUpdateOption.ATTENDEES)) ret.set(EventGetOption.ATTENDEES);
+			if (flags.has(EventUpdateOption.ATTACHMENTS)) ret.set(EventGetOption.ATTACHMENTS);
+			if (flags.has(EventUpdateOption.TAGS)) ret.set(EventGetOption.TAGS);
+			if (flags.has(EventUpdateOption.CUSTOM_VALUES)) ret.set(EventGetOption.CUSTOM_VALUES);
+			return ret;
+		}
 	}
 	
 	public static enum EventUpdateOption implements BitFlagsEnum<EventUpdateOption> {
