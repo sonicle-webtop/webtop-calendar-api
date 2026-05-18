@@ -173,6 +173,10 @@ public interface ICalendarManager {
 		@Override
 		public long mask() { return this.mask; }
 		
+		public static BitFlags<EventNotifyOption> withAll() {
+			return BitFlags.allOf(EventNotifyOption.class);
+		}
+		
 		public static BitFlags<EventNotifyOption> withDefaults() {
 			return BitFlags.with(EventNotifyOption.NOTIFY_RESOURCE_ATTENDEE);
 		}
@@ -226,7 +230,7 @@ public interface ICalendarManager {
 	}
 	
 	public static enum EventUpdateOption implements BitFlagsEnum<EventUpdateOption> {
-		ATTENDEES(1<<0), ATTACHMENTS(1<<1), TAGS(1<<2), CUSTOM_VALUES(1<<3);
+		ATTENDEES(1<<0), ATTACHMENTS(1<<1), TAGS(1<<2), CUSTOM_VALUES(1<<3), ATTENDEE_RESPONSE(1<<4);
 		
 		private long mask = 0;
 		private EventUpdateOption(long mask) { this.mask = mask; }

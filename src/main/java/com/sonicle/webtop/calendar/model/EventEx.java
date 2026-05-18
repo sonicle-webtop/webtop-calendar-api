@@ -125,6 +125,12 @@ public class EventEx extends EventBase {
 		return this.attendees != null ? attendees : new ArrayList<>(0);
 	}
 	
+	public EventEx addAttendee(EventAttendee attendee) {
+		if (this.attendees == null) this.attendees = new ArrayList<>();
+		this.attendees.add(Check.notNull(attendee, "attendee"));
+		return this;
+	}
+	
 	public List<EventAttachment> getAttachmentsOrEmpty() {
 		return this.attachments != null ? attachments : new ArrayList<>(0);
 	}

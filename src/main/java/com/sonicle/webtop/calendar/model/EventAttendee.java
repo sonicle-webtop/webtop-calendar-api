@@ -47,6 +47,7 @@ import org.joda.time.DateTime;
 public class EventAttendee {
 	protected String attendeeId;
 	protected String recipient;
+	protected String recipientUserId;
 	protected RecipientType recipientType;
 	protected RecipientRole recipientRole;
 	protected ResponseStatus responseStatus;
@@ -69,6 +70,14 @@ public class EventAttendee {
 
 	public void setRecipient(String value) {
 		recipient = value;
+	}
+
+	public String getRecipientUserId() {
+		return recipientUserId;
+	}
+
+	public void setRecipientUserId(String recipientUserId) {
+		this.recipientUserId = recipientUserId;
 	}
 
 	public RecipientType getRecipientType() {
