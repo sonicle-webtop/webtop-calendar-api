@@ -230,7 +230,7 @@ public interface ICalendarManager {
 	}
 	
 	public static enum EventUpdateOption implements BitFlagsEnum<EventUpdateOption> {
-		ATTENDEES(1<<0), ATTACHMENTS(1<<1), TAGS(1<<2), CUSTOM_VALUES(1<<3), ATTENDEE_RESPONSE(1<<4);
+		ATTENDEES(1<<0), ATTACHMENTS(1<<1), TAGS(1<<2), CUSTOM_VALUES(1<<3), IGNORE_ATTENDEE_RESPONSE(1<<4), IGNORE_ATTENDEE_NOTIFY(1<<5);
 		
 		private long mask = 0;
 		private EventUpdateOption(long mask) { this.mask = mask; }
