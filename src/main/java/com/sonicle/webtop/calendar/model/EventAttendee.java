@@ -33,11 +33,10 @@
 package com.sonicle.webtop.calendar.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.sonicle.commons.IdentityEquality;
 import com.sonicle.commons.InternetAddressUtils;
 import java.util.ArrayList;
 import jakarta.mail.internet.InternetAddress;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 
 /**
@@ -140,19 +139,12 @@ public class EventAttendee {
 	
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder()
-			.append(getAttendeeId())
-			.toHashCode();
+		return IdentityEquality.hashCode(this, attendeeId);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof EventAttendee == false) return false;
-		if (this == obj) return true;
-		final EventAttendee otherObject = (EventAttendee) obj;
-		return new EqualsBuilder()
-			.append(getAttendeeId(), otherObject.getAttendeeId())
-			.isEquals();
+		return IdentityEquality.equals(this, obj, attendeeId, () -> ((EventAttendee)obj).attendeeId);
 	}
 	
 	public static class List extends ArrayList<EventAttendee> {

@@ -32,10 +32,9 @@
  */
 package com.sonicle.webtop.calendar.model;
 
+import com.sonicle.commons.IdentityEquality;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 
 /**
@@ -100,19 +99,12 @@ public class EventAttachment {
 	
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder()
-			.append(getAttachmentId())
-			.toHashCode();
+		return IdentityEquality.hashCode(this, attachmentId);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof EventAttachment == false) return false;
-		if (this == obj) return true;
-		final EventAttachment otherObject = (EventAttachment)obj;
-		return new EqualsBuilder()
-			.append(getAttachmentId(), otherObject.getAttachmentId())
-			.isEquals();
+		return IdentityEquality.equals(this, obj, attachmentId, () -> ((EventAttachment)obj).attachmentId);
 	}
 	
 	public static List<EventAttachment> asListOfEventAttachmentsWithInputRef(List<EventAttachment> attachmentsToClone) {
