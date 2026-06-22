@@ -133,11 +133,11 @@ public class CalendarUtils {
 		return dates;
 	}
 	
-	public static EventBounds toEventBounds(EventBase event) {
-		return toEventBounds(event.getAllDay(), event.getStart(), event.getEnd(), event.getTimezoneObject());
+	public static EventBounds toNormalizedEventBounds(final EventBase event) {
+		return CalendarUtils.toNormalizedEventBounds(event.getAllDay(), event.getStart(), event.getEnd(), event.getTimezoneObject());
 	}
 	
-	public static EventBounds toEventBounds(boolean allDay, DateTime start, DateTime end, DateTimeZone timezone) {
+	public static EventBounds toNormalizedEventBounds(final boolean allDay, final DateTime start, final DateTime end, final DateTimeZone timezone) {
 		if (allDay) {
 			int daySpan = calculateDaysSpanForDisplay(start, end, timezone);
 			LocalDate startLocalDate = start.withZone(timezone).toLocalDate();
