@@ -40,7 +40,6 @@ import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttachment;
 import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
 import com.sonicle.webtop.calendar.model.EventAttendee;
-import com.sonicle.webtop.calendar.model.EventBase;
 import com.sonicle.webtop.calendar.model.EventEx;
 import com.sonicle.webtop.core.app.ical4j.XCustomFieldValue;
 import com.sonicle.webtop.core.app.ical4j.XTag;
@@ -107,6 +106,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import com.sonicle.webtop.calendar.model.EventBounds;
+import net.fortuna.ical4j.model.property.RRule;
 
 /**
  *
@@ -328,6 +328,7 @@ public class ICalendarOutput {
 		if (event.hasRecurrence()) {
 			Recur recur = event.getRecurrence().getRecurRule();
 			if (recur != null) {
+				vevent.getProperties().add(new RRule(recur));
 				if (event.getRecurrence().getExcludedDates() != null) {
 					LocalTime startTime = event.getStart().withZone(DateTimeZone.UTC).toLocalTime();
 					vevent.getProperties().add(ICal4jUtils.toIC4jExDate(event.getRecurrence().getExcludedDates(), startTime, DateTimeZone.UTC, true));
