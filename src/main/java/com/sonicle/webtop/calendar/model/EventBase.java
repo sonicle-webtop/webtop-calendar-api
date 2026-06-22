@@ -310,10 +310,13 @@ public class EventBase {
 	}
 	
 	public void censorize() {
+		this.setOrganizer(null);
+		this.setOrganizerId(null);
 		this.setTitle("(***)");
-		this.setDescription("");
+		this.setLocation(null);
+		this.setDescription(null);
 		this.setReminder(null);
-		this.censorized = true;		
+		this.censorized = true;	
 	}
 	
 	public boolean trimFieldLengths() {
