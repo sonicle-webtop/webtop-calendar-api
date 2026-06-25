@@ -122,6 +122,10 @@ public class ICalendarOutput {
 	private boolean ignoreCustomValues = false;
 	private LogHandler logHandler = null;
 	
+	public static final Set<String> FORBIDDEN_EXTRA_PROPS = new LinkedHashSet<>(Arrays.asList(
+		Property.UID, Property.ORGANIZER, Property.CREATED, Property.LAST_MODIFIED, Property.SEQUENCE, Property.DTSTART, Property.DTEND, Property.SUMMARY, Property.LOCATION, Property.DESCRIPTION, Property.CLASS, Property.TRANSP, Property.RRULE, Property.EXDATE, Property.ATTENDEE, Property.ATTACH, Property.CATEGORIES, Property.RDATE, Property.EXRULE
+	));
+	
 	public ICalendarOutput(String prodId) {
 		this.prodId = Check.notNull(prodId, "prodId");
 	}
