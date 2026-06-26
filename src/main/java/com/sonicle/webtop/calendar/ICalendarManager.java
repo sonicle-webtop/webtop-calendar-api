@@ -134,6 +134,15 @@ public interface ICalendarManager {
 	public Set<LocalDate> listEventDates(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final DateTimeZone targetTimezone) throws WTException;
 	public Map<String, DateTime> computeTransparencyTimeSpans(final UserProfileId targetProfileId, final EventBase.Transparency transparency, final DateWindow dateWindow, final TimeRange timeRange, final int minuteResolution, final DateTimeZone targetTimezone) throws WTException;
 	
+	/**
+	 * Resolve a {@code VEVENT} public UID (the {@code UID:} property carried
+	 * by ICS / iTIP payloads) to the WebTop event id of the matching event in
+	 * the current user's accessible calendars, or {@code null} when no match
+	 * exists. Used by cross-module flows (mail iTIP banner) to detect whether
+	 * an inbound invitation already corresponds to a known event before
+	 * applying.
+	 */
+	public String findEventId(final String publicUid) throws WTException;
 	@Deprecated public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
 	public Event addEvent(final EventEx event) throws WTException;
 	public Event addEvent(final EventEx event, final boolean notifyAttendees) throws WTException;
