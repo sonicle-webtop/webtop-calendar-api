@@ -52,6 +52,7 @@ import com.sonicle.webtop.calendar.model.CalendarQuery;
 import com.sonicle.webtop.calendar.model.ComparableEventRange;
 import com.sonicle.webtop.calendar.model.Event;
 import com.sonicle.webtop.calendar.model.EventAttachmentWithBytes;
+import com.sonicle.webtop.calendar.model.EventAttendee;
 import com.sonicle.webtop.calendar.model.EventBase;
 import com.sonicle.webtop.calendar.model.EventEx;
 import com.sonicle.webtop.calendar.model.EventInstance;
@@ -161,6 +162,7 @@ public interface ICalendarManager {
 	public void updateEventInstanceQuick(final UpdateEventTarget target, final EventInstanceId instanceId, final DateTime newStart, final DateTime newEnd, final String newTitle) throws WTException;
 	public void updateEventInstanceQuick(final UpdateEventTarget target, final EventInstanceId instanceId, final DateTime newStart, final DateTime newEnd, final String newTitle, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void updateEventInstanceTags(final UpdateTagsOperation operation, final Collection<EventInstanceId> instanceIds, final Set<String> tagIds) throws WTException;
+	public void updateEventInstanceAttendeeResponse(final EventInstanceId instanceId, final EventAttendee.ResponseStatus responseStatus, final String comment, final boolean notifyOrganizer) throws WTException;
 	public void deleteEvent(final int calendarId, final String publicUid, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void deleteEventInstance(final UpdateEventTarget target, final EventInstanceId instanceId, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void deleteEventInstance(final UpdateEventTarget target, final Collection<EventInstanceId> instanceIds, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
