@@ -107,6 +107,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import com.sonicle.webtop.calendar.model.EventBounds;
 import net.fortuna.ical4j.model.property.RRule;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -333,9 +334,10 @@ public class ICalendarOutput {
 			Recur recur = event.getRecurrence().getRecurRule();
 			if (recur != null) {
 				vevent.getProperties().add(new RRule(recur));
-				if (event.getRecurrence().getExcludedDates() != null) {
+				Set<LocalDate> exDates = event.getRecurrence().getExcludedDates();
+				if (exDates != null && !exDates.isEmpty()) {
 					LocalTime startTime = event.getStart().withZone(DateTimeZone.UTC).toLocalTime();
-					vevent.getProperties().add(ICal4jUtils.toIC4jExDate(event.getRecurrence().getExcludedDates(), startTime, DateTimeZone.UTC, true));
+					vevent.getProperties().add(ICal4jUtils.toIC4jExDate(exDates, startTime, DateTimeZone.UTC, true));
 				}
 			} else {
 				LogHandler.log(logHandler, 1, LogEntry.Level.WARN, "Recur rule is null");
