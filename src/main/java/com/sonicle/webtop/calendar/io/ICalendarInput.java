@@ -353,11 +353,13 @@ public class ICalendarInput implements EventStreamReader {
 				LogHandler.log(logHandler, 1, LogEntry.Level.WARN, "DTSTART must be set");
 				throw new WTException("DTSTART must be set");
 			}
-			event.setStart(localStart.toDateTimeAtStartOfDay(defaultTz));
+			start = localStart.toDateTimeAtStartOfDay(defaultTz);
+			event.setStart(start);
 			
 			org.joda.time.LocalDate localEnd = ICal4jUtils.toJodaLocalDate(ICal4jUtils.getDatePropertyValue(vevent.getEndDate()), DateTimeZone.UTC);
 			if (localEnd == null) localEnd = localStart.plusDays(1);
-			event.setEnd(localEnd.toDateTimeAtStartOfDay(defaultTz));
+			end = localEnd.toDateTimeAtStartOfDay(defaultTz);
+			event.setEnd(end);
 			
 		} else {
 			event.setAllDay(false);
