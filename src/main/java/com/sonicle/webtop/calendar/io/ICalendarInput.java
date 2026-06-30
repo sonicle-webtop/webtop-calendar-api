@@ -467,7 +467,7 @@ public class ICalendarInput implements EventStreamReader {
 		
 		// RECURRENCE-ID: identifies a specific instance of a recurring master entry
 		// https://www.kanzaki.com/docs/ical/recurrenceId.html
-		ICalendarUtils.RecurringRefs recurringRefs = ICalendarUtils.extractRecurringRefs(vevent);
+		ICalendarUtils.RRInstanceInfo recurringInstanceInfo = ICalendarUtils.extractRRInstanceInfo(vevent);
 		
 		// ATTENDEE
 		// https://www.kanzaki.com/docs/ical/attendee.html
@@ -577,7 +577,7 @@ public class ICalendarInput implements EventStreamReader {
 		Set<String> names = new LinkedHashSet(Arrays.asList(Property.CONTACT, Property.GEO, Property.URL, Property.COMMENT, Property.RESOURCES));
 		PropertyList extraProps = ICalendarUtils.extractProperties(vevent, names, true, null);
 		
-		return new EventInput(event, recurringRefs, extraProps, includeSourceComponentInOutput ? vevent : null);
+		return new EventInput(event, recurringInstanceInfo, extraProps, includeSourceComponentInOutput ? vevent : null);
 	}
 	
 	private Event.Reminder toEventReminder(final VAlarm alarm, final LogHandler logHandler) {

@@ -32,6 +32,7 @@
  */
 package com.sonicle.webtop.calendar.io;
 
+import com.sonicle.commons.Check;
 import com.sonicle.webtop.calendar.model.EventEx;
 import com.sonicle.webtop.calendar.model.EventInstance;
 import com.sonicle.webtop.core.util.ICalendarUtils;
@@ -48,13 +49,13 @@ import org.apache.commons.codec.digest.DigestUtils;
 public class EventInput {
 	private static final Pattern PATTERN_LINE_DTSTAMP = Pattern.compile("\nDTSTAMP:.*(\r)?\n");
 	public final EventEx event;
-	public final ICalendarUtils.RecurringRefs recurringRefs;
+	public final ICalendarUtils.RRInstanceInfo recurringInstanceInfo;
 	public final PropertyList extraProps;
 	public final VEvent sourceObject;
 	
-	public EventInput(EventEx event, ICalendarUtils.RecurringRefs recurringRefs, PropertyList extraProps, VEvent sourceObject) {
-		this.event = event;
-		this.recurringRefs = recurringRefs;
+	public EventInput(EventEx event, ICalendarUtils.RRInstanceInfo recurringInstanceInfo, PropertyList extraProps, VEvent sourceObject) {
+		this.event = Check.notNull(event, "event");
+		this.recurringInstanceInfo = recurringInstanceInfo;
 		this.extraProps = extraProps;
 		this.sourceObject = sourceObject;
 	}
