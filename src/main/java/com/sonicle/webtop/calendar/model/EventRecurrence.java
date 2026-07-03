@@ -132,7 +132,7 @@ public class EventRecurrence {
 			.collect(Collectors.toSet());
 	}
 	
-	public static Set<LocalDate> traslateExDates(final Set<LocalDate> exDates, final int days) {
+	public static Set<LocalDate> shiftExDates(final Set<LocalDate> exDates, final int days) {
 		if (exDates == null) return null;
 		Set<LocalDate> set = new LinkedHashSet(exDates.size());
 		for (LocalDate ld : exDates) {
