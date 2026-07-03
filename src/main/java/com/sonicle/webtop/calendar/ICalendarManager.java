@@ -220,6 +220,15 @@ public interface ICalendarManager {
 		private EventReminderOption(long mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
+		
+		public static BitFlags<EventReminderOption> allowReminders() {
+			return BitFlags.noneOf(EventReminderOption.class);
+		}
+		
+		public static BitFlags<EventReminderOption> withAllowReminders(BitFlags<EventReminderOption> flags) {
+			flags.unset(EventReminderOption.IGNORE);
+			return flags;
+		}
 	}
 	
 	public static enum EventGetOption implements BitFlagsEnum<EventGetOption> {

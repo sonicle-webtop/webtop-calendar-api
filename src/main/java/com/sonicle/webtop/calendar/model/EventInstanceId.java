@@ -40,6 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * @author malbinola
@@ -47,6 +48,7 @@ import org.joda.time.LocalDate;
 public class EventInstanceId extends CId {
 	public static final String DUMMY_EVENT_ID = "00000000000000000000000000000000";
 	public static final String NO_INSTANCE_DATE = "00000000";
+	private static final DateTimeFormatter fmtYMD = JodaTimeUtils.createFormatter("yyyyMMdd", DateTimeZone.UTC);
 	
 	public EventInstanceId(String id) {
 		super(".", id, 2);
@@ -69,7 +71,7 @@ public class EventInstanceId extends CId {
 		if (hasNoInstance()) {
 			return null;
 		} else {
-			return JodaTimeUtils.parseDateTime(JodaTimeUtils.createFormatter("yyyyMMdd", DateTimeZone.UTC), getInstance()).toLocalDate();
+			return JodaTimeUtils.parseDateTime(fmtYMD, getInstance()).toLocalDate();
 		}
 	}
 
@@ -106,7 +108,7 @@ public class EventInstanceId extends CId {
 	}
 	
 	public static EventInstanceId buildDummy() {
-		return build(DUMMY_EVENT_ID, null);
+		return build(DUMMY_EVENT_ID, (String)null);
 	}
 	
 	public static EventInstanceId buildSingleInstance(final String eventId) {
@@ -117,8 +119,12 @@ public class EventInstanceId extends CId {
 		return build(masterSeriesEventId, NO_INSTANCE_DATE);
 	}
 	
-	public static EventInstanceId build(final String eventId, final DateTime instance, final DateTimeZone targetTimezone) {
-		return build(eventId, JodaTimeUtils.print(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
+	public static EventInstanceId build(final String masterSeriesEventId, final LocalDate instance) {
+		return build(masterSeriesEventId, JodaTimeUtils.print(fmtYMD, instance));
+	}
+	
+	public static EventInstanceId build(final String masterSeriesEventId, final DateTime instance, final DateTimeZone targetTimezone) {
+		return build(masterSeriesEventId, JodaTimeUtils.print(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
 	}
 	
 	public static EventInstanceId build(final String eventId, final String instance) {
@@ -128,8 +134,8 @@ public class EventInstanceId extends CId {
 			.build();
 	}
 
-	public static EventInstanceId build(final String eventId, final String seriesEventId, final String seriesInstance) {
-		return build(LangUtils.coalesceStrings(seriesEventId, eventId), seriesInstance);
+	public static EventInstanceId build(final String eventId, final String masterSeriesEventId, final String seriesInstance) {
+		return build(LangUtils.coalesceStrings(masterSeriesEventId, eventId), seriesInstance);
 	}
 
 	private static class Builder extends CId.AbstractBuilder<Builder, EventInstanceId> {

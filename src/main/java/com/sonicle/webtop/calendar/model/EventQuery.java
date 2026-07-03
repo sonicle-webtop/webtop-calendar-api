@@ -44,6 +44,7 @@ import com.sonicle.webtop.core.app.sdk.QueryBuilderWithCFields;
  */
 public class EventQuery extends QueryBuilderWithCFields<EventQuery> {
 	public static final String ID = "id";
+	public static final String HREF = "href";
 	public static final String CREATED_AT = "createdAt";
 	public static final String UPDATED_AT = "updatedAt";
 	public static final String ROW_STATUS = "rowStatus";
@@ -68,6 +69,10 @@ public class EventQuery extends QueryBuilderWithCFields<EventQuery> {
 	
 	public StringProperty<EventQuery> id() {
 		return string(ID);
+	}
+	
+	public StringProperty<EventQuery> href() {
+		return string(HREF);
 	}
 	
 	public InstantProperty<EventQuery> createdAt() {

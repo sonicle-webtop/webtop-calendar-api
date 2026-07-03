@@ -33,8 +33,10 @@
 package com.sonicle.webtop.calendar.io;
 
 import com.sonicle.commons.Check;
+import com.sonicle.commons.LangUtils;
 import com.sonicle.webtop.calendar.model.EventEx;
 import com.sonicle.webtop.calendar.model.EventInstance;
+import com.sonicle.webtop.calendar.model.EventInstanceId;
 import com.sonicle.webtop.core.util.ICalendarUtils;
 import java.util.regex.Pattern;
 import net.fortuna.ical4j.model.PropertyList;
@@ -46,7 +48,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  *
  * @author malbinola
  */
-public class EventInput {
+public class EventInput implements Comparable<EventInput> {
 	private static final Pattern PATTERN_LINE_DTSTAMP = Pattern.compile("\nDTSTAMP:.*(\r)?\n");
 	public final EventEx event;
 	public final ICalendarUtils.RRInstanceInfo recurringInstanceInfo;
@@ -60,9 +62,32 @@ public class EventInput {
 		this.sourceObject = sourceObject;
 	}
 	
+	public boolean isSeriesMaster() {
+		if (recurringInstanceInfo != null) return false;
+		return event.hasRecurrence();
+	}
+	
 	public boolean isSourceEventCancelled() {
 		if (sourceObject == null) return false;
 		return Status.VEVENT_CANCELLED.equals(sourceObject.getProperty(Status.STATUS));
+	}
+	
+	public String buildUniqueKey() {
+		if (recurringInstanceInfo != null) {
+			return EventInstanceId.build(event.getPublicUid(), recurringInstanceInfo.instanceDate).toString();
+		} else if (event.hasRecurrence()) {
+			return EventInstanceId.buildMaster(event.getPublicUid()).toString();
+		} else {
+			return EventInstanceId.buildSingleInstance(event.getPublicUid()).toString();
+		}
+	}
+	
+	public String buildUidGroupKey() {
+		if (recurringInstanceInfo != null) {
+			return buildUidGroupKey(EventInstanceId.build(recurringInstanceInfo.masterUid, recurringInstanceInfo.instanceDate).getInstance());
+		} else {
+			return buildUidGroupKey(null);
+		}
 	}
 	
 	public String computeDataHash() {
@@ -80,5 +105,19 @@ public class EventInput {
 		target.setTitle(event.getTitle());
 		target.setLocation(event.getLocation());
 		target.setDescription(event.getDescription());
+	}
+	
+	@Override
+	public int compareTo(EventInput o) {
+		boolean thisHasRRIInfo = this.recurringInstanceInfo == null;
+		boolean otherIsHasRRIInfo = o.recurringInstanceInfo == null;
+		if (thisHasRRIInfo == otherIsHasRRIInfo) {
+			return 0; // both null or both non-null -> considered equal
+		}
+		return thisHasRRIInfo ? -1 : 1; // null comes first
+	}
+	
+	public static String buildUidGroupKey(final String serieInstance) {
+		return LangUtils.coalesceStrings(serieInstance, EventInstanceId.NO_INSTANCE_DATE);
 	}
 }
