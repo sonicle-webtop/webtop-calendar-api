@@ -71,12 +71,16 @@ public class EventInstanceId extends CId {
 		if (hasNoInstance()) {
 			return null;
 		} else {
-			return JodaTimeUtils.parseDateTime(fmtYMD, getInstance()).toLocalDate();
+			return parseInstancePart(getInstance());
 		}
 	}
 
 	public boolean hasNoInstance() {
 		return NO_INSTANCE_DATE.equals(getInstance());
+	}
+	
+	public static LocalDate parseInstancePart(final String s) {
+		return JodaTimeUtils.parseDateTime(fmtYMD, s).toLocalDate();
 	}
 
 	public static EventInstanceId parse(final String s) {
@@ -87,44 +91,58 @@ public class EventInstanceId extends CId {
 		}
 	}
 	
-	public static EventInstanceId asMasterInstanceId(EventInstanceId iid) {
+	public static EventInstanceId asSeriesMasterInstanceId(final EventInstanceId iid) {
 		Check.notNull(iid, "iid");
 		return buildMaster(iid.getEventId());
 	}
 	
-	public static boolean isSeriesMaster(EventInstanceId iid, String underlyingEventId) {
+	public static boolean isSingleOrSeriesMaster(final EventInstanceId iid, final String originalEventId) {
 		Check.notNull(iid, "iid");
-		return iid.getEventId().equals(underlyingEventId) && NO_INSTANCE_DATE.equals(iid.getInstance());
+		return iid.getEventId().equals(originalEventId) && NO_INSTANCE_DATE.equals(iid.getInstance());
 	}
 	
-	public static boolean isSeriesException(EventInstanceId iid, String underlyingEventId) {
+	public static boolean isSeriesMaster(final EventInstanceId iid, final String originalEventId) {
 		Check.notNull(iid, "iid");
-		return !StringUtils.isBlank(underlyingEventId) && !iid.getEventId().equals(underlyingEventId) && !NO_INSTANCE_DATE.equals(iid.getInstance());
+		return iid.getEventId().equals(originalEventId) && NO_INSTANCE_DATE.equals(iid.getInstance());
 	}
 	
-	public static boolean isSeriesItem(EventInstanceId iid, String underlyingEventId) {
+	public static boolean isSeriesException(final EventInstanceId iid, final String originalEventId) {
 		Check.notNull(iid, "iid");
-		return !isSeriesMaster(iid, underlyingEventId) && !isSeriesException(iid, underlyingEventId) && iid.getEventId().equals(underlyingEventId);
+		return !StringUtils.isBlank(originalEventId) && !iid.getEventId().equals(originalEventId) && !NO_INSTANCE_DATE.equals(iid.getInstance());
+	}
+	
+	public static boolean isSeriesItem(final EventInstanceId iid, final String originalEventId) {
+		Check.notNull(iid, "iid");
+		return !isSeriesMaster(iid, originalEventId) && !isSeriesException(iid, originalEventId) && iid.getEventId().equals(originalEventId);
+	}
+	
+	@Deprecated
+	public static EventInstanceId buildSingleInstance(final String singleEventId) {
+		return buildSingle(singleEventId);
+	}
+		
+	public static EventInstanceId buildSingle(final String singleEventId) {
+		return build(singleEventId, NO_INSTANCE_DATE);
+	}
+	
+	public static EventInstanceId buildMaster(final String masterEventId) {
+		return build(masterEventId, NO_INSTANCE_DATE);
+	}
+	
+	public static EventInstanceId buildInstance(final String masterEventId, final LocalDate instance) {
+		return build(masterEventId, JodaTimeUtils.print(fmtYMD, instance));
+	}
+	
+	public static EventInstanceId buildInstance(final String masterEventId, final DateTime instance, final DateTimeZone targetTimezone) {
+		return build(masterEventId, JodaTimeUtils.print(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
 	}
 	
 	public static EventInstanceId buildDummy() {
 		return build(DUMMY_EVENT_ID, (String)null);
 	}
 	
-	public static EventInstanceId buildSingleInstance(final String eventId) {
-		return build(eventId, NO_INSTANCE_DATE);
-	}
-	
-	public static EventInstanceId buildMaster(final String masterSeriesEventId) {
-		return build(masterSeriesEventId, NO_INSTANCE_DATE);
-	}
-	
-	public static EventInstanceId build(final String masterSeriesEventId, final LocalDate instance) {
-		return build(masterSeriesEventId, JodaTimeUtils.print(fmtYMD, instance));
-	}
-	
-	public static EventInstanceId build(final String masterSeriesEventId, final DateTime instance, final DateTimeZone targetTimezone) {
-		return build(masterSeriesEventId, JodaTimeUtils.print(JodaTimeUtils.createFormatter("yyyyMMdd", targetTimezone), instance));
+	public static EventInstanceId build(final String eventId, final String masterEventId, final String instance) {
+		return build(LangUtils.coalesceStrings(masterEventId, eventId), instance);
 	}
 	
 	public static EventInstanceId build(final String eventId, final String instance) {
@@ -132,10 +150,6 @@ public class EventInstanceId extends CId {
 			.withSeparator(".")
 			.withTokens(Check.notNull(eventId, "eventId"), StringUtils.defaultIfBlank(instance, NO_INSTANCE_DATE))
 			.build();
-	}
-
-	public static EventInstanceId build(final String eventId, final String masterSeriesEventId, final String seriesInstance) {
-		return build(LangUtils.coalesceStrings(masterSeriesEventId, eventId), seriesInstance);
 	}
 
 	private static class Builder extends CId.AbstractBuilder<Builder, EventInstanceId> {

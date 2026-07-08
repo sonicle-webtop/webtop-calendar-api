@@ -107,6 +107,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalTime;
 import com.sonicle.webtop.calendar.model.EventBounds;
 import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.RecurrenceId;
 import org.joda.time.LocalDate;
 
 /**
@@ -182,18 +183,18 @@ public class ICalendarOutput {
 		}
 	}
 	
-	public String writeICalendar(final Method method, final EventEx event, final PropertyList extraProps) throws WTException, IOException {
-		return ICalendarUtils.print(createCalendar(method, Arrays.asList(new EventOutput(event, extraProps))));
+	public String writeICalendar(final Method method, final EventEx event, final ICalendarUtils.RRInstanceInfo recurringInstanceInfo, final PropertyList extraProps) throws WTException, IOException {
+		return ICalendarUtils.print(createCalendar(method, Arrays.asList(new EventOutput(event, recurringInstanceInfo, extraProps))));
 	}
 	
-	public Calendar createCalendar(final Method method, final EventEx event, final PropertyList extraProps) throws WTException {
-		return createCalendar(method, Arrays.asList(new EventOutput(event, extraProps)));
+	public Calendar createCalendar(final Method method, final EventEx event, final ICalendarUtils.RRInstanceInfo recurringInstanceInfo, final PropertyList extraProps) throws WTException {
+		return createCalendar(method, Arrays.asList(new EventOutput(event, recurringInstanceInfo, extraProps)));
 	}
 	
 	public Calendar createCalendar(final Method method, final Collection<EventOutput> outputs) throws WTException {
 		Calendar ical = null;
 		if (method == null) {
-			ical = ICalendarUtils.newCalendar(prodId, null);
+			ical = ICalendarUtils.newCalendar(prodId, (Method)null);
 		} else {
 			ensureMethodRequestOrCancel(method);
 			ical = ICalendarUtils.newCalendar(prodId, method);
@@ -216,7 +217,7 @@ public class ICalendarOutput {
 			}
 			
 			try {
-				ical.getComponents().add(createEventObject(method, output.event, output.extraProps, logHandler));
+				ical.getComponents().add(createEventObject(method, output.event, output.recurringInstanceInfo, output.extraProps, logHandler));
 			} catch (Throwable t) {
 				if (buffLogHandler != null) {
 					LogHandler.log(buffLogHandler, 0, LogEntry.Level.ERROR, "Reason: {}", LangUtils.getThrowableMessage(t));
@@ -233,11 +234,11 @@ public class ICalendarOutput {
 		return ical;
 	}
 	
-	public VEvent createEventObject(final EventEx event, final PropertyList extraProps) throws WTException {
-		return createEventObject(null, event, extraProps, null);
+	public VEvent createEventObject(final EventEx event, final ICalendarUtils.RRInstanceInfo recurringInstanceInfo, final PropertyList extraProps) throws WTException {
+		return createEventObject(null, event, recurringInstanceInfo, extraProps, null);
 	}
 	
-	public VEvent createEventObject(final Method method, final EventEx event, final PropertyList extraProps, final LogHandler logHandler) throws WTException {
+	public VEvent createEventObject(final Method method, final EventEx event, final ICalendarUtils.RRInstanceInfo recurringInstanceInfo, final PropertyList extraProps, final LogHandler logHandler) throws WTException {
 		boolean useUTCDateTimes = (method != null);
 		VEvent vevent = new VEvent();
 		
@@ -346,6 +347,9 @@ public class ICalendarOutput {
 		
 		// RECURRENCE-ID: identifies a specific instance of a recurring master entry
 		// https://www.kanzaki.com/docs/ical/recurrenceId.html
+		if (recurringInstanceInfo != null) {
+			ICal4jUtils.addProperty(vevent, new RecurrenceId(ICal4jUtils.toIC4jDate(recurringInstanceInfo.instanceDate)));
+		}
 		
 		// ATTENDEE
 		// https://www.kanzaki.com/docs/ical/attendee.html

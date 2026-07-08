@@ -37,5 +37,5 @@ package com.sonicle.webtop.calendar;
  * @author malbinola
  */
 public enum EventObjectOutputType {
-	STAT, ICALENDAR, BEAN;
+	STAT, BEAN, ICALENDAR_EVENT, ICALENDAR_RAW;
 }

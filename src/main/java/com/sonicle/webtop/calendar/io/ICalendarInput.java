@@ -213,49 +213,6 @@ public class ICalendarInput implements EventStreamReader {
 		return results;
 	}
 	
-	@Deprecated
-	public ArrayList<EventInput> parseEventObjects999(final Calendar calendar) throws WTException {
-		// See http://www.kanzaki.com/docs/ical/
-		ArrayList<EventInput> results = new ArrayList<>();
-		
-		int count = 0;
-		for (Iterator xi = calendar.getComponents().iterator(); xi.hasNext();) {
-			final Component component = (Component) xi.next();
-			if (component instanceof VEvent) {
-				count++;
-				final VEvent ve = (VEvent)component;
-				final int veNo = count;
-				
-				BufferingLogHandler buffLogHandler = null;
-				if (logHandler != null) {
-					buffLogHandler = new BufferingLogHandler() {
-						@Override
-						public List<LogEntry> first() {
-							return Arrays.asList(new LogMessage(0, LogEntry.Level.INFO, "VEVENT #{} [{}]", veNo, ICal4jUtils.printDump(ve)));
-						}
-					};
-				}
-				
-				try {
-					final EventInput result = parseEventObject(ve, buffLogHandler);
-					if (result.event.trimFieldLengths()) {
-						LogHandler.log(buffLogHandler, 1, LogEntry.Level.WARN, "Some fields were truncated due to max-length");
-					}
-					results.add(result);
-					
-				} catch(Throwable t) {
-					LogHandler.log(buffLogHandler, 0, LogEntry.Level.ERROR, "Reason: {}", LangUtils.getThrowableMessage(t));
-				}
-				
-				if (logHandler != null && buffLogHandler != null) {
-					final List<LogEntry> entries = buffLogHandler.flush();
-					if (entries != null) logHandler.handle(entries);
-				}
-			}
-		}
-		return results;
-	}
-	
 	public void parseEventObjects(final InputStream is, final EventInputConsumer consumer) throws WTException, ParserException, IOException {
 		final AtomicInteger count = new AtomicInteger(0);
 		ICalendarUtils.createLazyCalendarBuilder(

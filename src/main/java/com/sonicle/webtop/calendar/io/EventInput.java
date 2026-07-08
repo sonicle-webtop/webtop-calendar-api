@@ -74,17 +74,17 @@ public class EventInput implements Comparable<EventInput> {
 	
 	public String buildUniqueKey() {
 		if (recurringInstanceInfo != null) {
-			return EventInstanceId.build(event.getPublicUid(), recurringInstanceInfo.instanceDate).toString();
+			return EventInstanceId.buildInstance(event.getPublicUid(), recurringInstanceInfo.instanceDate).toString();
 		} else if (event.hasRecurrence()) {
 			return EventInstanceId.buildMaster(event.getPublicUid()).toString();
 		} else {
-			return EventInstanceId.buildSingleInstance(event.getPublicUid()).toString();
+			return EventInstanceId.buildSingle(event.getPublicUid()).toString();
 		}
 	}
 	
 	public String buildUidGroupKey() {
 		if (recurringInstanceInfo != null) {
-			return buildUidGroupKey(EventInstanceId.build(recurringInstanceInfo.masterUid, recurringInstanceInfo.instanceDate).getInstance());
+			return buildUidGroupKey(EventInstanceId.buildInstance(recurringInstanceInfo.masterUid, recurringInstanceInfo.instanceDate).getInstance());
 		} else {
 			return buildUidGroupKey(null);
 		}
@@ -101,7 +101,7 @@ public class EventInput implements Comparable<EventInput> {
 		target.setAllDay(event.getAllDay());
 		target.setStart(event.getStart());
 		target.setEnd(event.getEnd());
-		target.setTimezone(event.getTitle());
+		target.setTimezone(event.getTimezone());
 		target.setTitle(event.getTitle());
 		target.setLocation(event.getLocation());
 		target.setDescription(event.getDescription());

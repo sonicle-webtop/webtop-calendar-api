@@ -33,6 +33,7 @@
 package com.sonicle.webtop.calendar.io;
 
 import com.sonicle.webtop.calendar.model.EventEx;
+import com.sonicle.webtop.core.util.ICalendarUtils;
 import net.fortuna.ical4j.model.PropertyList;
 
 /**
@@ -41,10 +42,12 @@ import net.fortuna.ical4j.model.PropertyList;
  */
 public class EventOutput {
 	public final EventEx event;
+	public final ICalendarUtils.RRInstanceInfo recurringInstanceInfo;
 	public final PropertyList extraProps;
 
-	public EventOutput(EventEx event, PropertyList extraProps) {
+	public EventOutput(EventEx event, ICalendarUtils.RRInstanceInfo recurringInstanceInfo, PropertyList extraProps) {
 		this.event = event;
+		this.recurringInstanceInfo = recurringInstanceInfo;
 		this.extraProps = extraProps;
 	}
 }

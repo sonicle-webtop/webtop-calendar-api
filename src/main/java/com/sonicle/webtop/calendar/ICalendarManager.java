@@ -114,13 +114,19 @@ public interface ICalendarManager {
 	public Map<Integer, CalendarPropSet> getCalendarCustomProps(Collection<Integer> calendarIds) throws WTException;
 	public CalendarPropSet updateCalendarCustomProps(int calendarId, CalendarPropSet propertySet) throws WTException;
 	public List<ComparableEventRange> listEventsBounds(final Collection<Integer> calendarIds, final DateTimeRange2 viewRange, final DateTimeZone targetTimezone) throws WTException;
+	public Map<String, DateTime> generateTimeSpans(final LocalDate fromDate, final LocalDate toDate, final TimeRange timeRange, final boolean applyTimeRangeForEachDay, final int minuteResolution, final DateTimeZone targetTimezone);
+	public Map<String, DateTime> computeTransparencyTimeSpans(final UserProfileId targetProfileId, final EventBase.Transparency transparency, final DateWindow dateWindow, final TimeRange timeRange, final int minuteResolution, final DateTimeZone targetTimezone) throws WTException;
 	public List<EventObject> listEventObjects(final int calendarId, final EventObjectOutputType outputType) throws WTException;
 	public List<EventObject> listEventObjects(final int calendarId, final DateTime since, final EventObjectOutputType outputType) throws WTException;
+	public ItemsListResult<EventObject> listEventObjects(final Collection<Integer> calendarIds, final DateTime since, final Condition<EventQuery> filterQuery, final EventObjectOutputType outputType) throws WTException;
+	public ItemsListResult<EventObject> listEventObjects(final Collection<Integer> calendarIds, final DateTime since, final Condition<EventQuery> filterQuery, final Integer page, final Integer limit, final boolean returnFullCount, final EventObjectOutputType outputType) throws WTException;
+	public ItemsListResult<EventObject> listEventObjects(final Collection<Integer> calendarIds, final DateTime since, final String filterQuery, final Integer page, final Integer limit, final boolean returnFullCount, final EventObjectOutputType outputType) throws WTException;
 	public Delta<EventObject> listEventObjectsDelta(final int calendarId, final String syncToken, final EventObjectOutputType outputType) throws WTException;
 	public Delta<EventObject> listEventObjectsDelta(final int calendarId, final DateTime since, final EventObjectOutputType outputType) throws WTException;
 	public List<EventObject> getEventObjects(final int calendarId, final Collection<String> hrefs, final EventObjectOutputType outputType) throws WTException;
 	public EventObject getEventObject(final int calendarId, String eventId, final EventObjectOutputType outputType) throws WTException;
 	public void addEventObject(final int calendarId, final String href, final net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
+	public void addEventObject(final int calendarId, final String href, final net.fortuna.ical4j.model.Calendar iCalendar, boolean allowReminders, boolean allowAttendeesNotifications) throws WTException;
 	public void updateEventObject(final int calendarId, final String href, final net.fortuna.ical4j.model.Calendar iCalendar) throws WTNotFoundException, WTException;
 	public void deleteEventObject(final int calendarId, final String href) throws WTNotFoundException, WTException;
 	public void deleteEventObject(final int calendarId, final String href, final BitFlags<EventNotifyOption> notifyOptions) throws WTNotFoundException, WTException;
@@ -130,20 +136,11 @@ public interface ICalendarManager {
 	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final Condition<EventQuery> filterQuery, final boolean sort, final DateTimeZone targetTimezone) throws  WTException;
 	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final Condition<EventQuery> filterQuery, final boolean sort, final DateTimeZone targetTimezone) throws  WTException;
 	public List<EventLookupInstance> listEventInstances(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final String filterQuery, final boolean sort, final DateTimeZone targetTimezone) throws WTException;
+	public Set<LocalDate> listEventDates(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final DateTimeZone targetTimezone) throws WTException;
 	public Set<LocalDate> listEventInstancesDates(final Collection<Integer> calendarIds, final DateTimeZone targetTimezone) throws WTException;
 	public Set<LocalDate> listEventInstancesDates(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final String filterQuery, final DateTimeZone targetTimezone) throws WTException;
-	public Set<LocalDate> listEventDates(final Collection<Integer> calendarIds, final DateTimeWindow timeWindow, final DateTimeZone targetTimezone) throws WTException;
-	public Map<String, DateTime> computeTransparencyTimeSpans(final UserProfileId targetProfileId, final EventBase.Transparency transparency, final DateWindow dateWindow, final TimeRange timeRange, final int minuteResolution, final DateTimeZone targetTimezone) throws WTException;
-	
-	/**
-	 * Resolve a {@code VEVENT} public UID (the {@code UID:} property carried
-	 * by ICS / iTIP payloads) to the WebTop event id of the matching event in
-	 * the current user's accessible calendars, or {@code null} when no match
-	 * exists. Used by cross-module flows (mail iTIP banner) to detect whether
-	 * an inbound invitation already corresponds to a known event before
-	 * applying.
-	 */
 	public String findEventId(final String publicUid) throws WTException;
+	public EventInstance getInvitationEvent(final GetEventScope scope, final String publicUid, final LocalDate instanceDate) throws WTException;
 	@Deprecated public Event getEvent(GetEventScope scope, String publicUid) throws WTException;
 	public Event addEvent(final EventEx event) throws WTException;
 	public Event addEvent(final EventEx event, final boolean notifyAttendees) throws WTException;
@@ -169,7 +166,6 @@ public interface ICalendarManager {
 	public void restoreEventInstance(final EventInstanceId instanceId, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void moveEventInstance(final boolean copy, final Collection<EventInstanceId> instanceIds, final int targetCalendarId, final BitFlags<EventGetOption> copyOptions, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void updateEventCalendarTags(final UpdateTagsOperation operation, final int calendarId, final Set<String> tagIds) throws WTException;
-	public Map<String, DateTime> generateTimeSpans(final LocalDate fromDate, final LocalDate toDate, final TimeRange timeRange, final boolean applyTimeRangeForEachDay, final int minuteResolution, final DateTimeZone targetTimezone);
 	
 	public static enum ImportMode {
 		@SerializedName("copy") COPY,
