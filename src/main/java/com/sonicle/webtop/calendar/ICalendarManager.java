@@ -148,9 +148,9 @@ public interface ICalendarManager {
 	public Event addEvent(final EventEx event, final String rawICalendar, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public Event addEvent(final int calendarId, final net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
 	
-	@Deprecated public Event handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar iCalendar, final Integer calendarId, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
-	public Event handleITIPRequest(final net.fortuna.ical4j.model.Calendar iCalendar, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
-	public Event handleITIPRequest(final Integer calendarId, final net.fortuna.ical4j.model.Calendar iCalendar, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	@Deprecated public HandleITIPRequestResult handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar iCalendar, final Integer calendarId, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	public HandleITIPRequestResult handleITIPRequest(final net.fortuna.ical4j.model.Calendar iCalendar, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	public HandleITIPRequestResult handleITIPRequest(final Integer calendarId, final net.fortuna.ical4j.model.Calendar iCalendar, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
 	
 	public EventInstance getEventInstance(final EventInstanceId instanceId) throws WTException;
 	public EventInstance getEventInstance(final EventInstanceId instanceId, final BitFlags<EventGetOption> options) throws WTException;
@@ -267,19 +267,31 @@ public interface ICalendarManager {
 		public long mask() { return this.mask; }
 	}
 	
+	public static class HandleITIPRequestResult {
+		protected final Event addedEvent;
+		
+		public HandleITIPRequestResult(Event addedEvent) {
+			this.addedEvent = addedEvent;
+		}
+		
+		public Event getAddedEvent() {
+			return addedEvent;
+		}
+	}
+	
 	public static class UpdateAttendeeResponseResult {
-		protected final String eventId;
+		protected final String targetEventId;
 		protected final Set<String> attendeeIds;
 		protected final int numOfSentReplies;
 		
-		public UpdateAttendeeResponseResult(String eventId, Set<String> attendeeIds, int numOfSentReplies) {
-			this.eventId = eventId;
+		public UpdateAttendeeResponseResult(String targetEventId, Set<String> attendeeIds, int numOfSentReplies) {
+			this.targetEventId = targetEventId;
 			this.attendeeIds = attendeeIds;
 			this.numOfSentReplies = numOfSentReplies;
 		}
 
-		public String getEventId() {
-			return eventId;
+		public String getTargetEventId() {
+			return targetEventId;
 		}
 
 		public Set<String> getAttendeeIds() {
