@@ -147,7 +147,11 @@ public interface ICalendarManager {
 	public Event addEvent(final EventEx event, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public Event addEvent(final EventEx event, final String rawICalendar, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public Event addEvent(final int calendarId, final net.fortuna.ical4j.model.Calendar iCalendar) throws WTException;
-	public Event handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar iCalendar, final Integer calendarId, final BitFlags<HandleICalInviationOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	
+	@Deprecated public Event handleInvitationFromICal(final net.fortuna.ical4j.model.Calendar iCalendar, final Integer calendarId, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	public Event handleITIPRequest(final net.fortuna.ical4j.model.Calendar iCalendar, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	public Event handleITIPRequest(final Integer calendarId, final net.fortuna.ical4j.model.Calendar iCalendar, final BitFlags<HandleITIPRequestOption> options) throws WTParseException, WTNotFoundException, WTConstraintException, WTException;
+	
 	public EventInstance getEventInstance(final EventInstanceId instanceId) throws WTException;
 	public EventInstance getEventInstance(final EventInstanceId instanceId, final BitFlags<EventGetOption> options) throws WTException;
 	public EventAttachmentWithBytes getEventInstanceAttachment(final EventInstanceId instanceId, final String attachmentId) throws WTException;
@@ -159,7 +163,7 @@ public interface ICalendarManager {
 	public void updateEventInstanceQuick(final UpdateEventTarget target, final EventInstanceId instanceId, final DateTime newStart, final DateTime newEnd, final String newTitle) throws WTException;
 	public void updateEventInstanceQuick(final UpdateEventTarget target, final EventInstanceId instanceId, final DateTime newStart, final DateTime newEnd, final String newTitle, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void updateEventInstanceTags(final UpdateTagsOperation operation, final Collection<EventInstanceId> instanceIds, final Set<String> tagIds) throws WTException;
-	public void updateEventInstanceAttendeeResponse(final EventInstanceId instanceId, final EventAttendee.ResponseStatus responseStatus, final String comment, final boolean notifyOrganizer) throws WTException;
+	public UpdateAttendeeResponseResult updateEventInstanceAttendeeResponse(final EventInstanceId instanceId, final EventAttendee.ResponseStatus responseStatus, final String comment, final boolean notifyOrganizer) throws WTException;
 	public void deleteEvent(final int calendarId, final String publicUid, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void deleteEventInstance(final UpdateEventTarget target, final EventInstanceId instanceId, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
 	public void deleteEventInstance(final UpdateEventTarget target, final Collection<EventInstanceId> instanceIds, final BitFlags<EventNotifyOption> notifyOptions) throws WTException;
@@ -254,12 +258,36 @@ public interface ICalendarManager {
 		public long mask() { return this.mask; }
 	}
 	
-	public static enum HandleICalInviationOption implements BitFlagsEnum<HandleICalInviationOption> {
+	public static enum HandleITIPRequestOption implements BitFlagsEnum<HandleITIPRequestOption> {
 		CONSTRAIN_AVAILABILITY(1<<1), EVENT_LOOKUP_SCOPE_STRICT(1<<2), IGNORE_ICAL_CLASSIFICATION(1<<3), IGNORE_ICAL_TRASPARENCY(1<<3), IGNORE_ICAL_ALARMS(1<<4);
 		
 		private long mask = 0;
-		private HandleICalInviationOption(long mask) { this.mask = mask; }
+		private HandleITIPRequestOption(long mask) { this.mask = mask; }
 		@Override
 		public long mask() { return this.mask; }
+	}
+	
+	public static class UpdateAttendeeResponseResult {
+		protected final String eventId;
+		protected final Set<String> attendeeIds;
+		protected final int numOfSentReplies;
+		
+		public UpdateAttendeeResponseResult(String eventId, Set<String> attendeeIds, int numOfSentReplies) {
+			this.eventId = eventId;
+			this.attendeeIds = attendeeIds;
+			this.numOfSentReplies = numOfSentReplies;
+		}
+
+		public String getEventId() {
+			return eventId;
+		}
+
+		public Set<String> getAttendeeIds() {
+			return attendeeIds;
+		}
+
+		public int getNumOfSentReplies() {
+			return numOfSentReplies;
+		}
 	}
 }

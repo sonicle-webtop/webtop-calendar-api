@@ -35,7 +35,6 @@ package com.sonicle.webtop.calendar.io;
 import com.sonicle.commons.Check;
 import com.sonicle.commons.LangUtils;
 import com.sonicle.webtop.calendar.model.EventEx;
-import com.sonicle.webtop.calendar.model.EventInstance;
 import com.sonicle.webtop.calendar.model.EventInstanceId;
 import com.sonicle.webtop.core.util.ICalendarUtils;
 import java.util.regex.Pattern;
@@ -43,6 +42,7 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Status;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -53,12 +53,16 @@ public class EventInput implements Comparable<EventInput> {
 	public final EventEx event;
 	public final ICalendarUtils.RRInstanceInfo recurringInstanceInfo;
 	public final PropertyList extraProps;
+	public final DateTime sourceLastModified;
+	public final Integer sourceSequence;
 	public final VEvent sourceObject;
 	
-	public EventInput(EventEx event, ICalendarUtils.RRInstanceInfo recurringInstanceInfo, PropertyList extraProps, VEvent sourceObject) {
+	public EventInput(EventEx event, ICalendarUtils.RRInstanceInfo recurringInstanceInfo, PropertyList extraProps, DateTime sourceLastModified, Integer sourceSequence, VEvent sourceObject) {
 		this.event = Check.notNull(event, "event");
 		this.recurringInstanceInfo = recurringInstanceInfo;
 		this.extraProps = extraProps;
+		this.sourceLastModified = sourceLastModified;
+		this.sourceSequence = sourceSequence;
 		this.sourceObject = sourceObject;
 	}
 	
@@ -96,8 +100,8 @@ public class EventInput implements Comparable<EventInput> {
 		return DigestUtils.md5Hex(s);
 	}
 	
-	public void mergeFieldsForInvitation(EventInstance target) {
-		target.setRevisionSequence(event.getRevisionSequence());
+	public void mergeFieldsForInvitation(final EventEx target) {
+		target.setRevisionSequence(sourceSequence);
 		target.setAllDay(event.getAllDay());
 		target.setStart(event.getStart());
 		target.setEnd(event.getEnd());

@@ -261,9 +261,26 @@ public class ICalendarInput implements EventStreamReader {
 	
 	public EventInput parseEventObject(final VEvent vevent, final LogHandler logHandler) throws WTException {
 		// See http://www.kanzaki.com/docs/ical/vevent.html
+		org.joda.time.DateTime sourceLastModified = null;
+		Integer sourceSequence = null;
 		EventEx event = new EventEx();
 		
 		//TODO: pass string field lengths in constructor or take them from db field definitions
+		
+		// CREATED: the date and time when the entity was created in the store
+		// https://www.kanzaki.com/docs/ical/created.html
+		event.setCreationTimestamp(ICalendarUtils.getPropertyValueAsDateTime(vevent.getCreated(), org.joda.time.DateTimeZone.UTC));
+		
+		// LAST-MODIFIED: the date and time when the entity was last-revised in the store
+		// http://www.kanzaki.com/docs/ical/lastModified.html
+		sourceLastModified = ICalendarUtils.getPropertyValueAsDateTime(vevent.getLastModified(), org.joda.time.DateTimeZone.UTC);
+		
+		// SEQUENCE: the revision sequence number
+		// http://www.kanzaki.com/docs/ical/sequence.html
+		Sequence sequence = vevent.getSequence();
+		if (sequence != null) {
+			sourceSequence = sequence.getSequenceNo();
+		}
 		
 		// UID: globally unique identifier
 		// http://www.kanzaki.com/docs/ical/uid.html
@@ -282,21 +299,6 @@ public class ICalendarInput implements EventStreamReader {
 			if (iaOrg != null) event.setOrganizer(InternetAddressUtils.toFullAddress(iaOrg));
 		} catch (Exception ex) {
 			LogHandler.log(logHandler, 1, LogEntry.Level.WARN, "Organizer invalid or empty [{}]", ICal4jUtils.getPropertyValue(vevent.getOrganizer()));
-		}
-		
-		// CREATED: the date and time when the entity was created in the store
-		// https://www.kanzaki.com/docs/ical/created.html
-		event.setCreationTimestamp(ICalendarUtils.getPropertyValueAsDateTime(vevent.getCreated(), org.joda.time.DateTimeZone.UTC));
-		
-		// LAST-MODIFIED: the date and time when the entity was last-revised in the store
-		// http://www.kanzaki.com/docs/ical/lastModified.html
-		event.setRevisionTimestamp(ICalendarUtils.getPropertyValueAsDateTime(vevent.getLastModified(), org.joda.time.DateTimeZone.UTC));
-		
-		// SEQUENCE: the revision sequence number
-		// http://www.kanzaki.com/docs/ical/sequence.html
-		Sequence sequence = vevent.getSequence();
-		if (sequence != null) {
-			event.setRevisionSequence(sequence.getSequenceNo());
 		}
 		
 		DateTimeZone eventTimezone = null;
@@ -534,7 +536,7 @@ public class ICalendarInput implements EventStreamReader {
 		Set<String> names = new LinkedHashSet(Arrays.asList(Property.CONTACT, Property.GEO, Property.URL, Property.COMMENT, Property.RESOURCES));
 		PropertyList extraProps = ICalendarUtils.extractProperties(vevent, names, true, null);
 		
-		return new EventInput(event, recurringInstanceInfo, extraProps, includeSourceComponentInOutput ? vevent : null);
+		return new EventInput(event, recurringInstanceInfo, extraProps, sourceLastModified, sourceSequence, includeSourceComponentInOutput ? vevent : null);
 	}
 	
 	private Event.Reminder toEventReminder(final VAlarm alarm, final LogHandler logHandler) {
