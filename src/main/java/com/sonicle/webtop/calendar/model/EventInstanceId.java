@@ -106,14 +106,14 @@ public class EventInstanceId extends CId {
 		return iid.getEventId().equals(originalEventId) && NO_INSTANCE_DATE.equals(iid.getInstance());
 	}
 	
-	public static boolean isSeriesException(final EventInstanceId iid, final String originalEventId) {
+	public static boolean isSeriesOverride(final EventInstanceId iid, final String originalEventId) {
 		Check.notNull(iid, "iid");
 		return !StringUtils.isBlank(originalEventId) && !iid.getEventId().equals(originalEventId) && !NO_INSTANCE_DATE.equals(iid.getInstance());
 	}
 	
-	public static boolean isSeriesItem(final EventInstanceId iid, final String originalEventId) {
+	public static boolean isSeriesVirtual(final EventInstanceId iid, final String originalEventId) {
 		Check.notNull(iid, "iid");
-		return !isSeriesMaster(iid, originalEventId) && !isSeriesException(iid, originalEventId) && iid.getEventId().equals(originalEventId);
+		return !isSeriesMaster(iid, originalEventId) && !isSeriesOverride(iid, originalEventId) && iid.getEventId().equals(originalEventId);
 	}
 	
 	@Deprecated

@@ -34,9 +34,15 @@ package com.sonicle.webtop.calendar.io;
 
 import com.sonicle.commons.Check;
 import com.sonicle.commons.LangUtils;
+import com.sonicle.commons.flags.BitFlags;
+import com.sonicle.webtop.calendar.model.EventAttendee;
 import com.sonicle.webtop.calendar.model.EventEx;
 import com.sonicle.webtop.calendar.model.EventInstanceId;
 import com.sonicle.webtop.core.util.ICalendarUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -109,6 +115,27 @@ public class EventInput implements Comparable<EventInput> {
 		target.setTitle(event.getTitle());
 		target.setLocation(event.getLocation());
 		target.setDescription(event.getDescription());
+	}
+	
+	public void mergeRecurrence(final EventEx target) {
+		target.setRecurrence(event.getRecurrence());
+	}
+	
+	public void mergeAttendees(final EventEx target) {
+		final Map<String, String> existingIdsByAddress = new HashMap<>();
+		for (EventAttendee existing : target.getAttendeesOrEmpty()) {
+			final String address = existing.getRecipientAddress();
+			if (address != null) existingIdsByAddress.put(address.toLowerCase(), existing.getAttendeeId());
+		}
+		
+		final List<EventAttendee> merged = new ArrayList<>();
+		for (EventAttendee incoming : event.getAttendeesOrEmpty()) {
+			final String address = incoming.getRecipientAddress();
+			if (address != null) incoming.setAttendeeId(existingIdsByAddress.get(address.toLowerCase()));
+			merged.add(incoming);
+		}
+		
+		target.setAttendees(merged);
 	}
 	
 	@Override

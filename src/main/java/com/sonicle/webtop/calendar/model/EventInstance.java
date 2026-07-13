@@ -89,9 +89,9 @@ public class EventInstance extends EventEx implements IEventInstanceStatable {
 		
 		if (hasRecurrence && EventInstanceId.isSeriesMaster(instanceId, originalEventId)) {
 			return Type.MASTER;
-		} else if (hasRecurrence && EventInstanceId.isSeriesItem(instanceId, originalEventId)) {
+		} else if (hasRecurrence && EventInstanceId.isSeriesVirtual(instanceId, originalEventId)) {
 			return Type.OCCURRENCE;
-		} else if (EventInstanceId.isSeriesException(instanceId, originalEventId)) {
+		} else if (EventInstanceId.isSeriesOverride(instanceId, originalEventId)) {
 			return Type.EXCEPTION;
 		} else {
 			return Type.SINGLE;

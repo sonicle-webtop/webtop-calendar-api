@@ -33,6 +33,7 @@
 package com.sonicle.webtop.calendar;
 
 import com.google.gson.annotations.SerializedName;
+import com.sonicle.commons.Check;
 import com.sonicle.commons.beans.ItemsListResult;
 import com.sonicle.commons.beans.SortInfo;
 import com.sonicle.commons.qbuilders.conditions.Condition;
@@ -259,7 +260,7 @@ public interface ICalendarManager {
 	}
 	
 	public static enum HandleITIPRequestOption implements BitFlagsEnum<HandleITIPRequestOption> {
-		CONSTRAIN_AVAILABILITY(1<<1), EVENT_LOOKUP_SCOPE_STRICT(1<<2), IGNORE_ICAL_CLASSIFICATION(1<<3), IGNORE_ICAL_TRASPARENCY(1<<3), IGNORE_ICAL_ALARMS(1<<4);
+		CONSTRAIN_AVAILABILITY(1<<1), EVENT_LOOKUP_SCOPE_STRICT(1<<2), IGNORE_ICAL_CLASSIFICATION(1<<3), IGNORE_ICAL_TRASPARENCY(1<<3), IGNORE_ICAL_ALARMS(1<<4), CONSTRAIN_SEQUENCE(1<<5), DRY_RUN(1<<6);
 		
 		private long mask = 0;
 		private HandleITIPRequestOption(long mask) { this.mask = mask; }
@@ -268,14 +269,30 @@ public interface ICalendarManager {
 	}
 	
 	public static class HandleITIPRequestResult {
-		protected final Event addedEvent;
+		protected final Status status;
+		protected final EventInstanceId eventInstanceId;
+		protected final Event event;
 		
-		public HandleITIPRequestResult(Event addedEvent) {
-			this.addedEvent = addedEvent;
+		public HandleITIPRequestResult(Status status, EventInstanceId eventInstanceId) {
+			this(status, eventInstanceId, null);
 		}
 		
-		public Event getAddedEvent() {
-			return addedEvent;
+		public HandleITIPRequestResult(Status status, EventInstanceId eventInstanceId, Event event) {
+			this.status = Check.notNull(status, "status");
+			this.eventInstanceId = Check.notNull(eventInstanceId, "eventInstanceId");
+			this.event = event;
+		}
+		
+		public Event getEvent() {
+			return event;
+		}
+		
+		public enum Status {
+			@SerializedName("created") CREATED,
+			@SerializedName("updated") UPDATED,
+			@SerializedName("removed") REMOVED,
+			@SerializedName("ignored") IGNORED,
+			@SerializedName("rsvp_recorded") RSVP_RECORDED;
 		}
 	}
 	
