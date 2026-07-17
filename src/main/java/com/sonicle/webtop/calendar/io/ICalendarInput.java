@@ -416,12 +416,14 @@ public class ICalendarInput implements EventStreamReader {
 		// RRULE, EXDATE: defines the repeating pattern and the list of exceptions
 		// https://www.kanzaki.com/docs/ical/rrule.html
 		// https://www.kanzaki.com/docs/ical/exdate.html
-		ICalendarUtils.RecurInfo recurInfo = ICalendarUtils.extractRecurInfo(vevent);
-		if (recurInfo.recur != null && start != null) {
-			event.setRecurrence(new EventRecurrence(recurInfo.recur.toString(), start, recurInfo.exDates));
-			
-		} else if (recurInfo.recur != null) {
-			LogHandler.log(logHandler, 1, LogEntry.Level.WARN, "Recurrence rule ignored: Start is missing");
+		ICalendarUtils.RRInfo rrInfo = ICalendarUtils.extractRRInfo(vevent);
+		if (rrInfo != null) {
+			if (start != null) {
+				event.setRecurrence(new EventRecurrence(rrInfo.getRecur().toString(), start, rrInfo.getExDates()));
+
+			} else {
+				LogHandler.log(logHandler, 1, LogEntry.Level.WARN, "Recurrence rule ignored: Start is missing");
+			}
 		}
 		
 		// RECURRENCE-ID: identifies a specific instance of a recurring master entry
