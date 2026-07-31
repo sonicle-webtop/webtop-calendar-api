@@ -212,6 +212,10 @@ public interface ICalendarManager {
 			opts.unset(EventNotifyOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventNotifyOption.NOTIFY_RESOURCE_ATTENDEE);
 			return opts;
 		}
+		
+		public static boolean shouldNotify(BitFlags<EventNotifyOption> opts) {
+			return opts.hasAny(EventNotifyOption.NOTIFY_INDIVIDUAL_ATTENDEE, EventNotifyOption.NOTIFY_RESOURCE_ATTENDEE);
+		}
 	}
 	
 	public static enum EventReminderOption implements BitFlagsEnum<EventReminderOption> {
