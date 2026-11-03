@@ -157,6 +157,10 @@ public class CalendarUtils {
 		}
 	}
 	
+	public static EventBounds toEventBoundsForDisplay(final EventBase event) {
+		return toEventBoundsForUIRead(event.getAllDay(), event.getStart(), event.getEnd(), event.getTimezoneObject());
+	}
+	
 	/**
 	 * Converts event boundaries from the persistence/backend representation
 	 * to the format expected by the UI when reading event data.
